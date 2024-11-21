@@ -10,7 +10,7 @@ public sealed class AddProduct : Endpoint<Request, Response>
         Post("/api/addProduct");
     }
 
-    public override async Task HandleAsync(Request request, CancellationToken ct)
+    public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         await Task.FromResult(0);
     }

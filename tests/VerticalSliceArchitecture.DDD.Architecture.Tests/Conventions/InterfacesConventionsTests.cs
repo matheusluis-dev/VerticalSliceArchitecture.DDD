@@ -2,7 +2,7 @@ namespace VerticalSliceArchitecture.DDD.Architecture.Tests.Conventions;
 
 using VerticalSliceArchitecture.DDD.Architecture.Tests.Common;
 
-public sealed class InterfaceConventionsTests
+public sealed class InterfacesConventionsTests
 {
     /// <summary>
     /// Validates that all interface names in the solution follow the standard naming convention.
@@ -23,9 +23,7 @@ public sealed class InterfaceConventionsTests
     public void Interfaces_starts_with_I()
     {
         // Arrange
-        var interfaces = Solution.Types
-            .That().AreInterfaces()
-            .GetTypes()
+        var interfaces = Application.Interfaces
             .Select(i => i.Name);
 
         // Assert

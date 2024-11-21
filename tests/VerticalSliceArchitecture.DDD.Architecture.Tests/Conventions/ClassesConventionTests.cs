@@ -1,9 +1,8 @@
 namespace VerticalSliceArchitecture.DDD.Architecture.Tests.Conventions;
 
 using VerticalSliceArchitecture.DDD.Architecture.Tests.Common;
-using VerticalSliceArchitecture.DDD.Architecture.Tests.Common.Rules;
 
-public sealed class ClassConventionTests
+public sealed class ClassesConventionTests
 {
     /// <summary>
     /// Verifies that all non-abstract, non-static, non-partial classes are sealed to enforce immutability 
@@ -18,13 +17,23 @@ public sealed class ClassConventionTests
     public void Non_abstract_non_static_non_partial_classes_should_be_sealed()
     {
         // Arrange
-        var nonAbstractNonStaticNonPartialClasses = Solution.Types
-            .That().AreClasses()
-            .And().AreNotAbstract()
-            .And().AreNotStatic()
-            .And().MeetCustomRule(new AreNotPartialCustomRule());
+        var nonAbstractNonStaticNonPartialClasses = Application.Classes
+            .Where(c => !c.IsAbstract && c.IsNotStatic() && c.IsNotPartial());
 
         // Assert
-        nonAbstractNonStaticNonPartialClasses.Should().BeSealed();
+        nonAbstractNonStaticNonPartialClasses.Should()
+            .AllSatisfy(@class => @class.Should().BeSealed());
+    }
+
+    [Fact]
+    public void Classes_that_all_methods_are_static_should_be_static()
+    {
+        // Arrange
+        var staticMethods = Application.StaticMethods
+            .Where(sm => sm.Methods.All(m => m.IsStatic))
+            .Where(sm => sm.Class.ReflectedType!.IsNotStatic());
+
+        // Assert
+        staticMethods.Should().BeEmpty();
     }
 }

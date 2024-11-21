@@ -8,7 +8,7 @@ public sealed class PropertiesConventionTests
     public void Properties_should_be_PascalCase()
     {
         // Arrange
-        var classes = Solution.Types
+        var classes = Application.Types
             .That().AreClasses()
             .GetTypes();
 

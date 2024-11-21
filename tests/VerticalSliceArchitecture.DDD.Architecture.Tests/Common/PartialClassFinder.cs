@@ -14,8 +14,6 @@ internal static class PartialClassFinder
     {
         var directoryPath = @"C:\Users\mathe\source\github\me\VerticalSliceArchitecture.DDD\src\VerticalSliceArchitecture.DDD.Application";
 
-        var partialClassNames = new List<string>();
-
         var csFiles = Directory.GetFiles(directoryPath, "*.cs", SearchOption.AllDirectories);
 
         foreach (var file in csFiles)
