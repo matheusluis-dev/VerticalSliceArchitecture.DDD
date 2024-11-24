@@ -1,9 +1,10 @@
 namespace VerticalSliceArchitecture.DDD.Application.Endpoints.Products;
 
-public sealed record Request(string? Name, decimal? Price);
-public sealed record Response(string? Name, decimal? Price);
+internal sealed record Request(string? Name, decimal? Price);
 
-public sealed class AddProduct : Endpoint<Request, Response>
+internal sealed record Response(string? Name, decimal? Price);
+
+internal sealed class AddProduct : Endpoint<Request, Response>
 {
     public override void Configure()
     {
@@ -12,6 +13,6 @@ public sealed class AddProduct : Endpoint<Request, Response>
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        await Task.FromResult(0);
+        _ = await Task.FromResult(0);
     }
 }

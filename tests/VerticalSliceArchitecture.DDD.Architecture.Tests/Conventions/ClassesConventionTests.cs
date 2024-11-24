@@ -1,39 +1,43 @@
 namespace VerticalSliceArchitecture.DDD.Architecture.Tests.Conventions;
 
 using VerticalSliceArchitecture.DDD.Architecture.Tests.Common;
+using VerticalSliceArchitecture.DDD.Architecture.Tests.Common.Extensions;
 
 public sealed class ClassesConventionTests
 {
     /// <summary>
-    /// Verifies that all non-abstract, non-static, non-partial classes are sealed to enforce immutability 
+    /// Verifies that all non-abstract, non-static, non-partial classes are sealed to enforce immutability
     /// and prevent unintended inheritance.
     /// <para>
-    /// Rationale: Sealing classes improves performance, reduces complexity, and signals that 
-    /// a class is designed for direct use without extension. Additionally, classes that are 
+    /// Rationale: Sealing classes improves performance, reduces complexity, and signals that
+    /// a class is designed for direct use without extension. Additionally, classes that are
     /// non-partial are easier to understand and maintain as a single, cohesive unit.
     /// </para>
     /// </summary>
     [Fact]
-    public void Non_abstract_non_static_non_partial_classes_should_be_sealed()
+    public void NonAbstractNonStaticNonPartialClassesShouldBeSealed()
     {
-        // Arrange
-        var nonAbstractNonStaticNonPartialClasses = Application.Classes
-            .Where(c => !c.IsAbstract && c.IsNotStatic() && c.IsNotPartial());
-
-        // Assert
-        nonAbstractNonStaticNonPartialClasses.Should()
+        Application
+            .NonAbstractNonStaticNonPartialClasses.Should()
             .AllSatisfy(@class => @class.Should().BeSealed());
     }
 
+    /// <summary>
+    /// Ensures that all classes with exclusively static methods are marked as static to adhere
+    /// to design best practices and communicate intent clearly.
+    /// <para>
+    /// Rationale: Declaring a class as static when all its methods are static reinforces the
+    /// class's purpose as a utility or helper. It prevents accidental instantiation and signals
+    /// that the class is not meant to maintain any instance-level state.
+    /// </para>
+    /// </summary>
     [Fact]
-    public void Classes_that_all_methods_are_static_should_be_static()
+    public void ClassesThatAllMethodsAreStaticShouldBeStatic()
     {
-        // Arrange
-        var staticMethods = Application.StaticMethods
-            .Where(sm => sm.Methods.All(m => m.IsStatic))
-            .Where(sm => sm.Class.ReflectedType!.IsNotStatic());
-
-        // Assert
-        staticMethods.Should().BeEmpty();
+        Application
+            .NonStaticClasses.Should()
+            .AllSatisfy(@class =>
+                @class.GetMethods().Length.Should().NotBe(@class.GetStaticMethods().Count())
+            );
     }
 }
