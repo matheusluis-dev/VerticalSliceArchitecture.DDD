@@ -20,7 +20,7 @@ public sealed class PropertiesConventionTests
         Application
             .ClassesWithProperties.Should()
             .AllSatisfy(@class =>
-                @class.Properties.Should().AllSatisfy(property => property.Name.IsPascalCase())
+                @class.Properties.Should().AllSatisfy(property => property.Name.IsPascalCase().Should().BeTrue())
             );
     }
 }
