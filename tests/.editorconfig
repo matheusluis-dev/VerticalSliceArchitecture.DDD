@@ -1,0 +1,4 @@
+[*.{cs,vb}]
+dotnet_diagnostic.CA1707.severity = none # Identifiers should not contain underscores
+dotnet_diagnostic.IDE0058.severity = none # Remove unnecessary expression value
+dotnet_diagnostic.CA1812.severity = none

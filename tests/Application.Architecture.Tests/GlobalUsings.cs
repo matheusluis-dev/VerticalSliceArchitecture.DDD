@@ -1,0 +1,10 @@
+global using System;
+global using Application.Architecture.Tests.Common;
+global using Application.Architecture.Tests.Common.Assertions;
+global using Application.Architecture.Tests.Common.CustomRules;
+global using Application.Architecture.Tests.Common.Extensions;
+global using Application.Architecture.Tests.Common.Helpers;
+global using FluentAssertions;
+global using Mono.Cecil;
+global using NetArchTest.Rules;
+global using Xunit;
