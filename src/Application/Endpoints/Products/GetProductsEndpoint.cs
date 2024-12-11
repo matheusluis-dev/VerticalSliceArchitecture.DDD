@@ -3,16 +3,15 @@ namespace Application.Endpoints.Products;
 using System.Threading;
 using System.Threading.Tasks;
 
-public sealed record Request(int Id, string Name);
-
-public sealed record Response(int Id, string Name);
-
-#pragma warning disable S2094 // Classes should not be empty
-public sealed class LolEndpoint;
-#pragma warning restore S2094 // Classes should not be empty
-
 public sealed class GetProductsEndpoint : Endpoint<Request, Response>
 {
+    private readonly ILogger _logger;
+
+    public GetProductsEndpoint(ILogger<GetProductsEndpoint> logger)
+    {
+        _logger = logger;
+    }
+
     public override void Configure()
     {
         Get("/products");
@@ -21,6 +20,12 @@ public sealed class GetProductsEndpoint : Endpoint<Request, Response>
 
     public override Task HandleAsync(Request req, CancellationToken ct)
     {
+        _logger.LogInformation("GetProductsEndpoint");
+
         return Task.CompletedTask;
     }
 }
+
+public sealed record Request(int Id, string Name);
+
+public sealed record Response(int Id, string Name);

@@ -26,7 +26,7 @@ csharp_prefer_braces = when_multiline:warning
 csharp_style_namespace_declarations = file_scoped:warning
 csharp_style_prefer_method_group_conversion = true:silent
 csharp_style_prefer_top_level_statements = true:silent
-csharp_style_prefer_primary_constructors = true:suggestion
+csharp_style_prefer_primary_constructors = false:suggestion
 csharp_prefer_system_threading_lock = true:suggestion
 csharp_style_expression_bodied_methods = false:warning
 csharp_style_expression_bodied_constructors = false:warning
@@ -80,6 +80,13 @@ end_of_line = lf
 # Makefiles
 [Makefile]
 indent_style = tab
+
+[*.{cs}]
+spelling_languages = en-us,pt-br
+spelling_checkable_types = strings,identifiers,comments
+spelling_error_severity = error
+spelling_exclusion_path = exclusion.dic
+spelling_use_default_exclusion_dictionary = false
 
 ##########################################
 # Default .NET Code Style Severities
@@ -360,59 +367,59 @@ dotnet_naming_symbols.stylecop_constant_fields_group.applicable_accessibilities 
 dotnet_naming_symbols.stylecop_constant_fields_group.required_modifiers         = const
 dotnet_naming_symbols.stylecop_constant_fields_group.applicable_kinds           = field
 dotnet_naming_rule.stylecop_constant_fields_must_be_pascal_case_rule.symbols    = stylecop_constant_fields_group
-dotnet_naming_rule.stylecop_constant_fields_must_be_pascal_case_rule.style = pascal_case_style
-dotnet_naming_rule.stylecop_constant_fields_must_be_pascal_case_rule.severity = warning
+dotnet_naming_rule.stylecop_constant_fields_must_be_pascal_case_rule.style      = pascal_case_style
+dotnet_naming_rule.stylecop_constant_fields_must_be_pascal_case_rule.severity   = warning
 
 # dotnet_naming_symbols.stylecop_static_readonly_underscored_group.applicable_accessibilities = public, internal, protected_internal, protected, private_protected, private
 # dotnet_naming_symbols.stylecop_static_readonly_underscored_group.required_modifiers         = static, readonly
 # dotnet_naming_symbols.stylecop_static_readonly_underscored_group.applicable_kinds           = field
-# dotnet_naming_style.underscored.capitalization = pascal_case
-# dotnet_naming_style.underscored.required_prefix = _
-# dotnet_naming_rule.private_fields_underscored.symbols = stylecop_static_readonly_underscored_group
-# dotnet_naming_rule.private_fields_underscored.style = underscored
-# dotnet_naming_rule.private_fields_underscored.severity = error
+# dotnet_naming_style.underscored.capitalization                                              = camel_case
+# dotnet_naming_style.underscored.required_prefix                                             = _
+# dotnet_naming_rule.private_fields_underscored.symbols                                       = stylecop_static_readonly_underscored_group
+# dotnet_naming_rule.private_fields_underscored.style                                         = underscored
+# dotnet_naming_rule.private_fields_underscored.severity                                      = error
 
 # All static readonly fields must be PascalCase
 # https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1311.md
-dotnet_naming_symbols.stylecop_static_readonly_fields_group.applicable_accessibilities = public, internal, protected_internal, protected, private_protected, private
+dotnet_naming_symbols.stylecop_static_readonly_fields_group.applicable_accessibilities = public, internal, protected_internal, protected, private_protected
 dotnet_naming_symbols.stylecop_static_readonly_fields_group.required_modifiers         = static, readonly
 dotnet_naming_symbols.stylecop_static_readonly_fields_group.applicable_kinds           = field
 dotnet_naming_rule.stylecop_static_readonly_fields_must_be_pascal_case_rule.symbols    = stylecop_static_readonly_fields_group
-dotnet_naming_rule.stylecop_static_readonly_fields_must_be_pascal_case_rule.style = pascal_case_style
-dotnet_naming_rule.stylecop_static_readonly_fields_must_be_pascal_case_rule.severity = warning
+dotnet_naming_rule.stylecop_static_readonly_fields_must_be_pascal_case_rule.style      = pascal_case_style
+dotnet_naming_rule.stylecop_static_readonly_fields_must_be_pascal_case_rule.severity   = warning
 
 # No non-private instance fields are allowed
 # https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1401.md
 dotnet_naming_symbols.stylecop_fields_must_be_private_group.applicable_accessibilities = public, internal, protected_internal, protected, private_protected
 dotnet_naming_symbols.stylecop_fields_must_be_private_group.applicable_kinds           = field
 dotnet_naming_rule.stylecop_instance_fields_must_be_private_rule.symbols               = stylecop_fields_must_be_private_group
-dotnet_naming_rule.stylecop_instance_fields_must_be_private_rule.style = disallowed_style
-dotnet_naming_rule.stylecop_instance_fields_must_be_private_rule.severity = error
+dotnet_naming_rule.stylecop_instance_fields_must_be_private_rule.style                 = disallowed_style
+dotnet_naming_rule.stylecop_instance_fields_must_be_private_rule.severity              = error
 
 # Private fields must be camelCase
 # https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1306.md
 dotnet_naming_symbols.stylecop_private_fields_group.applicable_accessibilities = private
 dotnet_naming_symbols.stylecop_private_fields_group.applicable_kinds           = field
 dotnet_naming_rule.stylecop_private_fields_must_be_camel_case_rule.symbols     = stylecop_private_fields_group
-dotnet_naming_rule.stylecop_private_fields_must_be_camel_case_rule.style = underscored_camel_case_style
-dotnet_naming_rule.stylecop_private_fields_must_be_camel_case_rule.severity = warning
+dotnet_naming_rule.stylecop_private_fields_must_be_camel_case_rule.style       = underscored_camel_case_style
+dotnet_naming_rule.stylecop_private_fields_must_be_camel_case_rule.severity    = warning
 
 # Local variables must be camelCase
 # https://github.com/DotNetAnalyzers/StyleCopAnalyzers/blob/master/documentation/SA1312.md
 dotnet_naming_symbols.stylecop_local_fields_group.applicable_accessibilities = local
 dotnet_naming_symbols.stylecop_local_fields_group.applicable_kinds           = local
 dotnet_naming_rule.stylecop_local_fields_must_be_camel_case_rule.symbols     = stylecop_local_fields_group
-dotnet_naming_rule.stylecop_local_fields_must_be_camel_case_rule.style = camel_case_style
-dotnet_naming_rule.stylecop_local_fields_must_be_camel_case_rule.severity = silent
+dotnet_naming_rule.stylecop_local_fields_must_be_camel_case_rule.style       = camel_case_style
+dotnet_naming_rule.stylecop_local_fields_must_be_camel_case_rule.severity    = silent
 
 # This rule should never fire.  However, it's included for at least two purposes:
 # First, it helps to understand, reason about, and root-case certain types of issues, such as bugs in .editorconfig parsers.
 # Second, it helps to raise immediate awareness if a new field type is added (as occurred recently in C#).
 dotnet_naming_symbols.sanity_check_uncovered_field_case_group.applicable_accessibilities = *
 dotnet_naming_symbols.sanity_check_uncovered_field_case_group.applicable_kinds           = field
-dotnet_naming_rule.sanity_check_uncovered_field_case_rule.symbols  = sanity_check_uncovered_field_case_group
-dotnet_naming_rule.sanity_check_uncovered_field_case_rule.style = internal_error_style
-dotnet_naming_rule.sanity_check_uncovered_field_case_rule.severity = error
+dotnet_naming_rule.sanity_check_uncovered_field_case_rule.symbols                        = sanity_check_uncovered_field_case_group
+dotnet_naming_rule.sanity_check_uncovered_field_case_rule.style                          = internal_error_style
+dotnet_naming_rule.sanity_check_uncovered_field_case_rule.severity                       = error
 
 
 ##########################################
@@ -567,3 +574,50 @@ end_of_line = crlf
 dotnet_diagnostic.CA1515.severity = none
 dotnet_diagnostic.IDE0005.severity = warning
 dotnet_diagnostic.CS1591.severity = none
+
+MA0048.only_validate_first_type = true
+
+dotnet_diagnostic.MA0001.severity = none
+dotnet_diagnostic.MA0003.severity = none
+dotnet_diagnostic.MA0005.severity = none
+dotnet_diagnostic.MA0007.severity = none
+dotnet_diagnostic.MA0010.severity = none
+dotnet_diagnostic.MA0011.severity = none
+dotnet_diagnostic.MA0012.severity = none
+dotnet_diagnostic.MA0013.severity = none
+dotnet_diagnostic.MA0014.severity = none
+dotnet_diagnostic.MA0015.severity = none
+dotnet_diagnostic.MA0017.severity = none
+dotnet_diagnostic.MA0020.severity = none
+dotnet_diagnostic.MA0027.severity = none
+dotnet_diagnostic.MA0028.severity = none
+dotnet_diagnostic.MA0029.severity = none
+dotnet_diagnostic.MA0036.severity = suggestion
+dotnet_diagnostic.MA0038.severity = none
+dotnet_diagnostic.MA0039.severity = none
+dotnet_diagnostic.MA0042.severity = none
+dotnet_diagnostic.MA0047.severity = none
+dotnet_diagnostic.MA0048.severity = none
+dotnet_diagnostic.MA0049.severity = none
+dotnet_diagnostic.MA0056.severity = none
+dotnet_diagnostic.MA0057.severity = none
+dotnet_diagnostic.MA0058.severity = none
+dotnet_diagnostic.MA0059.severity = none
+dotnet_diagnostic.MA0062.severity = none
+dotnet_diagnostic.MA0069.severity = none
+dotnet_diagnostic.MA0072.severity = none
+dotnet_diagnostic.MA0074.severity = none
+dotnet_diagnostic.MA0082.severity = none
+dotnet_diagnostic.MA0086.severity = none
+dotnet_diagnostic.MA0087.severity = none
+dotnet_diagnostic.MA0095.severity = none
+dotnet_diagnostic.MA0097.severity = none
+dotnet_diagnostic.MA0136.severity = none
+dotnet_diagnostic.MA0165.severity = none
+
+dotnet_diagnostic.MA0004.severity = none
+
+dotnet_diagnostic.IDE0058.severity = none
+dotnet_diagnostic.IDE0059.severity = none
+dotnet_diagnostic.IDE0052.severity = none
+dotnet_diagnostic.CA1848.severity = none

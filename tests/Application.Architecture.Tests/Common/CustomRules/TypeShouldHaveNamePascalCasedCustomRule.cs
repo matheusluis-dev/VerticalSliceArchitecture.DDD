@@ -1,16 +1,12 @@
 namespace Application.Architecture.Tests.Common.CustomRules;
 
-using Mono.Cecil;
-
 public sealed class TypeShouldHaveNamePascalCasedCustomRule : ICustomRule2
 {
-    public CustomRuleResult MeetsRule(TypeDefinition type)
+    public CustomRuleResult MeetsRule([NotNull] TypeDefinition type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        var isPascalCased = type.Name.IsPascalCased();
+        var message = isPascalCased ? "Is PascalCased" : "Is not PascalCased";
 
-        return new CustomRuleResult(
-            type.Name.IsPascalCased(),
-            $"'{type.Name}' => Is not PascalCased"
-        );
+        return new CustomRuleResult(isPascalCased, message);
     }
 }

@@ -8,6 +8,7 @@ internal static class Namespaces
     {
         public const string Common = "Application.Common";
         public const string Services = "Application.Services";
+
         public const string Endpoints = "Application.Endpoints";
     }
 

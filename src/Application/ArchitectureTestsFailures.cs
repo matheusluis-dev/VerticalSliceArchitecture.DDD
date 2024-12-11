@@ -13,6 +13,8 @@
 #pragma warning disable S1144 // Unused private types or members should be removed
 #pragma warning disable S1186 // Methods should not be empty
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+#pragma warning disable MA0048 // File name must match type name
+#pragma warning disable MA0036
 
 namespace Application
 {
@@ -22,7 +24,22 @@ namespace Application
 
     public class NonAbstractNonStaticNonPartialClassesShouldBeSealed { }
 
-    public class classesShouldBePascalCased { }
+    public class classesShouldBePascalCased
+    {
+        private string camelCased;
+        private string _PascalCased;
+        private string _camelCased;
+        public string Public;
+        public const string PublicConst = "A";
+        public readonly string PublicReadonly = "B";
+        protected string Protected;
+        internal string Internal;
+
+        public void Http()
+        {
+            var httpClient = new HttpClient();
+        }
+    }
 
     public sealed class MethodsClass
     {
@@ -54,3 +71,5 @@ namespace Application.Services
 #pragma warning restore IDE1006 // Naming Styles
 #pragma warning restore CA1715 // Identifiers should have correct prefix
 #pragma warning restore CA1040 // Avoid empty interfaces
+#pragma warning restore MA0048 // File name must match type name
+#pragma warning restore MA0036

@@ -2,10 +2,8 @@ namespace Application.Architecture.Tests.Common.CustomRules;
 
 public sealed class AsyncMethodsShouldHaveAsyncSuffixCustomRule : ICustomRule2
 {
-    public CustomRuleResult MeetsRule(TypeDefinition type)
+    public CustomRuleResult MeetsRule([NotNull] TypeDefinition type)
     {
-        ArgumentNullException.ThrowIfNull(type);
-
         var nonAsyncSuffixMethods = new List<string>();
         foreach (var method in type.ToType().GetAsyncMethods())
         {
@@ -18,10 +16,10 @@ public sealed class AsyncMethodsShouldHaveAsyncSuffixCustomRule : ICustomRule2
         var hasNonAsyncSuffixMethods = nonAsyncSuffixMethods.Count > 0;
         var message = hasNonAsyncSuffixMethods
             ? $$"""
-                '{{type.Name}}' => has async methods without 'Async' suffix:
+                Has async methods without 'Async' suffix:
                 {{nonAsyncSuffixMethods.ToUnorderedStringList('>', 4)}}
                 """
-            : $"'{type.Name} has not async methods without 'Async' suffix";
+            : $"Has not async methods without 'Async' suffix";
 
         return new CustomRuleResult(hasNonAsyncSuffixMethods, message);
     }

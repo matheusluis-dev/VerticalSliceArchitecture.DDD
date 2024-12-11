@@ -1,24 +1,27 @@
 namespace Application.Architecture.Tests.Common.Helpers;
 
-public static class DirectoryHelper
+internal static class DirectoryHelper
 {
-    public static bool TryGetDirectoryInSolution(
-        string subDirectory,
-        out DirectoryInfo? directoryInfo
-    )
-    {
-        var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+    private static readonly Dictionary<string, DirectoryInfo> _cache = [];
 
+    public static DirectoryInfo GetDirectoryInSolution(string subDirectory)
+    {
+        if (_cache.TryGetValue(subDirectory, out var cacheDirectoryInfo))
+            return cacheDirectoryInfo;
+
+        var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
         while (directory is not null)
         {
-            directoryInfo = new DirectoryInfo(Path.Combine(directory.FullName, subDirectory));
+            var directoryInfo = new DirectoryInfo(Path.Combine(directory.FullName, subDirectory));
             if (directoryInfo.Exists)
-                return true;
+            {
+                _cache.Add(subDirectory, directoryInfo);
+                return directoryInfo;
+            }
 
             directory = directory.Parent;
         }
 
-        directoryInfo = null;
-        return false;
+        throw new DirectoryNotFoundException($"Directory '{subDirectory}' not found");
     }
 }

@@ -4,9 +4,9 @@ using System.Reflection;
 
 internal static class Solution
 {
-    private static readonly Assembly Application = typeof(Program).Assembly;
+    private static readonly Assembly _application = typeof(Program).Assembly;
 
-    internal static Types AllTypes => Types.InAssembly(Application);
+    internal static Types AllTypes => Types.InAssembly(_application);
 
     internal static PredicateList TypesFromApplication =>
         AllTypes.That().ResideInNamespace(Namespaces.Layer.Application);

@@ -3,17 +3,30 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="8.2.2" />
     <PackageVersion Include="CSharpier.MsBuild" Version="0.30.3" />
     <PackageVersion Include="FastEndpoints" Version="5.32.0" />
     <PackageVersion Include="FastEndpoints.ClientGen" Version="5.32.0" />
     <PackageVersion Include="FastEndpoints.Generator" Version="5.32.0" />
+    <PackageVersion Include="FastEndpoints.OpenTelemetry" Version="2.3.0" />
     <PackageVersion Include="FastEndpoints.Security" Version="5.32.0" />
     <PackageVersion Include="FastEndpoints.Swagger" Version="5.32.0" />
     <PackageVersion Include="FluentAssertions" Version="7.0.0" />
     <PackageVersion Include="FluentAssertions.Analyzers" Version="0.34.1" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.182" />
+    <PackageVersion Include="Meziantou.FluentAssertionsAnalyzers" Version="1.0.21" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
     <PackageVersion Include="NetArchTest.eNhancedEdition" Version="1.4.3" />
+    <PackageVersion Include="NLog" Version="5.3.4" />
+    <PackageVersion Include="NLog.Extensions.Logging" Version="5.3.15" />
+    <PackageVersion Include="NLog.Web.AspNetCore" Version="5.3.15" />
     <PackageVersion Include="Roslynator.CodeAnalysis.Analyzers" Version="4.12.9" />
+    <PackageVersion Include="Serilog" Version="4.2.0" />
+    <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageVersion Include="Serilog.Extensions.Hosting" Version="9.0.0" />
+    <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.0" />
+    <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageVersion Include="Serilog.Sinks.Debug" Version="3.0.0" />
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.3.0.106239" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />

@@ -1,30 +1,22 @@
 namespace Application.Architecture.Tests.Common.CustomRules;
 
-using Mono.Cecil;
-
 public sealed class MethodsShouldHaveNamePascalCasedCustomRule : ICustomRule2
 {
-    public CustomRuleResult MeetsRule(TypeDefinition type)
+    public CustomRuleResult MeetsRule([NotNull] TypeDefinition type)
     {
-        ArgumentNullException.ThrowIfNull(type);
+        var nonPascalCasedMethods = type.ToType()
+            .GetUserDefinedMethods()
+            .Where(m => m.Name.IsNotPascalCased())
+            .Select(m => m.Name);
 
-        var nonPascalCasedMethods = new List<string>();
-        foreach (var method in type.ToType().GetUserDefinedMethods())
-        {
-            if (method.Name.IsNotPascalCased())
-            {
-                nonPascalCasedMethods.Add(method.Name);
-            }
-        }
-
-        var hasNonPascalCasedMethods = nonPascalCasedMethods.Count == 0;
+        var hasNonPascalCasedMethods = nonPascalCasedMethods.Any();
         var message = hasNonPascalCasedMethods
             ? $$"""
-                '{{type.Name}}' => has methods with name not PascalCased:
+                Has methods with name not PascalCased:
                 {{nonPascalCasedMethods.ToUnorderedStringList('>', 4)}}
                 """
-            : $"'{type.Name}' => has not methods with name not PascalCased";
+            : $"Has not methods with name not PascalCased";
 
-        return new CustomRuleResult(hasNonPascalCasedMethods, message);
+        return new CustomRuleResult(!hasNonPascalCasedMethods, message);
     }
 }

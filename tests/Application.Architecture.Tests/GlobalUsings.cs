@@ -1,4 +1,5 @@
 global using System;
+global using System.Diagnostics.CodeAnalysis;
 global using Application.Architecture.Tests.Common;
 global using Application.Architecture.Tests.Common.Assertions;
 global using Application.Architecture.Tests.Common.CustomRules;

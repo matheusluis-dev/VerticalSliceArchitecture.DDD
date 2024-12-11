@@ -8,18 +8,15 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 internal static class PartialClassesHelper
 {
-    private static readonly Lazy<IEnumerable<string>> Cache = new(LoadPartialClasses);
+    private static readonly Lazy<IEnumerable<string>> _cache = new(LoadPartialClasses);
 
-    internal static IEnumerable<string> Types => Cache.Value;
+    internal static IEnumerable<string> Types => _cache.Value;
 
     private static IEnumerable<string> LoadPartialClasses()
     {
-        if (!DirectoryHelper.TryGetDirectoryInSolution("src/Application", out var directory))
-        {
-            throw new DirectoryNotFoundException("Directory 'src/Application' not found");
-        }
+        var directoryInfo = DirectoryHelper.GetDirectoryInSolution(Paths.Application);
 
-        return directory!
+        return directoryInfo
             .EnumerateFiles("*.cs", SearchOption.AllDirectories)
             .SelectMany(file =>
             {
