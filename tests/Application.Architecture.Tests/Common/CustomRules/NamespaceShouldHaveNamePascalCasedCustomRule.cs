@@ -1,6 +1,4 @@
-﻿namespace Application.Architecture.Tests.Common.CustomRules;
-
-using Mono.Cecil;
+namespace Application.Architecture.Tests.Common.CustomRules;
 
 public sealed class NamespaceShouldHaveNamePascalCasedCustomRule : ICustomRule2
 {

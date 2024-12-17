@@ -27,11 +27,12 @@ public sealed class DomainLayerTests
     public void Domain_should_not_have_any_dependency()
     {
         // Arrange
-        var infrastructureTypes = Solution.InfrastructureTypes.GetTypesFullName();
-        var applicationTypes = Solution.NonDomainNonInfrastructureTypes.GetTypesFullName();
+        var infrastructureTypes = Sut.Types.WithInfrastructureTypesOnly().GetTypesFullName();
+        var applicationTypes = Sut.Types.WithApplicationLayerTypesOnly().GetTypesFullName();
 
-        var rules = Solution
-            .DomainTypes.Should()
+        var rules = Sut
+            .Types.WithDomainTypesOnly()
+            .Should()
             .NotHaveDependencyOnAny(infrastructureTypes)
             .And()
             .NotHaveDependencyOnAny(applicationTypes)
@@ -42,6 +43,6 @@ public sealed class DomainLayerTests
         var result = rules.GetResult();
 
         // Assert
-        result.IsSuccessful.Should().BeTrue();
+        result.Should().BeSuccessful();
     }
 }

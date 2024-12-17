@@ -5,7 +5,7 @@ public sealed class AsyncMethodsShouldHaveAsyncSuffixCustomRule : ICustomRule2
     public CustomRuleResult MeetsRule([NotNull] TypeDefinition type)
     {
         var nonAsyncSuffixMethods = new List<string>();
-        foreach (var method in type.ToType().GetAsyncMethods())
+        foreach (var method in type.GetAsyncMethods())
         {
             if (!method.Name.EndsWith("Async", StringComparison.Ordinal))
             {
@@ -19,7 +19,7 @@ public sealed class AsyncMethodsShouldHaveAsyncSuffixCustomRule : ICustomRule2
                 Has async methods without 'Async' suffix:
                 {{nonAsyncSuffixMethods.ToUnorderedStringList('>', 4)}}
                 """
-            : $"Has not async methods without 'Async' suffix";
+            : "Has not async methods without 'Async' suffix";
 
         return new CustomRuleResult(hasNonAsyncSuffixMethods, message);
     }

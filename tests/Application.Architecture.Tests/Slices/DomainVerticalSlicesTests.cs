@@ -15,8 +15,8 @@ public sealed class DomainVerticalSlicesTests
     public void Vertical_slices_from_Domain_should_not_depend_on_each_other()
     {
         // Arrange
-        var rules = Solution
-            .AllTypes.Slice()
+        var rules = Sut
+            .Types.Slice()
             .ByNamespacePrefix(Namespaces.DomainLayer.Features)
             .Should()
             .NotHaveDependenciesBetweenSlices();
@@ -25,6 +25,6 @@ public sealed class DomainVerticalSlicesTests
         var result = rules.GetResult();
 
         // Assert
-        result.ShouldBeSuccessful();
+        result.Should().BeSuccessful();
     }
 }

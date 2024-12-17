@@ -26,16 +26,19 @@ public sealed class ApplicationLayerTests
     public void Application_should_not_depend_on_Infrastructure()
     {
         // Arrange
-        var infrastructureTypesFullName = Solution.InfrastructureTypes.GetTypesFullName();
+        var infrastructureTypesFullName = Sut
+            .Types.WithInfrastructureTypesOnly()
+            .GetTypesFullName();
 
-        var rules = Solution
-            .NonDomainNonInfrastructureTypes.Should()
+        var rules = Sut
+            .Types.WithApplicationLayerTypesOnly()
+            .Should()
             .NotHaveDependencyOnAny(infrastructureTypesFullName);
 
         // Act
         var result = rules.GetResult();
 
         // Assert
-        result.IsSuccessful.Should().BeTrue();
+        result.Should().BeSuccessful();
     }
 }

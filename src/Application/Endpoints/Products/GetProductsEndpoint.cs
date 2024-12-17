@@ -3,7 +3,7 @@ namespace Application.Endpoints.Products;
 using System.Threading;
 using System.Threading.Tasks;
 
-public sealed class GetProductsEndpoint : Endpoint<Request, Response>
+internal sealed class GetProductsEndpoint : Endpoint<Request, Response>
 {
     private readonly ILogger _logger;
 

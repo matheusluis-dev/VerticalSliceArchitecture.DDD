@@ -36,14 +36,16 @@ public sealed class HttpClientTests
     public void HttpClient_should_not_be_instantiated_directly()
     {
         // Arrange
-        var rules = Solution.AllTypes.Should().NotHaveDependencyOnAny("System.Net.Http.HttpClient");
+        var rules = Sut.Types.Should().NotHaveDependencyOnAny("System.Net.Http.HttpClient");
 
         // Act
         var result = rules.GetResult();
 
         // Assert
-        result.ShouldBeSuccessful(
-            "HttpClient should not be instantiated directly, use IHttpClientFactory instead"
-        );
+        result
+            .Should()
+            .BeSuccessful(
+                "[HttpClient] should not be instantiated directly, use [IHttpClientFactory] instead"
+            );
     }
 }

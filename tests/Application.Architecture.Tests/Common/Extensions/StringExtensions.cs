@@ -28,4 +28,14 @@ public static class StringExtensions
     {
         return !str.IsUnderscoreCamelCased();
     }
+
+    public static bool IsUpperCased(this string str)
+    {
+        return str.All(char.IsUpper);
+    }
+
+    public static bool IsNotUpperCased(this string str)
+    {
+        return !str.IsUpperCased();
+    }
 }

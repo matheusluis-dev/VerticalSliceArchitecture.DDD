@@ -6,8 +6,8 @@ public sealed class EndpointsVerticalSlicesTests
     public void Vertical_slices_from_Endpoints_should_not_depend_on_each_other()
     {
         // Arrange
-        var rules = Solution
-            .AllTypes.Slice()
+        var rules = Sut
+            .Types.Slice()
             .ByNamespacePrefix(Namespaces.ApplicationLayer.Endpoints)
             .Should()
             .NotHaveDependenciesBetweenSlices();
@@ -16,6 +16,6 @@ public sealed class EndpointsVerticalSlicesTests
         var result = rules.GetResult();
 
         // Assert
-        result.ShouldBeSuccessful();
+        result.Should().BeSuccessful();
     }
 }

@@ -18,6 +18,9 @@
 
 namespace Application
 {
+    using System;
+    using Microsoft.AspNetCore.Authentication;
+
     public interface interfacesShouldBePascalCased { }
 
     public interface InterfaceSecondCharShouldBeUpperCased { }
@@ -43,12 +46,78 @@ namespace Application
 
     public sealed class MethodsClass
     {
-        private void camelCasedMethod() { }
+        public const string camel_cased = "A";
 
-        private async Task DoesntEndWithAsyncSuffix() { }
+        private void camelCasedMethod()
+        {
+            const string insideMethod = "B";
+            const int intConst = 10;
+            var varInsideMethod = "B";
+        }
+    }
+
+    public sealed class AllMethodsStatic()
+    {
+        public static void Bla() { }
+
+        public static void Ble() { }
     }
 
     public sealed class NotAnEndpoint() { }
+
+    public sealed class NullObjectWithoutImplementedInterfaceNullObject
+    {
+        public void EmptyMethod() { }
+
+        public void EmptyMethodWithReturn()
+        {
+            return;
+        }
+
+        public void NonEmptyMethod()
+        {
+            var a = 5;
+            var b = 1;
+            var sum = a + b;
+        }
+    }
+
+    public sealed class NullObjectImplementingOneInterfaceNullObject : ISystemClock
+    {
+        public DateTimeOffset UtcNow => DateTimeOffset.MinValue;
+    }
+
+    public sealed class NullObjectImplementingTwoInterfacesNullObject : ISystemClock, ILogger
+    {
+        public DateTimeOffset UtcNow => DateTimeOffset.MinValue;
+
+        public IDisposable? BeginScope<TState>(TState state)
+            where TState : notnull
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsEnabled(LogLevel logLevel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Log<TState>(
+            LogLevel logLevel,
+            EventId eventId,
+            TState state,
+            Exception? exception,
+            Func<TState, Exception?, string> formatter
+        )
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public sealed class SystemClockNullObject : ISystemClock
+    {
+        public DateTimeOffset UtcNow => throw new NotImplementedException();
+    }
 }
 
 namespace Application.Services
