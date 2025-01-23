@@ -1,6 +1,5 @@
 namespace Application.Domain.Todo.Models;
 
-using System;
 using Application.Domain.Common;
 using Application.Domain.Todo.Enums;
 

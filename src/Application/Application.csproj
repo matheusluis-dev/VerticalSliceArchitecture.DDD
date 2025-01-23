@@ -12,6 +12,7 @@
     <PackageReference Include="NLog.Web.AspNetCore" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <PackageReference Include="Vogen" />
     <PackageReference Update="CSharpier.MsBuild">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
