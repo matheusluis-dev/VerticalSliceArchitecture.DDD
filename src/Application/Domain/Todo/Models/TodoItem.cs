@@ -25,7 +25,7 @@ public class TodoItem : EntityBase
         {
             if (value && !_done)
             {
-                RaiseDomainEvent(new TodoItemCompletedEvent(this));
+                //RaiseDomainEvent(new TodoItemCompletedEvent(this));
             }
 
             _done = value;

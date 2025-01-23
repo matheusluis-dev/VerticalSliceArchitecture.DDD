@@ -1,80 +1,46 @@
 namespace Application.Domain.Todo.ValueObjects;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Application.Domain.Common;
+using Vogen;
 
-public class Color : ValueObjectBase
+[ValueObject<string>]
+public readonly partial struct Color
 {
-    static Color() { }
+    public static readonly Color White = From("#FFFFFF");
+    public static readonly Color Red = From("#FF5733");
+    public static readonly Color Orange = From("#FFC300");
+    public static readonly Color Yellow = From("#FFFF66");
+    public static readonly Color Green = From("#CCFF99");
+    public static readonly Color Blue = From("#6666FF");
+    public static readonly Color Purple = From("#9966CC");
+    public static readonly Color Grey = From("#999999");
 
-    private Color() { }
+    private static readonly IEnumerable<Color> _supportedColors =
+    [
+        White,
+        Red,
+        Orange,
+        Yellow,
+        Green,
+        Blue,
+        Purple,
+        Grey,
+    ];
 
-    private Color(string code)
+    private static Validation Validate(string input)
     {
-        Code = code;
+        return
+            !string.IsNullOrWhiteSpace(input)
+            && _supportedColors.Any(color =>
+                color.Value.Equals(input, StringComparison.OrdinalIgnoreCase)
+            )
+            ? Validation.Ok
+            : Validation.Invalid("Invalid color.");
     }
 
-    public static Color From(string code)
+    private static string NormalizeInput(string input)
     {
-        var colour = new Color { Code = code };
-
-        return !SupportedColours.Contains(colour)
-            ? throw new Exception(code)
-            : colour;
-    }
-
-    public static Color White => new("#FFFFFF");
-
-    public static Color Red => new("#FF5733");
-
-    public static Color Orange => new("#FFC300");
-
-    public static Color Yellow => new("#FFFF66");
-
-    public static Color Green => new("#CCFF99 ");
-
-    public static Color Blue => new("#6666FF");
-
-    public static Color Purple => new("#9966CC");
-
-    public static Color Grey => new("#999999");
-
-    public string Code { get; private set; } = "#000000";
-
-    public static implicit operator string(Color colour)
-    {
-        return colour.ToString();
-    }
-
-    public static explicit operator Color(string code)
-    {
-        return From(code);
-    }
-
-    public override string ToString()
-    {
-        return Code;
-    }
-
-    protected static IEnumerable<Color> SupportedColours
-    {
-        get
-        {
-            yield return White;
-            yield return Red;
-            yield return Orange;
-            yield return Yellow;
-            yield return Green;
-            yield return Blue;
-            yield return Purple;
-            yield return Grey;
-        }
-    }
-
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        yield return Code;
+        return input.ToUpperInvariant();
     }
 }

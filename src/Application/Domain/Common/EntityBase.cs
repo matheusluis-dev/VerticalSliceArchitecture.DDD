@@ -26,5 +26,4 @@ public abstract class EntityBase
     {
         _domainEvents.Add(domainEvent);
     }
-
 }

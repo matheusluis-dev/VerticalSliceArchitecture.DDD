@@ -7,4 +7,3 @@ public enum PriorityLevel
     Medium = 2,
     High = 3,
 }
-
