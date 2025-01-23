@@ -4,9 +4,8 @@
 #pragma warning disable IDE0058 // Expression value is never used
 #pragma warning disable CA1031 // Do not catch general exception types
 
-using System.Text.Json.Serialization;
-using Application.Configuration;
-using FastEndpoints.Swagger;
+using Application;
+using Carter;
 using NLog;
 using NLog.Web;
 
@@ -18,29 +17,20 @@ try
 {
     var builder = WebApplication.CreateBuilder();
 
-    builder.Services.ConfigureFastEndpoints();
-    builder.Services.SwaggerDocument();
+    builder.Services.AddOpenApi();
+    builder.Services.AddCarter();
 
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
 
-    builder.Services.AddApplicationServices();
+    builder.Services.AddApplication();
+    builder.Services.AddInfrastructure(builder.Configuration);
 
     await using var app = builder.Build();
 
-    app.UseFastEndpoints(config =>
-    {
-        config.Versioning.Prefix = "v";
-        config.Versioning.DefaultVersion = 1;
-        config.Versioning.PrependToRoute = true;
+    app.UseHttpsRedirection();
 
-        config.Endpoints.RoutePrefix = "api";
-
-        config.Serializer.Options.Converters.Add(new JsonStringEnumConverter());
-    });
-
-    app.UseSwaggerGen();
-
+    app.MapCarter();
     await app.RunAsync();
 }
 catch (Exception exception)

@@ -4,18 +4,27 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Aspire.Hosting.AppHost" Version="8.2.2" />
-    <PackageVersion Include="CSharpier.MsBuild" Version="0.30.3" />
-    <PackageVersion Include="FastEndpoints" Version="5.32.0" />
-    <PackageVersion Include="FastEndpoints.ClientGen" Version="5.32.0" />
-    <PackageVersion Include="FastEndpoints.Generator" Version="5.32.0" />
+    <PackageVersion Include="Carter" Version="9.0.0" />
+    <PackageVersion Include="Carter.Analyzers" Version="9.0.0" />
+    <PackageVersion Include="CSharpier.MsBuild" Version="0.30.6" />
+    <PackageVersion Include="FastEndpoints" Version="5.33.0" />
+    <PackageVersion Include="FastEndpoints.ClientGen" Version="5.33.0" />
+    <PackageVersion Include="FastEndpoints.Generator" Version="5.33.0" />
     <PackageVersion Include="FastEndpoints.OpenTelemetry" Version="2.3.0" />
-    <PackageVersion Include="FastEndpoints.Security" Version="5.32.0" />
-    <PackageVersion Include="FastEndpoints.Swagger" Version="5.32.0" />
-    <PackageVersion Include="FluentAssertions" Version="7.0.0" />
+    <PackageVersion Include="FastEndpoints.Security" Version="5.33.0" />
+    <PackageVersion Include="FastEndpoints.Swagger" Version="5.33.0" />
+    <PackageVersion Include="FluentAssertions" Version="8.0.1" />
     <PackageVersion Include="FluentAssertions.Analyzers" Version="0.34.1" />
-    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.182" />
+    <PackageVersion Include="MediatR" Version="12.4.1" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.186" />
     <PackageVersion Include="Meziantou.FluentAssertionsAnalyzers" Version="1.0.21" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
     <PackageVersion Include="NetArchTest.eNhancedEdition" Version="1.4.3" />
     <PackageVersion Include="NLog" Version="5.3.4" />
     <PackageVersion Include="NLog.Extensions.Logging" Version="5.3.15" />
@@ -27,11 +36,11 @@
     <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageVersion Include="Serilog.Sinks.Debug" Version="3.0.0" />
-    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.3.0.106239" />
-    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.5.0.109200" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageVersion Include="xunit" Version="2.9.2" />
-    <PackageVersion Include="xunit.analyzers" Version="1.17.0" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.analyzers" Version="1.19.0" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.1" />
   </ItemGroup>
 </Project>
