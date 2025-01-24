@@ -1,4 +1,4 @@
-namespace Application.Domain.Common;
+namespace Application.Domain.Common.Events;
 
 using MediatR;
 

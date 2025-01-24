@@ -1,9 +1,8 @@
 namespace Application.Domain.Todo.Models;
 
-using Application.Domain.Common;
 using Application.Domain.Todo.Enums;
 
-public class TodoItem : EntityBase
+public class TodoItem
 {
     public Guid Id { get; set; }
 

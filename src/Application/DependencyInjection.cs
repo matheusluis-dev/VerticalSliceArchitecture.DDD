@@ -1,7 +1,11 @@
 namespace Application;
 
+using Application.Domain.Common.Entities;
+using Application.Domain.Common.Repositories;
 using Application.Infrastructure.Persistence;
+using Application.Infrastructure.Repositories;
 using Application.Infrastructure.Services;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,6 +43,7 @@ public static class DependencyInjection
         }
 
         services.AddTransient<IDateTimeService, DateTimeService>();
+        services.AddScoped<IRepository<IEntity>, Repository<IEntity, ApplicationDbContext>>();
 
         return services;
     }
