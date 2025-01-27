@@ -1,7 +1,7 @@
 namespace Application.Domain.Orders.Specifications;
 
 using Application.Domain.Common.Specifications;
-using Application.Domain.Orders.Entities;
+using Application.Domain.Orders.Aggregates;
 
 public sealed class PriceHigherThanValueSpecification : SpecificationBase<Order>
 {

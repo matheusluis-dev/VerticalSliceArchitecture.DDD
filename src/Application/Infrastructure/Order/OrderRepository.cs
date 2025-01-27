@@ -2,7 +2,7 @@ namespace Application.Infrastructure.Order;
 
 using System.Linq;
 using System.Linq.Expressions;
-using Application.Domain.Orders.Entities;
+using Application.Domain.Orders.Aggregates;
 using Application.Domain.Orders.Repositories;
 using Application.Domain.Orders.Specifications.Builder;
 using Application.Infrastructure.Order.Mappers;

@@ -5,7 +5,7 @@ using Application.Domain.Common.Entities;
 
 public interface ISpecificationSequence<TEntity, TSpecificationCriteria>
     where TEntity : class, IEntity
-    where TSpecificationCriteria : ISpecificationCriteria
+    where TSpecificationCriteria : class, ISpecificationCriteria
 {
     TSpecificationCriteria And();
     ISpecificationSequence<TEntity, TSpecificationCriteria> And(

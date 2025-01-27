@@ -31,8 +31,5 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Domain\Orders\Aggregates\" />
-  </ItemGroup>
 
 </Project>

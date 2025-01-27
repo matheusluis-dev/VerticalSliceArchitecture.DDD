@@ -14,11 +14,6 @@ public abstract class SpecificationBuilder<TEntity, TSpecificationCriteria>
 
     protected SpecificationBuilder() { }
 
-    //public static ISpecificationEntryPoint<TEntity, TSpecificationCriteria> Create()
-    //{
-    //    return new SpecificationBuilder<TEntity, TSpecificationCriteria>();
-    //}
-
     public TSpecificationCriteria SetQueryableCallback(GetQueryableCallback<TEntity> callback)
     {
         if (_callback is not null)
@@ -64,14 +59,6 @@ public abstract class SpecificationBuilder<TEntity, TSpecificationCriteria>
         _context.Or();
         criterias(this);
 
-        return this;
-    }
-
-    public ISpecificationSequence<TEntity, TSpecificationCriteria> Include(
-        ISpecification<TEntity> specification
-    )
-    {
-        _context.AddSpecification(specification);
         return this;
     }
 

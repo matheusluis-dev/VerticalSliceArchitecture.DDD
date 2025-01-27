@@ -1,4 +1,6 @@
-namespace Application.Domain.Orders.Entities;
+using Application.Domain.Orders.Entities;
+
+namespace Application.Domain.Orders.Aggregates;
 
 using System;
 using System.Collections.Generic;

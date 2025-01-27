@@ -1,7 +1,7 @@
 namespace Application.Domain.Orders.Specifications.Builder;
 
 using Application.Domain.Common.Specifications.Builder;
-using Application.Domain.Orders.Entities;
+using Application.Domain.Orders.Aggregates;
 
 public sealed class OrderSpecificationBuilder
     : SpecificationBuilder<Order, IOrderSpecificationBuilderCriteria>,

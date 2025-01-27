@@ -7,4 +7,4 @@ public interface ISpecificationBuilder<TEntity, TSpecificationCriteria>
         ISpecificationSequence<TEntity, TSpecificationCriteria>,
         ISpecificationCriteria
     where TEntity : class, IEntity
-    where TSpecificationCriteria : ISpecificationCriteria;
+    where TSpecificationCriteria : class, ISpecificationCriteria;
