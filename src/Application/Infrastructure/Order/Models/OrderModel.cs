@@ -1,10 +1,10 @@
-namespace Application.Infrastructure.Models.Order;
+namespace Application.Infrastructure.Order.Models;
 
 using System;
 using Application.Domain.Common.Entities;
 using Application.Domain.Common.ValueObjects;
-using Application.Domain.Order.ValueObjects;
 using Application.Domain.Orders.Enums;
+using Application.Domain.Orders.ValueObjects;
 
 public sealed class OrderModel : IAuditable
 {

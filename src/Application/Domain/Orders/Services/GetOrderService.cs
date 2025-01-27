@@ -1,26 +1,34 @@
 namespace Application.Domain.Orders.Services;
 
-using Application.Domain.Common.Repositories;
-using Application.Domain.Orders.Aggregates;
-using Application.Domain.Orders.Specifications;
+using Application.Domain.Orders.Entities;
+using Application.Domain.Orders.Repositories;
 
 public sealed class GetOrderService
 {
-    private readonly IRepository<Order> _repository;
+    private readonly IOrderRepository _repository;
 
-    public GetOrderService(IRepository<Order> repository)
+    public GetOrderService(IOrderRepository repository)
     {
         _repository = repository;
     }
 
-    public IEnumerable<Order> GetOrdersWithTotalPriceHigherThan()
+    public IQueryable<Order> GetAll()
     {
-        return _repository.Specify(new OrderPriceHigherThan1000Specification());
+        return _repository.GetAll();
     }
 
-    public IEnumerable<Order> GetPaidOrders()
+    public IQueryable<Order> GetPaidOrders()
     {
-        return _repository.Specify(new OrdersPaidStatusSpecification());
+        return _repository.Specify.ArePaid().GetQueryable();
     }
 
+    public IQueryable<Order> GetOrdersWithTotalPriceHigherThan(decimal @value)
+    {
+        return _repository.Specify.TotalPriceHigherThan(@value).GetQueryable();
+    }
+
+    public IQueryable<Order> GetPaidOrdersWithTotalPriceHigherThan500()
+    {
+        return _repository.Specify.ArePaid().And().TotalPriceHigherThan(500).GetQueryable();
+    }
 }

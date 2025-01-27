@@ -2,7 +2,7 @@ namespace Application.Domain.Orders.Entities;
 
 using Application.Domain.Common.Entities;
 using Application.Domain.Common.ValueObjects;
-using Application.Domain.Order.ValueObjects;
+using Application.Domain.Orders.ValueObjects;
 
 public sealed class OrderItem : IChildEntity, IAuditable
 {

@@ -3,7 +3,7 @@ namespace Application.Infrastructure.Persistence;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using Application.Infrastructure.Models.Order;
+using Application.Infrastructure.Order.Models;
 using Microsoft.EntityFrameworkCore;
 
 public sealed partial class ApplicationDbContext : DbContext

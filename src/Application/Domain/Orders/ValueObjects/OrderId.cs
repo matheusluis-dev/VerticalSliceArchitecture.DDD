@@ -1,4 +1,4 @@
-namespace Application.Domain.Order.ValueObjects;
+namespace Application.Domain.Orders.ValueObjects;
 
 using Vogen;
 

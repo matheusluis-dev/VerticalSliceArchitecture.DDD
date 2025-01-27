@@ -1,12 +1,11 @@
-namespace Application.Domain.Orders.Aggregates;
+namespace Application.Domain.Orders.Entities;
 
 using System;
 using System.Collections.Generic;
 using Application.Domain.Common.Entities;
 using Application.Domain.Common.ValueObjects;
-using Application.Domain.Order.ValueObjects;
-using Application.Domain.Orders.Entities;
 using Application.Domain.Orders.Enums;
+using Application.Domain.Orders.ValueObjects;
 using Ardalis.GuardClauses;
 using Ardalis.Result;
 

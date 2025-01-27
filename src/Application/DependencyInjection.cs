@@ -1,11 +1,9 @@
 namespace Application;
 
-using Application.Domain.Common.Entities;
-using Application.Domain.Common.Repositories;
+using Application.Domain.Orders.Repositories;
+using Application.Infrastructure.Order;
 using Application.Infrastructure.Persistence;
-using Application.Infrastructure.Repositories;
 using Application.Infrastructure.Services;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,8 +41,22 @@ public static class DependencyInjection
         }
 
         services.AddTransient<IDateTimeService, DateTimeService>();
-        services.AddScoped<IRepository<IEntity>, Repository<IEntity, ApplicationDbContext>>();
 
+        services.AddRepositories();
+        services.AddSpecifications();
+
+        return services;
+    }
+
+    private static IServiceCollection AddRepositories(this IServiceCollection services)
+    {
+        services.AddScoped<IOrderRepository, OrderRepository>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddSpecifications(this IServiceCollection services)
+    {
         return services;
     }
 }
