@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Application.Domain.Common.Entities;
 using Application.Domain.Common.ValueObjects;
 using Application.Domain.Orders.Enums;
+using Application.Domain.Orders.Services.UpdateOrder.Models;
 using Application.Domain.Orders.ValueObjects;
 using Ardalis.GuardClauses;
 using Ardalis.Result;
@@ -27,7 +28,7 @@ public sealed class Order : IAggregate, IAuditable
     {
         Guard.Against.Null(newItem);
 
-        if (OrderItems.Contains(newItem))
+        if (OrderItems.Select(item => item.Id).Contains(newItem.Id))
             return Result.Error($"Item with ID {newItem.Id} already exists.");
 
         OrderItems.Add(newItem);
@@ -35,18 +36,25 @@ public sealed class Order : IAggregate, IAuditable
         return Result.Created(newItem);
     }
 
-    public Result<OrderItem> UpdateOrderItem(OrderItem itemUpdate)
+    public Result<OrderItem> UpdateOrderItem(UpdateOrderItemModel model)
     {
-        Guard.Against.Null(itemUpdate);
+        Guard.Against.Null(model);
 
-        var id = itemUpdate.Id;
+        var id = model.Id;
         var item = OrderItems.FirstOrDefault(item => item.Id == id);
 
         if (item is null)
-            return Result.NotFound($"Item with ID {itemUpdate.Id} not found");
+            return Result.NotFound($"Item with ID {model.Id} not found");
 
-        item.Quantity = itemUpdate.Quantity;
-        item.UnitPrice = itemUpdate.UnitPrice;
+        var itemIndex = OrderItems.IndexOf(item);
+
+        OrderItems[itemIndex] = new OrderItem
+        {
+            OrderId = item.OrderId,
+            Id = model.Id,
+            Quantity = model.Quantity ?? item.Quantity,
+            UnitPrice = model.UnitPrice ?? item.UnitPrice,
+        };
 
         return Result.Success(item);
     }

@@ -80,7 +80,7 @@ public static class OrderFaker
     )
     {
         if (!configuration.ItemsQuantities.TryGetValue(orderIndex, out var quantity))
-            return 1;
+            return 0;
 
         return quantity;
     }
@@ -92,7 +92,7 @@ public static class OrderFaker
     )
     {
         if (!configuration.ItemsPrices.TryGetValue((orderIndex, orderItemIndex), out var price))
-            return 1;
+            return 0;
 
         return price;
     }

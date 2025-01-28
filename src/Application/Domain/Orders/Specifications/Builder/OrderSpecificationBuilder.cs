@@ -1,6 +1,7 @@
 namespace Application.Domain.Orders.Specifications.Builder;
 
 using Application.Domain.Common.Specifications.Builder;
+using Application.Domain.Common.ValueObjects;
 using Application.Domain.Orders.Aggregates;
 
 public sealed class OrderSpecificationBuilder
@@ -14,10 +15,10 @@ public sealed class OrderSpecificationBuilder
     }
 
     public ISpecificationSequence<Order, IOrderSpecificationBuilderCriteria> TotalPriceHigherThan(
-        decimal @value
+        Amount amount
     )
     {
-        _context.AddSpecification(new PriceHigherThanValueSpecification(@value));
+        _context.AddSpecification(new PriceHigherThanValueSpecification(amount));
         return this;
     }
 }

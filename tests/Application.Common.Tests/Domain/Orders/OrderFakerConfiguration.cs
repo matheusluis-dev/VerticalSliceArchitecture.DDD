@@ -18,7 +18,7 @@ public sealed class OrderFakerConfiguration
         return new OrderFakerConfiguration();
     }
 
-    public OrderFakerConfiguration SetOrderQuantity(int orderQuantity)
+    public OrderFakerConfiguration SetOrderCount(int orderQuantity)
     {
         OrderQuantity = orderQuantity;
         return this;
@@ -46,7 +46,7 @@ public sealed class OrderFakerConfiguration
         return this;
     }
 
-    public OrderFakerConfiguration SetOrderItemQuantity(
+    public OrderFakerConfiguration SetOrderItemCount(
         int itemQuantity,
         IEnumerable<int>? orderIndexes = null
     )
