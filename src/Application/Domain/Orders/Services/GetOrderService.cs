@@ -2,6 +2,7 @@ namespace Application.Domain.Orders.Services;
 
 using Application.Domain.Orders.Aggregates;
 using Application.Domain.Orders.Repositories;
+using Application.Domain.Orders.ValueObjects;
 
 public sealed class GetOrderService
 {

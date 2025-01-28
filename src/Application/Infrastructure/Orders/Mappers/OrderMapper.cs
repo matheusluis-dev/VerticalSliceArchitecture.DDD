@@ -1,7 +1,7 @@
 namespace Application.Infrastructure.Order.Mappers;
 
 using Application.Domain.Orders.Aggregates;
-using Application.Infrastructure.Order.Models;
+using Application.Infrastructure.Orders.Models;
 using Riok.Mapperly.Abstractions;
 
 [Mapper]

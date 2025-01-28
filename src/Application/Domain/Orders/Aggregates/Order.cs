@@ -13,7 +13,7 @@ using Ardalis.Result;
 
 public sealed class Order : IAggregate, IAuditable
 {
-    public OrderId Id { get; init; }
+    public required OrderId Id { get; init; }
     public IList<OrderItem> OrderItems { get; init; } = [];
     public OrderStatus Status { get; set; }
     public Amount TotalPrice => Amount.From(OrderItems.Sum(order => order.Price.Value));
@@ -22,14 +22,6 @@ public sealed class Order : IAggregate, IAuditable
     public UserName CreatedBy { get; set; }
     public DateTime? LastModified { get; set; }
     public UserName LastModifiedBy { get; set; }
-
-    private Order() { }
-
-    public Order(OrderId id, IEnumerable<OrderItem> orderItems)
-    {
-        Id = id;
-        OrderItems = orderItems.ToList();
-    }
 
     public Result<OrderItem> AddOrderItem(OrderItem newItem)
     {

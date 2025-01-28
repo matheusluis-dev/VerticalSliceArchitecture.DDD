@@ -1,4 +1,4 @@
-namespace Application.Infrastructure.Order;
+namespace Application.Infrastructure.Orders;
 
 using System.Linq;
 using System.Linq.Expressions;
@@ -6,7 +6,7 @@ using Application.Domain.Orders.Aggregates;
 using Application.Domain.Orders.Repositories;
 using Application.Domain.Orders.Specifications.Builder;
 using Application.Infrastructure.Order.Mappers;
-using Application.Infrastructure.Order.Models;
+using Application.Infrastructure.Orders.Models;
 using Application.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 

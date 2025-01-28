@@ -6,8 +6,8 @@ using Application.Domain.Orders.ValueObjects;
 
 public sealed class OrderItem : IChildEntity, IAuditable
 {
-    public OrderItemId Id { get; init; }
-    public OrderId OrderId { get; init; }
+    public required OrderItemId Id { get; init; }
+    public required OrderId OrderId { get; init; }
     public Quantity Quantity { get; set; }
     public Amount UnitPrice { get; set; }
     public Amount Price => UnitPrice.MultiplyByQuantity(Quantity);
@@ -17,13 +17,13 @@ public sealed class OrderItem : IChildEntity, IAuditable
     public DateTime? LastModified { get; set; }
     public UserName LastModifiedBy { get; set; }
 
-    private OrderItem() { }
+    //private OrderItem() { }
 
-    public OrderItem(OrderItemId id, OrderId orderId, Quantity quantity, Amount unitPrice)
-    {
-        Id = id;
-        OrderId = orderId;
-        Quantity = quantity;
-        UnitPrice = unitPrice;
-    }
+    //public OrderItem(OrderItemId id, OrderId orderId, Quantity quantity, Amount unitPrice)
+    //{
+    //    Id = id;
+    //    OrderId = orderId;
+    //    Quantity = quantity;
+    //    UnitPrice = unitPrice;
+    //}
 }

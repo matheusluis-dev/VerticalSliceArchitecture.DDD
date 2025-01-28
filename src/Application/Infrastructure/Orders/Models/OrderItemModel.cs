@@ -1,4 +1,4 @@
-namespace Application.Infrastructure.Order.Models;
+namespace Application.Infrastructure.Orders.Models;
 
 using System;
 using Application.Domain.Common.Entities;

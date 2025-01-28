@@ -1,7 +1,7 @@
 namespace Application;
 
 using Application.Domain.Orders.Repositories;
-using Application.Infrastructure.Order;
+using Application.Infrastructure.Orders;
 using Application.Infrastructure.Persistence;
 using Application.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
