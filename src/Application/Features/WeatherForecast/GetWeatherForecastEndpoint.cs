@@ -1,4 +1,4 @@
-namespace Application.Endpoints.WeatherForecast;
+namespace Application.Features.WeatherForecast;
 
 using Carter;
 using Microsoft.AspNetCore.Builder;

@@ -3,6 +3,7 @@
     <PackageReference Include="Ardalis.GuardClauses" />
     <PackageReference Include="Ardalis.GuardClauses.Custom" />
     <PackageReference Include="Ardalis.Result" />
+    <PackageReference Include="Ardalis.Result.AspNetCore" />
     <PackageReference Include="Carter" />
     <PackageReference Include="Carter.Analyzers" />
     <PackageReference Include="LinqKit" />

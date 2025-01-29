@@ -11,7 +11,7 @@ public sealed class OrderModel : IAuditable
     public OrderId Id { get; set; }
     public Amount TotalPrice { get; set; }
     public OrderStatus Status { get; set; }
-    public IEnumerable<OrderItemModel> OrderItems { get; set; } = [];
+    public IList<OrderItemModel> OrderItems { get; set; } = [];
 
     public DateTime Created { get; set; }
     public UserName CreatedBy { get; set; }

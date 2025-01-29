@@ -42,7 +42,7 @@ public sealed class ClassesConventionsTests
 
     /// <summary>
     /// <para>
-    /// Ensures that all non-abstract, non-static, and non-partial classes are declared as sealed.
+    /// Ensures that all non-abstract and non-static classes are declared as sealed.
     /// </para>
     ///
     /// <para>
@@ -52,19 +52,19 @@ public sealed class ClassesConventionsTests
     /// </para>
     /// </summary>
     [Fact]
-    public void Non_Abstract_non_Static_non_Partial_classes_should_be_Sealed()
+    public void Non_Abstract_non_Static_classes_must_be_Sealed()
     {
         // Arrange
-        var rules = Solution
-            .AllTypes.That()
-            .AreClasses()
-            .Should()
-            .MeetCustomRule(new NonAbstractNonStaticNonPartialClassesShouldBeSealedCustomRule());
+        var rules = SutArch
+            .Types.That.AreClasses()
+            .And.AreNotStatic()
+            .And.AreNotAbstract()
+            .Should.BeSealed();
 
         // Act
         var result = rules.GetResult();
 
         // Assert
-        result.ShouldBeSuccessful();
+        Assert.True(result.IsSuccessful);
     }
 }

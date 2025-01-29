@@ -8,7 +8,7 @@ using Application.Domain.Orders.ValueObjects;
 public sealed class OrderItemModel : IAuditable
 {
     public OrderItemId Id { get; set; }
-    public required OrderModel Order { get; set; }
+    public OrderModel Order { get; set; }
     public Quantity Quantity { get; set; }
     public Amount UnitPrice { get; set; }
     public Amount Price { get; set; }
