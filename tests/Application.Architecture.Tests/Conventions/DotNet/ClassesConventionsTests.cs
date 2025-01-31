@@ -27,17 +27,13 @@ public sealed class ClassesConventionsTests
     public void Classes_should_be_PascalCased()
     {
         // Arrange
-        var rules = Solution
-            .AllTypes.That()
-            .AreClasses()
-            .Should()
-            .MeetCustomRule(new TypeShouldHaveNamePascalCasedCustomRule());
+        var rules = SutArchGuard.Types.That.AreClasses().Should.HaveNamePascalCased();
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.ShouldBeSuccessful();
+        Check.That(result).IsSuccess();
     }
 
     /// <summary>
@@ -55,14 +51,14 @@ public sealed class ClassesConventionsTests
     public void Non_Abstract_non_Static_classes_must_be_Sealed()
     {
         // Arrange
-        var rules = SutArch
+        var rules = SutArchGuard
             .Types.That.AreClasses()
             .And.AreNotStatic()
             .And.AreNotAbstract()
             .Should.BeSealed();
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
         Assert.True(result.IsSuccessful);

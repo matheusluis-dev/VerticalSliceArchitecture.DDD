@@ -10,4 +10,6 @@ global using Microsoft.CodeAnalysis.CSharp;
 global using Microsoft.CodeAnalysis.CSharp.Syntax;
 global using Mono.Cecil;
 global using NetArchTest.Rules;
+global using NFluent;
 global using Xunit;
+global using ArchGuard.Extensions.NFluent;

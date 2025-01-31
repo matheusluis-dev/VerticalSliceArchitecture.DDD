@@ -1,19 +1,19 @@
 namespace Application.Architecture.Tests.Dependencies;
 
+
+
 public sealed class NewtonsoftJsonTests
 {
     [Fact]
     public void NewtonsoftJson_should_not_be_used()
     {
         // Arrange
-        var rules = Sut.Types.Should().NotHaveDependencyOnAny("Newtonsoft.Json");
+        var rules = SutArchGuard.Types.Should.NotHaveDependencyOn("Newtonsoft.Json");
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result
-            .Should()
-            .BeSuccessful("[Newtonsoft.Json] should not be used, use [System.Text.Json] instead");
+        Check.That(result).IsSuccess();
     }
 }

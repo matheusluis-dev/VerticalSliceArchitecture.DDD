@@ -26,7 +26,9 @@ public sealed class ApplicationLayerTests
     public void Application_should_not_depend_on_Infrastructure()
     {
         // Arrange
-        var infrastructureTypesFullName = SutArch.Types.That.ResideInNamespace("Application.Infrastructure").GetTypes();
+        var infrastructureTypesFullName = SutArchGuard
+            .Types.That.ResideInNamespace("Application.Infrastructure")
+            .GetTypes();
 
         var rules = Sut
             .Types.WithApplicationLayerTypesOnly()

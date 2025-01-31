@@ -21,17 +21,13 @@ public sealed class MethodsConventionsTests
     public void Methods_should_be_PascalCased()
     {
         // Arrange
-        var rules = Solution
-            .TypesFromApplication.And()
-            .AreClasses()
-            .Should()
-            .MeetCustomRule(new MethodsShouldHaveNamePascalCasedCustomRule());
+        var rules = SutArchGuard.Types.Verify().Methods.Should.HaveNamePascalCased();
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.ShouldBeSuccessful();
+        Check.That(result).IsSuccess();
     }
 
     /// <summary>
@@ -49,16 +45,15 @@ public sealed class MethodsConventionsTests
     public void Async_methods_should_have_Async_suffix()
     {
         // Arrange
-        var rules = Solution
-            .TypesFromApplication.And()
-            .AreClasses()
-            .Should()
-            .MeetCustomRule(new AsyncMethodsShouldHaveAsyncSuffixCustomRule());
+        var rules = SutArchGuard
+            .Types.Verify()
+            .Methods.That.AreAsynchronous()
+            .Should.HaveNameEndingWith("Async");
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.ShouldBeSuccessful();
+        Check.That(result).IsSuccess();
     }
 }

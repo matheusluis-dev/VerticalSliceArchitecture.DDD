@@ -1,11 +1,12 @@
 namespace Application.Architecture.Tests.Conventions.Application;
 
-using FastEndpoints;
+using Carter;
+using NFluent;
 
 /// <summary>
 /// <para>
 /// Test suite for validating naming and inheritance conventions related to
-/// <see cref="FastEndpoints"/>.
+/// Endpoints.
 /// </para>
 ///
 /// <para>
@@ -17,7 +18,7 @@ public sealed class EndpointsConventionsTests
 {
     /// <summary>
     /// <para>
-    /// Ensures that all classes inheriting from <see cref="FastEndpoints"/>. types
+    /// Ensures that all classes inheriting from Endpoints. types
     /// (Endpoint, Endpoint with generics have an "Endpoint" suffix in their names.
     /// </para>
     ///
@@ -29,27 +30,15 @@ public sealed class EndpointsConventionsTests
     public void Endpoints_classes_should_have_Endpoint_suffix()
     {
         // Arrange
-        var rules = Solution
-            .AllTypes.That()
-            .Inherit(typeof(Endpoint<>))
-            .Or()
-            .Inherit(typeof(Endpoint<,>))
-            .Or()
-            .Inherit(typeof(Endpoint<,,>))
-            .Or()
-            .Inherit<EndpointWithoutRequest>()
-            .Or()
-            .Inherit(typeof(EndpointWithoutRequest<>))
-            .Or()
-            .Inherit(typeof(EndpointWithoutRequest<,>))
-            .Should()
-            .HaveNameEndingWith("Endpoint");
+        var rules = SutArchGuard
+            .Types.That.ImplementInterface(typeof(ICarterModule))
+            .Should.HaveNameEndingWith("Endpoint");
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.ShouldBeSuccessful();
+        Check.That(result).IsSuccess();
     }
 
     /// <summary>
@@ -63,26 +52,25 @@ public sealed class EndpointsConventionsTests
     /// </para>
     /// </summary>
     [Fact]
-    public void Classes_outside_namespace_Endpoints_should_not_have_Endpoint_suffix()
+    public void Classes_outside_namespace_Endpoints_should_not_be_an_Endpoint()
     {
         // Arrange
-        var rules = Solution
-            .AllTypes.That()
-            .DoNotResideInNamespace(Namespaces.ApplicationLayer.Endpoints)
-            .Should()
-            .NotHaveNameEndingWith("Endpoint");
+        var rules = SutArchGuard
+            .Types.That.DoNotResideInNamespace(Namespaces.ApplicationLayer.Endpoints)
+            .Should.NotHaveNameEndingWith("Endpoint")
+            .And.NotImplementInterface(typeof(ICarterModule));
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.ShouldBeSuccessful();
+        Check.That(result).IsSuccess();
     }
 
     /// <summary>
     /// <para>
     /// Verifies that classes within the "Endpoints" namespace that do not inherit from
-    /// <see cref="FastEndpoints"/> types do not have an "Endpoint" suffix.
+    /// Endpoints types do not have an "Endpoint" suffix.
     /// </para>
     ///
     /// <para>
@@ -93,28 +81,15 @@ public sealed class EndpointsConventionsTests
     public void Classes_inside_namespace_Endpoints_that_does_not_inherit_from_Endpoint_class_should_not_have_Endpoint_suffix()
     {
         // Arrange
-        var rules = Solution
-            .AllTypes.That()
-            .ResideInNamespace(Namespaces.ApplicationLayer.Endpoints)
-            .And()
-            .DoNotInherit(typeof(Endpoint<>))
-            .And()
-            .DoNotInherit(typeof(Endpoint<,>))
-            .And()
-            .DoNotInherit(typeof(Endpoint<,,>))
-            .And()
-            .DoNotInherit<EndpointWithoutRequest>()
-            .And()
-            .DoNotInherit(typeof(EndpointWithoutRequest<>))
-            .And()
-            .DoNotInherit(typeof(EndpointWithoutRequest<,>))
-            .Should()
-            .NotHaveNameEndingWith("Endpoint");
+        var rules = SutArchGuard
+            .Types.That.ResideInNamespace(Namespaces.ApplicationLayer.Endpoints)
+            .And.ImplementInterface(typeof(ICarterModule))
+            .Should.NotHaveNameEndingWith("Endpoint");
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.ShouldBeSuccessful();
+        Check.That(result).IsSuccess();
     }
 }

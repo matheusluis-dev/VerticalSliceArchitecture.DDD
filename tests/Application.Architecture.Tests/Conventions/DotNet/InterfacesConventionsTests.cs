@@ -24,15 +24,13 @@ public sealed class InterfacesConventionsTests
     public void Interfaces_should_be_PascalCased()
     {
         // Arrange
-        var rules = SutArch
-            .Types.That.AreInterfaces()
-            .Should.MeetCustomRule(new TypeShouldHaveNamePascalCasedCustomRule());
+        var rules = SutArchGuard.Types.That.AreInterfaces().Should.HaveNamePascalCased();
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.ShouldBeSuccessful();
+        Assert.True(result.IsSuccessful);
     }
 
     /// <summary>
@@ -49,7 +47,7 @@ public sealed class InterfacesConventionsTests
     public void Interfaces_should_start_with_I()
     {
         // Arrange
-        var rules = SutArch.Types.That.AreInterfaces().Should.HaveNameMatching("^I[A-Z]");
+        var rules = SutArchGuard.Types.That.AreInterfaces().Should.HaveNameMatching("^I[A-Z]");
 
         // Act
         var result = rules.GetResult(StringComparison.Ordinal);
