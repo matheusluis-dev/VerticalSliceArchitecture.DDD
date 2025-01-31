@@ -1,6 +1,7 @@
 namespace Application;
 
 using Application.Domain.Orders.Repositories;
+using Application.Domain.Orders.Specifications.Builder;
 using Application.Infrastructure.Orders;
 using Application.Infrastructure.Persistence;
 using Application.Infrastructure.Services;
@@ -57,6 +58,8 @@ public static class DependencyInjection
 
     private static IServiceCollection AddSpecifications(this IServiceCollection services)
     {
+        services.AddScoped<OrderSpecificationBuilder, OrderSpecificationBuilder>();
+
         return services;
     }
 }
