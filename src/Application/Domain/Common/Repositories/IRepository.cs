@@ -6,5 +6,7 @@ public interface IRepository<TEntity>
     where TEntity : class, IEntity
 {
     IQueryable<TEntity> GetAll();
-    Task AddAsync(TEntity entity);
+    Task<IPagedList<TEntity>> GetPagedAsync(int pageIndex, int pageSize);
+    Task AddAsync(TEntity entity, CancellationToken ct = default);
+    Task SaveChangesAsync(CancellationToken ct = default);
 }

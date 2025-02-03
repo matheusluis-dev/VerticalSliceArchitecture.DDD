@@ -3,6 +3,7 @@ namespace Application.Infrastructure.Persistence;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using Application.Domain.Orders.ValueObjects;
 using Application.Infrastructure.Orders.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,16 +25,20 @@ public sealed partial class ApplicationDbContext : DbContext
             {
                 model.HasKey(m => m.Id);
                 model.HasIndex(m => m.Id);
+
+                model.Property(m => m.Id).HasVogenConversion();
             })
             .Entity<OrderItemModel>(model =>
             {
                 model.HasKey(m => m.Id);
                 model.HasIndex(m => m.Id);
 
+                model.Property(m => m.Id).HasVogenConversion();
+
                 model
                     .HasOne(m => m.Order)
                     .WithMany(m => m.OrderItems)
-                    .HasForeignKey(m => m.Id)
+                    .HasForeignKey(m => m.OrderId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 

@@ -3,6 +3,7 @@ namespace Application.Infrastructure.Orders;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Application.Domain.Common;
 using Application.Domain.Orders.Aggregates;
 using Application.Domain.Orders.Repositories;
 using Application.Domain.Orders.Specifications.Builder;
@@ -43,8 +44,18 @@ public sealed class OrderRepository : IOrderRepository
         return _orderSet.AsQueryable().ToEntityQueryable();
     }
 
-    public async Task AddAsync(Order order)
+    public async Task<IPagedList<Order>> GetPagedAsync(int pageIndex, int pageSize)
     {
-        await _orderSet.AddAsync(order.ToModel());
+        return await PagedList<Order>.CreateAsync(GetAll(), pageIndex, pageSize);
+    }
+
+    public async Task AddAsync(Order order, CancellationToken ct = default)
+    {
+        await _orderSet.AddAsync(order.FromEntity(), ct);
+    }
+
+    public async Task SaveChangesAsync(CancellationToken ct = default)
+    {
+        await _context.SaveChangesAsync(ct);
     }
 }

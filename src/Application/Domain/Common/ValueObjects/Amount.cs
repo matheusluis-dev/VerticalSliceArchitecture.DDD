@@ -2,7 +2,7 @@ namespace Application.Domain.Common.ValueObjects;
 
 using Vogen;
 
-[ValueObject<decimal>]
+[ValueObject<decimal>(conversions: Conversions.Default | Conversions.EfCoreValueConverter)]
 public readonly partial struct Amount
 {
     public static readonly Amount Zero = From(0);

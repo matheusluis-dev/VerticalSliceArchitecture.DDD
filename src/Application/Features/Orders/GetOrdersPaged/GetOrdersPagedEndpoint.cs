@@ -1,11 +1,14 @@
-namespace Application.Features.Orders.CreateOrder;
+namespace Application.Features.Orders.GetOrdersPaged;
 
+using System.Threading;
+using System.Threading.Tasks;
 using Application.Domain.Orders.Repositories;
 using FastEndpoints;
+using static Application.Features.Orders.CreateOrder.CreateOrderEndpoint;
 
-public static partial class CreateOrderEndpoint
+public static partial class GetOrdersPagedEndpoint
 {
-    public sealed class Endpoint : Endpoint<Request, Response, OrderMapper>
+    public sealed class Endpoint : Endpoint<Request, Response, PagedOrderMapper>
     {
         private readonly IOrderRepository _orderRepository;
 
@@ -16,19 +19,16 @@ public static partial class CreateOrderEndpoint
 
         public override void Configure()
         {
-            Post("/orders");
+            Get("/orders/paged");
             AllowAnonymous();
             Validator<CreateOrderValidator>();
         }
 
         public override async Task<Response> ExecuteAsync(Request req, CancellationToken ct)
         {
-            var order = Map.ToEntity(req);
+            var p = await _orderRepository.GetPagedAsync(req.PageNumber, req.PageSize);
 
-            await _orderRepository.AddAsync(order, ct);
-            await _orderRepository.SaveChangesAsync(ct);
-
-            return Map.FromEntity(order);
+            return Map.FromEntity(p);
         }
     }
 }

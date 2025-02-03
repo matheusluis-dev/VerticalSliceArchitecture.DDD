@@ -16,8 +16,10 @@ public static class DependencyInjection
     public static IServiceCollection AddConfiguredFastEndpoints(this IServiceCollection services)
     {
         services.AddFastEndpoints(options =>
-            options.SourceGeneratorDiscoveredTypes = DiscoveredTypes.All
-        );
+        {
+            options.SourceGeneratorDiscoveredTypes = DiscoveredTypes.All;
+            options.IncludeAbstractValidators = true;
+        });
 
         services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
             options.SerializerOptions.Converters.Add(new JsonStringEnumConverter())
