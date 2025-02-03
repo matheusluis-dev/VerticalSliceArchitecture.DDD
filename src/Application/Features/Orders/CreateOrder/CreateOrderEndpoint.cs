@@ -2,36 +2,13 @@ namespace Application.Features.Orders.CreateOrder;
 
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Application.Common.CQRS;
 using Application.Domain.Common.ValueObjects;
-using Application.Domain.Orders.Aggregates;
 using Application.Domain.Orders.Entities;
 using Application.Domain.Orders.Enums;
 using Application.Domain.Orders.Repositories;
 using Application.Domain.Orders.ValueObjects;
 using Ardalis.Result;
-using Ardalis.Result.AspNetCore;
-using Carter;
-using MediatR;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Routing;
-
-public sealed class CreateOrderEndpoint : ICarterModule
-{
-    public void AddRoutes(IEndpointRouteBuilder app)
-    {
-        app.MapPost(
-                "order",
-                async (ISender sender, Request request, CancellationToken cancellationToken) =>
-                {
-                    var result = await sender.Send(request, cancellationToken);
-
-                    return result.ToMinimalApiResult();
-                }
-            )
-            .WithName("CreateOrder");
-    }
-}
+using FastEndpoints;
 
 public sealed record Request(IEnumerable<RequestItems>? Items) : ICommand<Result<Response>>;
 
@@ -39,22 +16,27 @@ public sealed record RequestItems([Required] Quantity Quantity, [Required] Amoun
 
 public sealed record Response([Required] OrderId Id);
 
-public sealed class CreateOrderHandler : ICommandHandler<Request, Result<Response>>
+public sealed class CreateOrderEndpoint : Endpoint<Request, Result<Response>>
 {
     private readonly IOrderRepository _orderRepository;
 
-    public CreateOrderHandler(IOrderRepository orderRepository)
+    public CreateOrderEndpoint(IOrderRepository orderRepository)
     {
         _orderRepository = orderRepository;
     }
 
-    public async Task<Result<Response>> Handle(Request request, CancellationToken cancellationToken)
+    public override void Configure()
+    {
+        Post("/orders");
+        AllowAnonymous();
+    }
+
+    public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var id = OrderId.Create();
 
         var orderItems =
-            request
-                ?.Items?.Select(item => new OrderItem
+            req?.Items?.Select(item => new OrderItem
                 {
                     Id = OrderItemId.Create(),
                     OrderId = id,
@@ -63,7 +45,7 @@ public sealed class CreateOrderHandler : ICommandHandler<Request, Result<Respons
                 })
                 .ToList() ?? [];
 
-        var order = new Order
+        var order = new Domain.Orders.Aggregates.Order
         {
             Id = id,
             Status = OrderStatus.Pending,
@@ -72,6 +54,6 @@ public sealed class CreateOrderHandler : ICommandHandler<Request, Result<Respons
 
         await _orderRepository.AddAsync(order);
 
-        return Result.Created(new Response(id));
+        await SendAsync(Result.Created(new Response(id)), 201, ct);
     }
 }

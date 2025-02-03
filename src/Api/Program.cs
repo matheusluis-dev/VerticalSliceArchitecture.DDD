@@ -5,7 +5,7 @@
 #pragma warning disable CA1031 // Do not catch general exception types
 
 using Application;
-using Carter;
+using FastEndpoints;
 using NLog;
 using NLog.Web;
 
@@ -17,8 +17,9 @@ try
 {
     var builder = WebApplication.CreateBuilder();
 
+    builder.Services.AddConfiguredFastEndpoints();
+
     builder.Services.AddOpenApi();
-    builder.Services.AddCarter();
 
     builder.Logging.ClearProviders();
     builder.Host.UseNLog();
@@ -29,8 +30,8 @@ try
     await using var app = builder.Build();
 
     app.UseHttpsRedirection();
+    app.UseFastEndpoints();
 
-    app.MapCarter();
     await app.RunAsync();
 }
 catch (Exception exception)

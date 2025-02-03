@@ -1,7 +1,5 @@
 namespace Application.Architecture.Tests.Dependencies;
 
-
-
 public sealed class NewtonsoftJsonTests
 {
     [Fact]
