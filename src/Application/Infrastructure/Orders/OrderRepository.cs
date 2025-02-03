@@ -41,7 +41,7 @@ public sealed class OrderRepository : IOrderRepository
 
     public IQueryable<Order> GetAll()
     {
-        return _orderSet.AsQueryable().ToEntityQueryable();
+        return _orderSet.AsQueryable().Include(o => o.OrderItems).ToEntityQueryable();
     }
 
     public async Task<IPagedList<Order>> GetPagedAsync(int pageIndex, int pageSize)

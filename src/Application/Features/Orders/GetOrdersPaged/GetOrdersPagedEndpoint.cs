@@ -1,10 +1,10 @@
 namespace Application.Features.Orders.GetOrdersPaged;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Domain.Orders.Repositories;
 using FastEndpoints;
-using static Application.Features.Orders.CreateOrder.CreateOrderEndpoint;
 
 public static partial class GetOrdersPagedEndpoint
 {
@@ -21,14 +21,16 @@ public static partial class GetOrdersPagedEndpoint
         {
             Get("/orders/paged");
             AllowAnonymous();
-            Validator<CreateOrderValidator>();
         }
 
-        public override async Task<Response> ExecuteAsync(Request req, CancellationToken ct)
+        public override async Task<Response> ExecuteAsync(
+            [NotNull] Request req,
+            CancellationToken ct
+        )
         {
             var p = await _orderRepository.GetPagedAsync(req.PageNumber, req.PageSize);
 
-            return Map.FromEntity(p);
+            return await Map.FromEntityAsync(p, ct);
         }
     }
 }

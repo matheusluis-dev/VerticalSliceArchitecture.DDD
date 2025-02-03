@@ -8,12 +8,21 @@ public static partial class GetOrdersPagedEndpoint
 {
     public sealed record Response(IEnumerable<OrderResponse> Orders, int PageIndex, int TotalPages)
     {
-        public sealed record OrderResponse(
-            OrderStatus Status,
-            Amount TotalPrice,
-            IEnumerable<OrderItemResponse> Items
-        );
+        //public required IEnumerable<OrderResponse> Orders { get; init; }
+        //public required int PageIndex { get; init; }
+        //public required int TotalPages { get; init; }
 
-        public sealed record OrderItemResponse(Quantity Quantity, Amount UnitPrice);
+        public sealed record OrderResponse
+        {
+            public required OrderStatus Status { get; init; }
+            public required Amount TotalPrice { get; init; }
+            public required IEnumerable<OrderItemResponse> Items { get; init; }
+        }
+
+        public sealed record OrderItemResponse
+        {
+            public required Quantity Quantity { get; init; }
+            public required Amount UnitPrice { get; init; }
+        }
     }
 }
