@@ -22,13 +22,11 @@ public static partial class GetOrdersPagedEndpoint
             {
                 Status = order.Status,
                 TotalPrice = order.TotalPrice,
-                Items = order
-                    .OrderItems.AsQueryable()
-                    .Select(item => new Response.OrderItemResponse
-                    {
-                        Quantity = item.Quantity,
-                        UnitPrice = item.UnitPrice,
-                    }),
+                Items = order.OrderItems.Select(item => new Response.OrderItemResponse
+                {
+                    Quantity = item.Quantity,
+                    UnitPrice = item.UnitPrice,
+                }),
             });
 
             return Task.FromResult(
