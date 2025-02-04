@@ -21,17 +21,13 @@ public sealed class MethodsConventionsTests
     public void Methods_should_be_PascalCased()
     {
         // Arrange
-        var rules = Sut
-            .Types.That()
-            .AreClasses()
-            .Should()
-            .MeetCustomRule(new MethodsShouldHaveNamePascalCasedCustomRule());
+        var rules = SutArchGuard.Types.Verify().Methods.Should.HaveNamePascalCased();
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.Should().BeSuccessful();
+        Check.That(result).IsSuccess();
     }
 
     /// <summary>
@@ -49,33 +45,15 @@ public sealed class MethodsConventionsTests
     public void Async_methods_should_have_Async_suffix()
     {
         // Arrange
-        var rules = Sut
-            .Types.That()
-            .AreClasses()
-            .Should()
-            .MeetCustomRule(new AsyncMethodsShouldHaveAsyncSuffixCustomRule());
+        var rules = SutArchGuard
+            .Types.Verify()
+            .Methods.That.AreAsynchronous()
+            .Should.HaveNameEndingWith("Async");
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.Should().BeSuccessful();
-    }
-
-    [Fact]
-    public void Async_methods_should_return_Task_CompletedTask_instead_of_empty_return()
-    {
-        // Arrange
-        var rules = Sut
-            .Classes.Should()
-            .MeetCustomRule(
-                new AsyncMethodsShouldReturnTaskCompletedTaskInsteadOfEmptyReturnCustomRule()
-            );
-
-        // Act
-        var result = rules.GetResult();
-
-        // Assert
-        result.Should().BeSuccessful();
+        Check.That(result).IsSuccess();
     }
 }

@@ -16,7 +16,7 @@ public sealed class RecordsConventionsTests
     }
 
     [Fact]
-    public void Non_abstract_records_must_be_Sealed()
+    public void Non_abstract_records_should_be_Sealed()
     {
         // Arrange
         var rules = SutArchGuard.Types.That.AreRecords().And.AreNotAbstract().Should.BeSealed();
@@ -29,7 +29,7 @@ public sealed class RecordsConventionsTests
     }
 
     [Fact]
-    public void Records_must_be_immutable()
+    public void Records_should_be_immutable()
     {
         // Arrange
         var rules = SutArchGuard.Types.That.AreRecords().Should.BeImmutable();

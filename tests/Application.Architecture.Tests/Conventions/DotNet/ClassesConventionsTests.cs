@@ -48,7 +48,7 @@ public sealed class ClassesConventionsTests
     /// </para>
     /// </summary>
     [Fact]
-    public void Non_Abstract_non_Static_classes_must_be_Sealed()
+    public void Non_Abstract_non_Static_classes_should_be_Sealed()
     {
         // Arrange
         var rules = SutArchGuard

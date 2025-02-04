@@ -27,7 +27,8 @@ public sealed class ApplicationLayerTests
     {
         // Arrange
         var rules = SutArchGuard
-            .Types.That.DoNotResideInNamespace("Application.Domain", "Application.Infrastructure")
+            .Types.That.ResideInNamespace("Application")
+            .And.DoNotResideInNamespace("Application.Domain", "Application.Infrastructure")
             .Should.NotHaveDependencyOnNamespace(
                 "Application.Domain",
                 "Application.Infrastructure"
