@@ -24,15 +24,13 @@ public sealed class InterfacesConventionsTests
     public void Interfaces_should_be_PascalCased()
     {
         // Arrange
-        var rules = Sut
-            .Interfaces.Should()
-            .MeetCustomRule(new TypeShouldHaveNamePascalCasedCustomRule());
+        var rules = SutArchGuard.Types.That.AreInterfaces().Should.HaveNamePascalCased();
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.Should().BeSuccessful();
+        Assert.True(result.IsSuccessful);
     }
 
     /// <summary>
@@ -46,17 +44,15 @@ public sealed class InterfacesConventionsTests
     /// </para>
     /// </summary>
     [Fact]
-    public void Interfaces_should_start_with_I()
+    public void Interfaces_should_start_with_I_followed_by_a_capital_letter()
     {
         // Arrange
-        var rules = Sut
-            .Interfaces.Should()
-            .MeetCustomRule(new InterfacesShouldStartWithCapitalICustomRule());
+        var rules = SutArchGuard.Types.That.AreInterfaces().Should.HaveNameMatching("^I[A-Z]");
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.Should().BeSuccessful();
+        Assert.True(result.IsSuccessful);
     }
 }

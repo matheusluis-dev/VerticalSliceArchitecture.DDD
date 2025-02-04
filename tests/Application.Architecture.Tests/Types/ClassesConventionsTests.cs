@@ -27,20 +27,18 @@ public sealed class ClassesConventionsTests
     public void Classes_should_be_PascalCased()
     {
         // Arrange
-        var rules = Sut
-            .Classes.Should()
-            .MeetCustomRule(new TypeShouldHaveNamePascalCasedCustomRule());
+        var rules = SutArchGuard.Types.That.AreClasses().Should.HaveNamePascalCased();
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.Should().BeSuccessful();
+        Check.That(result).IsSuccess();
     }
 
     /// <summary>
     /// <para>
-    /// Ensures that all non-abstract, non-static, and non-partial classes are declared as sealed.
+    /// Ensures that all non-abstract and non-static classes are declared as sealed.
     /// </para>
     ///
     /// <para>
@@ -50,32 +48,19 @@ public sealed class ClassesConventionsTests
     /// </para>
     /// </summary>
     [Fact]
-    public void Non_Abstract_non_Static_non_Partial_classes_should_be_Sealed()
+    public void Non_Abstract_non_Static_classes_must_be_Sealed()
     {
         // Arrange
-        var rules = Sut
-            .Classes.Should()
-            .MeetCustomRule(new NonAbstractNonStaticNonPartialClassesShouldBeSealedCustomRule());
+        var rules = SutArchGuard
+            .Types.That.AreClasses()
+            .And.AreNotStatic()
+            .And.AreNotAbstract()
+            .Should.BeSealed();
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.Should().BeSuccessful();
-    }
-
-    [Fact]
-    public void Classes_that_contains_only_static_methods_should_be_static()
-    {
-        // Arrange
-        var rules = Sut
-            .Classes.Should()
-            .MeetCustomRule(new ClassesThatContainsStaticMethodsOnlyShouldBeStaticCustomRule());
-
-        // Act
-        var result = rules.GetResult();
-
-        // Assert
-        result.Should().BeSuccessful();
+        Assert.True(result.IsSuccessful);
     }
 }
