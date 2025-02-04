@@ -27,7 +27,7 @@ public static partial class CreateOrderEndpoint
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var order = await Map.ToEntityAsync(req);
+            var order = await Map.ToEntityAsync(req, ct);
 
             await _orderRepository.CreateAsync(order, ct);
             await _context.SaveChangesAsync(ct);

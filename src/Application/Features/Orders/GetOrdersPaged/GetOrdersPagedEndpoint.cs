@@ -25,9 +25,9 @@ public static partial class GetOrdersPagedEndpoint
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var p = await _orderRepository.FindAllPagedAsync(req.PageNumber, req.PageSize, ct);
+            var pagedList = await _orderRepository.FindAllPagedAsync(req.PageNumber, req.PageSize, ct);
 
-            await SendMappedAsync(p, StatusCodes.Status200OK, ct);
+            await SendMappedAsync(pagedList, StatusCodes.Status200OK, ct);
         }
     }
 }
