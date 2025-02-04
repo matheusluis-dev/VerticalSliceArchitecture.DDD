@@ -26,19 +26,17 @@ public sealed class ApplicationLayerTests
     public void Application_should_not_depend_on_Infrastructure()
     {
         // Arrange
-        var infrastructureTypesFullName = SutArchGuard
-            .Types.That.ResideInNamespace("Application.Infrastructure")
-            .GetTypes();
-
-        var rules = Sut
-            .Types.WithApplicationLayerTypesOnly()
-            .Should()
-            .NotHaveDependencyOnAny(infrastructureTypesFullName);
+        var rules = SutArchGuard
+            .Types.That.DoNotResideInNamespace("Application.Domain", "Application.Infrastructure")
+            .Should.NotHaveDependencyOnNamespace(
+                "Application.Domain",
+                "Application.Infrastructure"
+            );
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.Should().BeSuccessful();
+        Check.That(result).IsSuccess();
     }
 }

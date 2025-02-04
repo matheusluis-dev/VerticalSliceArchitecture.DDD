@@ -26,17 +26,15 @@ public sealed class InfrastructureLayerTests
     public void Infrastructure_should_not_depend_on_Application()
     {
         // Arrange
-        var applicationTypesFullName = Sut.Types.WithApplicationLayerTypesOnly().GetTypesFullName();
-
-        var rules = Sut
-            .Types.WithInfrastructureTypesOnly()
-            .Should()
-            .NotHaveDependencyOnAny(applicationTypesFullName);
+        // TODO won't work
+        var rules = SutArchGuard
+            .Types.That.ResideInNamespace("Application.Infrastructure")
+            .Should.NotHaveDependencyOnNamespace("Application");
 
         // Act
         var result = rules.GetResult();
 
         // Assert
-        result.Should().BeSuccessful();
+        Check.That(result).IsSuccess();
     }
 }

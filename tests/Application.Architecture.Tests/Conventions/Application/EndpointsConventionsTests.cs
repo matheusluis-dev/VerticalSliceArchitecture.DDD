@@ -1,6 +1,6 @@
 namespace Application.Architecture.Tests.Conventions.Application;
 
-using Carter;
+using FastEndpoints;
 using NFluent;
 
 /// <summary>
@@ -31,7 +31,7 @@ public sealed class EndpointsConventionsTests
     {
         // Arrange
         var rules = SutArchGuard
-            .Types.That.ImplementInterface(typeof(ICarterModule))
+            .Types.That.Inherit(typeof(Endpoint<>), typeof(Endpoint<,>), typeof(Endpoint<,,>))
             .Should.HaveNameEndingWith("Endpoint");
 
         // Act
@@ -58,7 +58,7 @@ public sealed class EndpointsConventionsTests
         var rules = SutArchGuard
             .Types.That.DoNotResideInNamespace(Namespaces.ApplicationLayer.Endpoints)
             .Should.NotHaveNameEndingWith("Endpoint")
-            .And.NotImplementInterface(typeof(ICarterModule));
+            .And.NotInherit(typeof(Endpoint<>), typeof(Endpoint<,>), typeof(Endpoint<,,>));
 
         // Act
         var result = rules.GetResult(StringComparison.Ordinal);
@@ -83,7 +83,7 @@ public sealed class EndpointsConventionsTests
         // Arrange
         var rules = SutArchGuard
             .Types.That.ResideInNamespace(Namespaces.ApplicationLayer.Endpoints)
-            .And.ImplementInterface(typeof(ICarterModule))
+            .And.Inherit(typeof(Endpoint<>), typeof(Endpoint<,>), typeof(Endpoint<,,>))
             .Should.NotHaveNameEndingWith("Endpoint");
 
         // Act

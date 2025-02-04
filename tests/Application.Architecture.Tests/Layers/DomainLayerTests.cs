@@ -27,22 +27,14 @@ public sealed class DomainLayerTests
     public void Domain_should_not_have_any_dependency()
     {
         // Arrange
-        var infrastructureTypes = Sut.Types.WithInfrastructureTypesOnly().GetTypesFullName();
-        var applicationTypes = Sut.Types.WithApplicationLayerTypesOnly().GetTypesFullName();
-
-        var rules = Sut
-            .Types.WithDomainTypesOnly()
-            .Should()
-            .NotHaveDependencyOnAny(infrastructureTypes)
-            .And()
-            .NotHaveDependencyOnAny(applicationTypes)
-            .And()
-            .OnlyHaveDependencyOn(Namespaces.System);
+        var rules = SutArchGuard
+            .Types.That.ResideInNamespace("Application.Domain")
+            .Should.HaveDependencyOnlyOnNamespace("System");
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.Should().BeSuccessful();
+        Check.That(result).IsSuccess();
     }
 }
