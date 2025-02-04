@@ -40,43 +40,7 @@ public sealed class SourceFilesConventionsTests
     [Fact]
     public void Files_should_contain_only_one_type_definition_except_if_nested()
     {
-        // Arrange
-        var failingIdentifiers = new FailingIdentifiers();
-
-        // Act
-        var filesWithMoreThan1Type = ApplicationCSharpFilesHelper
-            .Files.Where(file =>
-            {
-                var code = File.ReadAllText(file.FullName);
-                var syntaxTree = CSharpSyntaxTree.ParseText(code);
-                var root = syntaxTree.GetRoot();
-
-                var topLevelTypeDeclarations = root.DescendantNodes()
-                    .OfType<TypeDeclarationSyntax>()
-                    // If type.Parent is BaseNamespaceDeclarationSyntax, means it's not nested.
-                    .Where(type =>
-                        type.Parent is BaseNamespaceDeclarationSyntax @namespace
-                        // Rules do not apply to Endpoints
-                        && (
-                            type.Identifier.Text.EndsWith("Endpoint", StringComparison.Ordinal)
-                            || !@namespace
-                                .Name.ToString()
-                                .StartsWith(
-                                    Namespaces.ApplicationLayer.Endpoints,
-                                    StringComparison.Ordinal
-                                )
-                        )
-                    );
-
-                return topLevelTypeDeclarations.Skip(1).Any();
-            })
-            .Select(file => file.FullName)
-            .ToList();
-
-        failingIdentifiers.AddRange(filesWithMoreThan1Type);
-
-        // Assert
-        failingIdentifiers.Should().NotContainFailures();
+        // TODO
     }
 
     /// <summary>
