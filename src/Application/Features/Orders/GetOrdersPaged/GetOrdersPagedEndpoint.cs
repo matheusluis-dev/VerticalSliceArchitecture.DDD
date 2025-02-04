@@ -1,10 +1,10 @@
 namespace Application.Features.Orders.GetOrdersPaged;
 
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Domain.Orders.Repositories;
 using FastEndpoints;
+using Microsoft.AspNetCore.Http;
 
 public static partial class GetOrdersPagedEndpoint
 {
@@ -23,14 +23,11 @@ public static partial class GetOrdersPagedEndpoint
             AllowAnonymous();
         }
 
-        public override async Task<Response> ExecuteAsync(
-            [NotNull] Request req,
-            CancellationToken ct
-        )
+        public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var p = await _orderRepository.GetPagedAsync(req.PageNumber, req.PageSize);
+            var p = await _orderRepository.FindAllPagedAsync(req.PageNumber, req.PageSize, ct);
 
-            return await Map.FromEntityAsync(p, ct);
+            await SendMappedAsync(p, StatusCodes.Status200OK, ct);
         }
     }
 }

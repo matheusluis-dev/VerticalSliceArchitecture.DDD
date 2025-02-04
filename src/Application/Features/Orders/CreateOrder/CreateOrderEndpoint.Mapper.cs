@@ -11,12 +11,18 @@ public static partial class CreateOrderEndpoint
 {
     public sealed class OrderMapper : Mapper<Request, Response, Domain.Orders.Aggregates.Order>
     {
-        public override Response FromEntity([NotNull] Domain.Orders.Aggregates.Order e)
+        public override Task<Response> FromEntityAsync(
+            [NotNull] Domain.Orders.Aggregates.Order e,
+            CancellationToken ct = default
+        )
         {
-            return new(e.Id);
+            return Task.FromResult(new Response(e.Id));
         }
 
-        public override Domain.Orders.Aggregates.Order ToEntity(Request r)
+        public override Task<Domain.Orders.Aggregates.Order> ToEntityAsync(
+            Request r,
+            CancellationToken ct = default
+        )
         {
             var id = OrderId.Create();
 
@@ -30,12 +36,14 @@ public static partial class CreateOrderEndpoint
                     })
                     .ToList() ?? [];
 
-            return new Domain.Orders.Aggregates.Order
-            {
-                Id = id,
-                Status = OrderStatus.Pending,
-                OrderItems = orderItems,
-            };
+            return Task.FromResult(
+                new Domain.Orders.Aggregates.Order
+                {
+                    Id = id,
+                    Status = OrderStatus.Pending,
+                    OrderItems = orderItems,
+                }
+            );
         }
     }
 }

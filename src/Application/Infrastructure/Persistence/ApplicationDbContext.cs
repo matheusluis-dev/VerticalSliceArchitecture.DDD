@@ -4,13 +4,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Application.Domain.Orders.ValueObjects;
-using Application.Infrastructure.Orders.Models;
+using Application.Infrastructure.Orders.Tables;
 using Microsoft.EntityFrameworkCore;
 
 public sealed partial class ApplicationDbContext : DbContext
 {
-    public DbSet<OrderModel> Order { get; set; }
-    public DbSet<OrderItemModel> OrderItem { get; set; }
+    public DbSet<OrderTable> Order { get; set; }
+    public DbSet<OrderItemTable> OrderItem { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -21,14 +21,14 @@ public sealed partial class ApplicationDbContext : DbContext
     protected override void OnModelCreating([NotNull] ModelBuilder modelBuilder)
     {
         modelBuilder
-            .Entity<OrderModel>(model =>
+            .Entity<OrderTable>(model =>
             {
                 model.HasKey(m => m.Id);
                 model.HasIndex(m => m.Id);
 
                 model.Property(m => m.Id).HasVogenConversion();
             })
-            .Entity<OrderItemModel>(model =>
+            .Entity<OrderItemTable>(model =>
             {
                 model.HasKey(m => m.Id);
                 model.HasIndex(m => m.Id);

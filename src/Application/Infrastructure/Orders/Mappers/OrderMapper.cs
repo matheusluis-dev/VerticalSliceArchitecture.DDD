@@ -3,18 +3,18 @@ namespace Application.Infrastructure.Orders.Mappers;
 using System.Diagnostics.CodeAnalysis;
 using Application.Domain.Orders.Aggregates;
 using Application.Domain.Orders.Entities;
-using Application.Infrastructure.Orders.Models;
+using Application.Infrastructure.Orders.Tables;
 
 public static class OrderMapper
 {
     public static IQueryable<Order> ToEntityQueryable(
-        [NotNull] this IQueryable<OrderModel> orderModel
+        [NotNull] this IQueryable<OrderTable> orderModel
     )
     {
         return orderModel.Select(o => o.ToEntity());
     }
 
-    public static Order ToEntity([NotNull] this OrderModel orderModel)
+    public static Order ToEntity([NotNull] this OrderTable orderModel)
     {
         return new Order
         {
@@ -24,7 +24,7 @@ public static class OrderMapper
         };
     }
 
-    public static OrderItem ToEntity([NotNull] this OrderItemModel orderItemModel)
+    public static OrderItem ToEntity([NotNull] this OrderItemTable orderItemModel)
     {
         return new OrderItem
         {
@@ -39,9 +39,9 @@ public static class OrderMapper
         };
     }
 
-    public static OrderModel FromEntity([NotNull] this Order order)
+    public static OrderTable FromEntity([NotNull] this Order order)
     {
-        return new OrderModel
+        return new OrderTable
         {
             Id = order.Id,
             Status = order.Status,
@@ -49,9 +49,9 @@ public static class OrderMapper
         };
     }
 
-    public static OrderItemModel FromEntity([NotNull] this OrderItem orderItem)
+    public static OrderItemTable FromEntity([NotNull] this OrderItem orderItem)
     {
-        return new OrderItemModel
+        return new OrderItemTable
         {
             Id = orderItem.Id,
             OrderId = orderItem.OrderId,

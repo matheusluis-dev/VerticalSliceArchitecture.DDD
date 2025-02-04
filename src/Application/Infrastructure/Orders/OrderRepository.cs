@@ -7,15 +7,16 @@ using Application.Domain.Common;
 using Application.Domain.Orders.Aggregates;
 using Application.Domain.Orders.Repositories;
 using Application.Domain.Orders.Specifications.Builder;
+using Application.Domain.Orders.ValueObjects;
 using Application.Infrastructure.Orders.Mappers;
-using Application.Infrastructure.Orders.Models;
+using Application.Infrastructure.Orders.Tables;
 using Application.Infrastructure.Persistence;
+using Ardalis.GuardClauses;
 using Microsoft.EntityFrameworkCore;
 
 public sealed class OrderRepository : IOrderRepository
 {
-    private readonly ApplicationDbContext _context;
-    private readonly DbSet<OrderModel> _orderSet;
+    private readonly DbSet<OrderTable> _orderSet;
 
     private readonly OrderSpecificationBuilder _specificationBuilder;
 
@@ -24,8 +25,9 @@ public sealed class OrderRepository : IOrderRepository
         OrderSpecificationBuilder specificationBuilder
     )
     {
-        _context = context;
-        _orderSet = _context.Order;
+        Guard.Against.Null(context);
+
+        _orderSet = context.Order;
         _specificationBuilder = specificationBuilder;
     }
 
@@ -44,18 +46,50 @@ public sealed class OrderRepository : IOrderRepository
         return _orderSet.AsQueryable().Include(o => o.OrderItems).ToEntityQueryable();
     }
 
-    public async Task<IPagedList<Order>> GetPagedAsync(int pageIndex, int pageSize)
+    public async Task<Order?> FindByIdAsync(OrderId id, CancellationToken ct = default)
     {
-        return await PagedList<Order>.CreateAsync(GetAll(), pageIndex, pageSize);
+        var order = await _orderSet.FindAsync([id], ct);
+
+        if (order is null)
+            return null;
+
+        return order.ToEntity();
     }
 
-    public async Task AddAsync(Order order, CancellationToken ct = default)
+    public async Task<IPagedList<Order>> FindAllPagedAsync(
+        int pageIndex,
+        int pageSize,
+        CancellationToken ct = default
+    )
+    {
+        return await PagedList<Order>.CreateAsync(
+            _orderSet
+                .AsQueryable()
+                .Include(order => order.OrderItems)
+                .AsNoTracking()
+                .ToEntityQueryable(),
+            pageIndex,
+            pageSize,
+            ct
+        );
+    }
+
+    public async Task<Order?> CreateAsync(Order order, CancellationToken ct = default)
     {
         await _orderSet.AddAsync(order.FromEntity(), ct);
+
+        return order;
     }
 
-    public async Task SaveChangesAsync(CancellationToken ct = default)
+    public async Task<bool> DeleteAsync(OrderId orderId, CancellationToken ct = default)
     {
-        await _context.SaveChangesAsync(ct);
+        var order = await _orderSet.FirstOrDefaultAsync(order => order.Id == orderId, ct);
+
+        if (order is null)
+            return false;
+
+        _orderSet.Remove(order);
+
+        return true;
     }
 }

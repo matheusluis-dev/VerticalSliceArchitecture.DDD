@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Common\" />
+    <Folder Include="Domain\Common\Repositories\" />
   </ItemGroup>
 
 </Project>

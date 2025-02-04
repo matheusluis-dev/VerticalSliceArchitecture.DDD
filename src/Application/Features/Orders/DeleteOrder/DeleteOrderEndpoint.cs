@@ -1,13 +1,15 @@
-namespace Application.Features.Orders.CreateOrder;
+namespace Application.Features.Orders.DeleteOrder;
 
+using System.Threading;
+using System.Threading.Tasks;
 using Application.Domain.Orders.Repositories;
 using Application.Infrastructure.Persistence;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;
 
-public static partial class CreateOrderEndpoint
+public static partial class DeleteOrderEndpoint
 {
-    public sealed class Endpoint : Endpoint<Request, Response, OrderMapper>
+    public sealed class Endpoint : Endpoint<Request, Response>
     {
         private readonly ApplicationDbContext _context;
         private readonly IOrderRepository _orderRepository;
@@ -20,19 +22,23 @@ public static partial class CreateOrderEndpoint
 
         public override void Configure()
         {
-            Post("/orders");
+            Delete("orders/{id}");
             AllowAnonymous();
-            Validator<CreateOrderValidator>();
         }
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var order = await Map.ToEntityAsync(req);
+            var deleted = await _orderRepository.DeleteAsync(req.Id, ct);
 
-            await _orderRepository.CreateAsync(order, ct);
+            if (!deleted)
+            {
+                await SendNoContentAsync(ct);
+                return;
+            }
+
             await _context.SaveChangesAsync(ct);
 
-            await SendMappedAsync(order, StatusCodes.Status201Created, ct);
+            await SendAsync(new Response(req.Id), StatusCodes.Status200OK, ct);
         }
     }
 }

@@ -1,15 +1,15 @@
-namespace Application.Infrastructure.Orders.Models;
+namespace Application.Infrastructure.Orders.Tables;
 
 using System;
 using Application.Domain.Common.Entities;
 using Application.Domain.Common.ValueObjects;
 using Application.Domain.Orders.ValueObjects;
 
-public sealed class OrderItemModel : IAuditable
+public sealed class OrderItemTable : IAuditable
 {
     public OrderItemId Id { get; set; }
     public OrderId OrderId { get; set; }
-    public OrderModel Order { get; set; }
+    public OrderTable Order { get; set; }
     public Quantity Quantity { get; set; }
     public Amount UnitPrice { get; set; }
     public Amount Price { get; set; }

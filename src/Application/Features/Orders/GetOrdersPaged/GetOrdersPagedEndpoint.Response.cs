@@ -6,12 +6,14 @@ using static Application.Features.Orders.GetOrdersPaged.GetOrdersPagedEndpoint.R
 
 public static partial class GetOrdersPagedEndpoint
 {
-    public sealed record Response(IEnumerable<OrderResponse> Orders, int PageIndex, int TotalPages)
+    public sealed record Response(
+        int PageIndex,
+        int TotalPages,
+        bool HasPreviousPage,
+        bool HasNextPage,
+        IEnumerable<OrderResponse> Orders
+    )
     {
-        //public required IEnumerable<OrderResponse> Orders { get; init; }
-        //public required int PageIndex { get; init; }
-        //public required int TotalPages { get; init; }
-
         public sealed record OrderResponse
         {
             public required OrderStatus Status { get; init; }
