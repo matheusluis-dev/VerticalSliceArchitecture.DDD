@@ -1,12 +1,12 @@
 namespace Application.Architecture.Tests.Types;
 
-public sealed class RecordsConventionsTests
+public sealed class RecordsTests
 {
     [Fact]
-    public void Records_should_be_PascalCased()
+    public void Records_should_have_name_PascalCased()
     {
         // Arrange
-        var rules = SutArchGuard.Types.That.AreRecords().Should.HaveNamePascalCased();
+        var rules = SystemUnderTest.Types.That.AreRecords().Should.HaveNamePascalCased();
 
         // Act
         var result = rules.GetResult(StringComparison.Ordinal);
@@ -16,10 +16,10 @@ public sealed class RecordsConventionsTests
     }
 
     [Fact]
-    public void Non_abstract_records_should_be_Sealed()
+    public void Non_abstract_records_should_be_sealed()
     {
         // Arrange
-        var rules = SutArchGuard.Types.That.AreRecords().And.AreNotAbstract().Should.BeSealed();
+        var rules = SystemUnderTest.Types.That.AreRecords().And.AreNotAbstract().Should.BeSealed();
 
         // Act
         var result = rules.GetResult(StringComparison.Ordinal);
@@ -32,7 +32,7 @@ public sealed class RecordsConventionsTests
     public void Records_should_be_immutable()
     {
         // Arrange
-        var rules = SutArchGuard.Types.That.AreRecords().Should.BeImmutable();
+        var rules = SystemUnderTest.Types.That.AreRecords().Should.BeImmutable();
 
         // Act
         var result = rules.GetResult(StringComparison.Ordinal);

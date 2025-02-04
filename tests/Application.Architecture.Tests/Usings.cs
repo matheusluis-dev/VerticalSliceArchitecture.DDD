@@ -1,14 +1,7 @@
-global using System.Diagnostics.CodeAnalysis;
-global using Application.Architecture.Tests.Common;
-global using Application.Architecture.Tests.Common.CustomRules;
-global using Application.Architecture.Tests.Common.Extensions;
-global using Application.Architecture.Tests.Common.Helpers;
 global using ArchGuard;
 global using ArchGuard.Extensions.NFluent;
 global using Microsoft.CodeAnalysis;
 global using Microsoft.CodeAnalysis.CSharp;
 global using Microsoft.CodeAnalysis.CSharp.Syntax;
-global using Mono.Cecil;
-global using NetArchTest.Rules;
 global using NFluent;
 global using Xunit;

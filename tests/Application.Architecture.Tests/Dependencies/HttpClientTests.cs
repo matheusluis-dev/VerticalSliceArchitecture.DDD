@@ -36,7 +36,7 @@ public sealed class HttpClientTests
     public void HttpClient_should_not_be_instantiated_directly()
     {
         // Arrange
-        var rules = SutArchGuard.Types.Should.NotHaveDependencyOn("System.Net.Http.HttpClient");
+        var rules = SystemUnderTest.Types.Should.NotHaveDependencyOn("System.Net.Http.HttpClient");
 
         // Act
         var result = rules.GetResult(StringComparison.Ordinal);

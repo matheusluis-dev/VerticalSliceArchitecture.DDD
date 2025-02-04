@@ -12,6 +12,19 @@ namespace Application.Architecture.Tests.Meta;
 /// </summary>
 public sealed class SourceFilesConventionsTests
 {
+    [Fact]
+    public void Namespaces_should_match_folder_structure()
+    {
+        // Arrange
+        var rules = SystemUnderTest.Types.Should.HaveSourceFilePathMatchingNamespace();
+
+        // Act
+        var result = rules.GetResult(StringComparison.Ordinal);
+
+        // Assert
+        Check.That(result).IsSuccess();
+    }
+
     /// <summary>
     /// <para>
     /// Ensures that each source file contains only one top-level <see langword="type"/>
@@ -82,18 +95,12 @@ public sealed class SourceFilesConventionsTests
     public void File_name_should_match_Type_name()
     {
         // Arrange
-        var rules = Sut
-            .Types.That()
-            .DoNotResideInNamespace(Namespaces.ApplicationLayer.Endpoints)
-            .Or()
-            .HaveNameEndingWith("Endpoint")
-            .Should()
-            .HaveSourceFileNameMatchingName();
+        var rules = SystemUnderTest.Types.Should.HaveSourceFileNameMatchingTypeName();
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.Should().BeSuccessful();
+        Check.That(result).IsSuccess();
     }
 }

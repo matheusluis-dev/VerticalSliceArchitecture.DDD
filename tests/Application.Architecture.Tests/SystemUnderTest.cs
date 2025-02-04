@@ -1,16 +1,15 @@
-namespace Application.Architecture.Tests.Common;
+namespace Application.Architecture.Tests;
 
 using System;
 using ArchGuard;
 
-internal static class SutArchGuard
+internal static class SystemUnderTest
 {
     private static readonly Lazy<ITypeFilterEntryPoint> _types = new(
         ArchGuard.Types.InSolution(
             new SolutionSearchParameters
             {
-                SolutionPath =
-                    "C:/Users/matheus.oliveira/source/repos/GitHub/VerticalSliceArchitecture.DDD/VerticalSliceArchitecture.DDD.sln",
+                SolutionPath = "VerticalSliceArchitecture.DDD/VerticalSliceArchitecture.DDD.sln",
                 Preprocessor = "net9_0",
                 ProjectName = "Application",
             }

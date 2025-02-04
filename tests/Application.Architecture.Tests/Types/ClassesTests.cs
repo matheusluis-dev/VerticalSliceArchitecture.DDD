@@ -1,4 +1,4 @@
-namespace Application.Architecture.Tests.Conventions.DotNet;
+namespace Application.Architecture.Tests.Types;
 
 /// <summary>
 /// <para>
@@ -10,7 +10,7 @@ namespace Application.Architecture.Tests.Conventions.DotNet;
 /// consistency, and scalability across the solution.
 /// </para>
 /// </summary>
-public sealed class ClassesConventionsTests
+public sealed class ClassesTests
 {
     /// <summary>
     /// <para>
@@ -27,7 +27,7 @@ public sealed class ClassesConventionsTests
     public void Classes_should_be_PascalCased()
     {
         // Arrange
-        var rules = SutArchGuard.Types.That.AreClasses().Should.HaveNamePascalCased();
+        var rules = SystemUnderTest.Types.That.AreClasses().Should.HaveNamePascalCased();
 
         // Act
         var result = rules.GetResult(StringComparison.Ordinal);
@@ -51,7 +51,7 @@ public sealed class ClassesConventionsTests
     public void Non_Abstract_non_Static_classes_should_be_Sealed()
     {
         // Arrange
-        var rules = SutArchGuard
+        var rules = SystemUnderTest
             .Types.That.AreClasses()
             .And.AreNotStatic()
             .And.AreNotAbstract()

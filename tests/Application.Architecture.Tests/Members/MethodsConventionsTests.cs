@@ -1,5 +1,7 @@
 namespace Application.Architecture.Tests.Members;
 
+using Application.Architecture.Tests;
+
 /// <summary>
 /// Test suite for validating <see langword="method"/> naming conventions in the application.
 /// These tests enforce adherence to .NET coding standards, ensuring consistency
@@ -21,7 +23,7 @@ public sealed class MethodsConventionsTests
     public void Methods_should_be_PascalCased()
     {
         // Arrange
-        var rules = SutArchGuard.Types.Verify().Methods.Should.HaveNamePascalCased();
+        var rules = SystemUnderTest.Types.Verify().Methods.Should.HaveNamePascalCased();
 
         // Act
         var result = rules.GetResult(StringComparison.Ordinal);
@@ -45,7 +47,7 @@ public sealed class MethodsConventionsTests
     public void Async_methods_should_have_Async_suffix()
     {
         // Arrange
-        var rules = SutArchGuard
+        var rules = SystemUnderTest
             .Types.Verify()
             .Methods.That.AreAsynchronous()
             .Should.HaveNameEndingWith("Async");

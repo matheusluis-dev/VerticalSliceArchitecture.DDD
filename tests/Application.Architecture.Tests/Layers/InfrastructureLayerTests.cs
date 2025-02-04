@@ -1,5 +1,7 @@
 namespace Application.Architecture.Tests.Layers;
 
+using Application.Architecture.Tests;
+
 /// <summary>
 /// <para>
 /// Test suite for validating dependency rules in the infrastructure layer.
@@ -26,13 +28,12 @@ public sealed class InfrastructureLayerTests
     public void Infrastructure_should_not_depend_on_Application()
     {
         // Arrange
-        // TODO won't work
-        var rules = SutArchGuard
+        var rules = SystemUnderTest
             .Types.That.ResideInNamespace("Application.Infrastructure")
             .Should.NotHaveDependencyOnNamespace("Application");
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
         Check.That(result).IsSuccess();

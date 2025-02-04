@@ -6,7 +6,7 @@ public sealed class NewtonsoftJsonTests
     public void NewtonsoftJson_should_not_be_used()
     {
         // Arrange
-        var rules = SutArchGuard.Types.Should.NotHaveDependencyOn("Newtonsoft.Json");
+        var rules = SystemUnderTest.Types.Should.NotHaveDependencyOnNamespace("Newtonsoft");
 
         // Act
         var result = rules.GetResult(StringComparison.Ordinal);

@@ -65,7 +65,7 @@ public sealed class FilesConventionsTests
             .ToList();
 
         // Assert
-        filesWithMoreThan1TypeDeclared.ShouldBeEmpty();
+        Check.That(filesWithMoreThan1TypeDeclared).IsEmpty();
     }
 
     /// <summary>

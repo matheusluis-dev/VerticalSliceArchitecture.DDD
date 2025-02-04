@@ -11,7 +11,7 @@ namespace Application.Architecture.Tests.Types;
 /// alignment with widely accepted development practices.
 /// </para>
 /// </summary>
-public sealed class InterfacesConventionsTests
+public sealed class InterfacesTests
 {
     /// <summary>
     /// Verifies that all <see langword="interface"/> in the solution follow the PascalCase naming
@@ -24,7 +24,7 @@ public sealed class InterfacesConventionsTests
     public void Interfaces_should_be_PascalCased()
     {
         // Arrange
-        var rules = SutArchGuard.Types.That.AreInterfaces().Should.HaveNamePascalCased();
+        var rules = SystemUnderTest.Types.That.AreInterfaces().Should.HaveNamePascalCased();
 
         // Act
         var result = rules.GetResult(StringComparison.Ordinal);
@@ -47,7 +47,7 @@ public sealed class InterfacesConventionsTests
     public void Interfaces_should_start_with_I_followed_by_a_capital_letter()
     {
         // Arrange
-        var rules = SutArchGuard.Types.That.AreInterfaces().Should.HaveNameMatching("^I[A-Z]");
+        var rules = SystemUnderTest.Types.That.AreInterfaces().Should.HaveNameMatching("^I[A-Z]");
 
         // Act
         var result = rules.GetResult(StringComparison.Ordinal);

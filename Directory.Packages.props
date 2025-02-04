@@ -3,8 +3,8 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="ArchGuard" Version="0.0.13" />
-    <PackageVersion Include="ArchGuard.Extensions.NFluent" Version="0.0.12" />
+    <PackageVersion Include="ArchGuard" Version="0.0.16" />
+    <PackageVersion Include="ArchGuard.Extensions.NFluent" Version="0.0.15" />
     <PackageVersion Include="Ardalis.GuardClauses" Version="5.0.0" />
     <PackageVersion Include="Ardalis.GuardClauses.Custom" Version="4.0.6" />
     <PackageVersion Include="Ardalis.Result" Version="10.1.0" />

@@ -1,4 +1,4 @@
-namespace Application.Architecture.Tests.Conventions.Application;
+namespace Application.Architecture.Tests.Application;
 
 using FastEndpoints;
 using NFluent;
@@ -14,7 +14,7 @@ using NFluent;
 /// improving maintainability and clarity in the application.
 /// </para>
 /// </summary>
-public sealed class EndpointsConventionsTests
+public sealed class EndpointsTests
 {
     /// <summary>
     /// <para>
@@ -30,7 +30,7 @@ public sealed class EndpointsConventionsTests
     public void Endpoints_classes_should_have_Endpoint_suffix()
     {
         // Arrange
-        var rules = SutArchGuard
+        var rules = SystemUnderTest
             .Types.That.Inherit(typeof(Endpoint<>), typeof(Endpoint<,>), typeof(Endpoint<,,>))
             .Should.HaveNameEndingWith("Endpoint");
 
@@ -55,8 +55,8 @@ public sealed class EndpointsConventionsTests
     public void Classes_outside_namespace_Endpoints_should_not_be_an_Endpoint()
     {
         // Arrange
-        var rules = SutArchGuard
-            .Types.That.DoNotResideInNamespace(Namespaces.ApplicationLayer.Endpoints)
+        var rules = SystemUnderTest
+            .Types.That.DoNotResideInNamespace("Application.Endpoints")
             .Should.NotHaveNameEndingWith("Endpoint")
             .And.NotInherit(typeof(Endpoint<>), typeof(Endpoint<,>), typeof(Endpoint<,,>));
 
@@ -81,9 +81,9 @@ public sealed class EndpointsConventionsTests
     public void Classes_inside_namespace_Endpoints_that_does_not_inherit_from_Endpoint_class_should_not_have_Endpoint_suffix()
     {
         // Arrange
-        var rules = SutArchGuard
-            .Types.That.ResideInNamespace(Namespaces.ApplicationLayer.Endpoints)
-            .And.Inherit(typeof(Endpoint<>), typeof(Endpoint<,>), typeof(Endpoint<,,>))
+        var rules = SystemUnderTest
+            .Types.That.ResideInNamespace("Application.Endpoints")
+            .And.DoNotInherit(typeof(Endpoint<>), typeof(Endpoint<,>), typeof(Endpoint<,,>))
             .Should.NotHaveNameEndingWith("Endpoint");
 
         // Act
