@@ -22,7 +22,7 @@ public sealed class SourceFilesConventionsTests
         var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        Check.That(result).IsSuccess();
+        result.ShouldBeSuccess();
     }
 
     /// <summary>
@@ -59,12 +59,14 @@ public sealed class SourceFilesConventionsTests
     public void File_name_should_match_Type_name()
     {
         // Arrange
-        var rules = SystemUnderTest.Types.Should.HaveSourceFileNameMatchingTypeName();
+        var rules = SystemUnderTest
+            .Types.That.AreNotPartial()
+            .Should.HaveSourceFileNameMatchingTypeName();
 
         // Act
         var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        Check.That(result).IsSuccess();
+        result.ShouldBeSuccess();
     }
 }

@@ -3,8 +3,9 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="ArchGuard" Version="0.0.16" />
-    <PackageVersion Include="ArchGuard.Extensions.NFluent" Version="0.0.15" />
+    <PackageVersion Include="ArchGuard" Version="0.0.18" />
+    <PackageVersion Include="ArchGuard.Extensions.NFluent" Version="0.0.17" />
+    <PackageVersion Include="ArchGuard.Extensions.Shouldly" Version="0.0.18" />
     <PackageVersion Include="Ardalis.GuardClauses" Version="5.0.0" />
     <PackageVersion Include="Ardalis.GuardClauses.Custom" Version="4.0.6" />
     <PackageVersion Include="Ardalis.Result" Version="10.1.0" />
@@ -48,6 +49,7 @@
     <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.0" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageVersion Include="Serilog.Sinks.Debug" Version="3.0.0" />
+    <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.6.0.109712" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />

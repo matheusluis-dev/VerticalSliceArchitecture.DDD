@@ -14,6 +14,6 @@ public sealed class InfrastructureServicesTests
         var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        Check.That(result).IsSuccess();
+        result.ShouldBeSuccess();
     }
 }

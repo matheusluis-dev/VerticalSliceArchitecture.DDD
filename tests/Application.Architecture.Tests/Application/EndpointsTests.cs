@@ -1,7 +1,6 @@
 namespace Application.Architecture.Tests.Application;
 
 using FastEndpoints;
-using NFluent;
 
 /// <summary>
 /// <para>
@@ -38,7 +37,8 @@ public sealed class EndpointsTests
         var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        Check.That(result).IsSuccess();
+        result.ShouldBeSuccess();
+
     }
 
     /// <summary>
@@ -64,7 +64,7 @@ public sealed class EndpointsTests
         var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        Check.That(result).IsSuccess();
+        result.ShouldBeSuccess();
     }
 
     /// <summary>
@@ -90,6 +90,6 @@ public sealed class EndpointsTests
         var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        Check.That(result).IsSuccess();
+        result.ShouldBeSuccess();
     }
 }

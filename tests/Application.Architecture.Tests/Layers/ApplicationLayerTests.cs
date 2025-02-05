@@ -1,7 +1,4 @@
 namespace Application.Architecture.Tests.Layers;
-
-using Application.Architecture.Tests;
-
 /// <summary>
 /// <para>
 /// Test suite for validating dependency rules in the application layer.
@@ -37,6 +34,6 @@ public sealed class ApplicationLayerTests
         var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        Check.That(result).IsSuccess();
+        result.ShouldBeSuccess();
     }
 }

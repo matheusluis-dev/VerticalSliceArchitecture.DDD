@@ -1,7 +1,4 @@
 namespace Application.Architecture.Tests.Members;
-
-using Application.Architecture.Tests;
-
 /// <summary>
 /// Test suite for validating <see langword="method"/> naming conventions in the application.
 /// These tests enforce adherence to .NET coding standards, ensuring consistency
@@ -29,7 +26,7 @@ public sealed class MethodsConventionsTests
         var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        Check.That(result).IsSuccess();
+        result.ShouldBeSuccess();
     }
 
     /// <summary>
@@ -56,6 +53,6 @@ public sealed class MethodsConventionsTests
         var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        Check.That(result).IsSuccess();
+        result.ShouldBeSuccess();
     }
 }

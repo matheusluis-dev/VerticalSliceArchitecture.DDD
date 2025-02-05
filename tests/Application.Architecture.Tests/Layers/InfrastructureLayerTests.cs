@@ -1,7 +1,4 @@
 namespace Application.Architecture.Tests.Layers;
-
-using Application.Architecture.Tests;
-
 /// <summary>
 /// <para>
 /// Test suite for validating dependency rules in the infrastructure layer.
@@ -36,6 +33,6 @@ public sealed class InfrastructureLayerTests
         var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        Check.That(result).IsSuccess();
+        result.ShouldBeSuccess();
     }
 }

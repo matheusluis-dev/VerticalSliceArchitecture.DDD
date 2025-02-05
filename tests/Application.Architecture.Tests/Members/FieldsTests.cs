@@ -1,4 +1,4 @@
-namespace Application.Architecture.Tests.Conventions.DotNet;
+namespace Application.Architecture.Tests.Members;
 
 /// <summary>
 /// <para>
@@ -10,7 +10,7 @@ namespace Application.Architecture.Tests.Conventions.DotNet;
 /// non-<see langword="static"/> fields ensuring better maintainability and code quality.
 /// </para>
 /// </summary>
-public sealed class FieldsConventionsTests
+public sealed class FieldsTests
 {
     /// <summary>
     /// <para>
@@ -23,18 +23,20 @@ public sealed class FieldsConventionsTests
     /// </para>
     /// </summary>
     [Fact]
-    public void Private_fields_should_be_camelCased_with_underscore_prefix()
+    public void Private_and_protected_fields_should_be_camelCased_with_underscore_prefix()
     {
         // Arrange
-        var rules = Solution
-            .AllTypes.Should()
-            .MeetCustomRule(new PrivateFieldsShouldBeCamelCasedWithUnderscorePrefixCustomRule());
+        var rules = SystemUnderTest
+            .Types.Verify()
+            .Fields.That.ArePrivate()
+            .Or.AreProtected()
+            .Should.HaveNameCamelCased('_');
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.ShouldBeSuccessful();
+        result.ShouldBeSuccess();
     }
 
     /// <summary>
@@ -48,32 +50,37 @@ public sealed class FieldsConventionsTests
     /// </para>
     /// </summary>
     [Fact]
-    public void Non_static_fields_should_not_be_public()
+    public void Non_static_fields_should_not_be_public_and_not_be_internal()
     {
         // Arrange
-        var rules = Solution
-            .AllTypes.Should()
-            .MeetCustomRule(new FieldsShouldNotBePublicCustomRule());
+        var rules = SystemUnderTest
+            .Types.Verify()
+            .Fields.That.AreNotStatic()
+            .Should.NotBePublic()
+            .And.NotBeInternal();
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.ShouldBeSuccessful();
+        result.ShouldBeSuccess();
     }
 
     [Fact]
-    public void Non_private_static_fields_should_be_PascalCased()
+    public void Static_fields_that_are_not_private_or_protected_should_have_name_PascalCased()
     {
         // Arrange
-        var rules = Solution
-            .AllTypes.Should()
-            .MeetCustomRule(new NonPrivateStaticFieldsShouldBePascalCasedCustomRule());
+        var rules = SystemUnderTest
+            .Types.Verify()
+            .Fields.That.AreStatic()
+            .And.AreNotProtected()
+            .And.AreNotPrivate()
+            .Should.HaveNamePascalCased();
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.ShouldBeSuccessful();
+        result.ShouldBeSuccess();
     }
 }

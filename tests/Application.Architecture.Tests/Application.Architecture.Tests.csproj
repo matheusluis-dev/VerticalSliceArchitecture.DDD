@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="ArchGuard" />
-    <PackageReference Include="ArchGuard.Extensions.NFluent" />
+    <PackageReference Include="ArchGuard.Extensions.Shouldly" />
     <PackageReference Include="Bogus" />
     <PackageReference Include="coverlet.collector">
       <PrivateAssets>all</PrivateAssets>
@@ -15,8 +15,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="NFluent" />
-    <PackageReference Include="NFluent.Analyzer" />
+    <PackageReference Include="Shouldly" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.analyzers">
       <PrivateAssets>all</PrivateAssets>
