@@ -1,4 +1,5 @@
 namespace Application.Architecture.Tests.Layers;
+
 /// <summary>
 /// <para>
 /// Test suite for validating dependency rules in the infrastructure layer.

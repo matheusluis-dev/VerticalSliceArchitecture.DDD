@@ -1,4 +1,5 @@
 namespace Application.Architecture.Tests.Members;
+
 /// <summary>
 /// Test suite for validating <see langword="method"/> naming conventions in the application.
 /// These tests enforce adherence to .NET coding standards, ensuring consistency

@@ -1,4 +1,4 @@
-namespace Application.Features.Orders.GetOrdersPaged;
+namespace Application.Endpoints.Orders.GetOrdersPaged;
 
 using System.Threading;
 using System.Threading.Tasks;

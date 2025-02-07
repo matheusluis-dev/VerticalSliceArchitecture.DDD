@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <IsPackable>false</IsPackable>
@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="ArchGuard" />
+    <PackageReference Include="ArchGuard.Core" />
     <PackageReference Include="ArchGuard.Extensions.Shouldly" />
     <PackageReference Include="Bogus" />
     <PackageReference Include="coverlet.collector">
@@ -14,6 +15,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Shouldly" />
     <PackageReference Include="xunit" />

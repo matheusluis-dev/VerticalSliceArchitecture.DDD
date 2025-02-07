@@ -1,14 +1,11 @@
-namespace Application.Features.Orders.CreateOrder;
+namespace Application.Endpoints.Orders.CreateOrder;
 
 using FastEndpoints;
 
-public static partial class CreateOrderEndpoint
+public sealed class CreateOrderValidator : Validator<Request>
 {
-    public sealed class CreateOrderValidator : Validator<Request>
+    public CreateOrderValidator()
     {
-        public CreateOrderValidator()
-        {
-            RuleFor(x => x.Items).NotNull().NotEmpty().WithMessage("Order items must be provided.");
-        }
+        RuleFor(x => x.Items).NotNull().NotEmpty().WithMessage("Order items must be provided.");
     }
 }

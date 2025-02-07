@@ -1,4 +1,4 @@
-namespace Application.Features.Orders.DeleteOrder;
+namespace Application.Endpoints.Orders.DeleteOrder;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,38 +7,35 @@ using Application.Infrastructure.Persistence;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;
 
-public static partial class DeleteOrderEndpoint
+public sealed class Endpoint : Endpoint<Request, Response>
 {
-    public sealed class Endpoint : Endpoint<Request, Response>
+    private readonly ApplicationDbContext _context;
+    private readonly IOrderRepository _orderRepository;
+
+    public Endpoint(ApplicationDbContext context, IOrderRepository orderRepository)
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IOrderRepository _orderRepository;
+        _context = context;
+        _orderRepository = orderRepository;
+    }
 
-        public Endpoint(ApplicationDbContext context, IOrderRepository orderRepository)
+    public override void Configure()
+    {
+        Delete("orders/{id}");
+        AllowAnonymous();
+    }
+
+    public override async Task HandleAsync(Request req, CancellationToken ct)
+    {
+        var deleted = await _orderRepository.DeleteAsync(req.Id, ct);
+
+        if (!deleted)
         {
-            _context = context;
-            _orderRepository = orderRepository;
+            await SendNoContentAsync(ct);
+            return;
         }
 
-        public override void Configure()
-        {
-            Delete("orders/{id}");
-            AllowAnonymous();
-        }
+        await _context.SaveChangesAsync(ct);
 
-        public override async Task HandleAsync(Request req, CancellationToken ct)
-        {
-            var deleted = await _orderRepository.DeleteAsync(req.Id, ct);
-
-            if (!deleted)
-            {
-                await SendNoContentAsync(ct);
-                return;
-            }
-
-            await _context.SaveChangesAsync(ct);
-
-            await SendAsync(new Response(req.Id), StatusCodes.Status200OK, ct);
-        }
+        await SendAsync(new Response(req.Id), StatusCodes.Status200OK, ct);
     }
 }

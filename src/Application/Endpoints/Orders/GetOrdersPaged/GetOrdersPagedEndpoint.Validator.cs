@@ -1,3 +1,3 @@
-namespace Application.Features.Orders.GetOrdersPaged;
+namespace Application.Endpoints.Orders.GetOrdersPaged;
 
 public static partial class GetOrdersPagedEndpoint { }

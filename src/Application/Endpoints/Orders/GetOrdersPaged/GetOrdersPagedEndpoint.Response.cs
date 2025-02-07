@@ -1,8 +1,8 @@
-namespace Application.Features.Orders.GetOrdersPaged;
+namespace Application.Endpoints.Orders.GetOrdersPaged;
 
 using Application.Domain.Common.ValueObjects;
 using Application.Domain.Orders.Enums;
-using static Application.Features.Orders.GetOrdersPaged.GetOrdersPagedEndpoint.Response;
+using static Application.Endpoints.Orders.GetOrdersPaged.GetOrdersPagedEndpoint.Response;
 
 public static partial class GetOrdersPagedEndpoint
 {

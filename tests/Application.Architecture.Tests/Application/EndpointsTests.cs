@@ -38,7 +38,6 @@ public sealed class EndpointsTests
 
         // Assert
         result.ShouldBeSuccess();
-
     }
 
     /// <summary>

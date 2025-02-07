@@ -21,14 +21,12 @@ public sealed class PropertiesConventionsTests
     public void Properties_should_be_PascalCased()
     {
         // Arrange
-        var rules = Sut
-            .Types.Should()
-            .MeetCustomRule(new PropertiesShouldHaveNamePascalCasedCustomRule());
+        var rules = SystemUnderTest.Types.Verify().Properties.Should.HaveNamePascalCased();
 
         // Act
-        var result = rules.GetResult();
+        var result = rules.GetResult(StringComparison.Ordinal);
 
         // Assert
-        result.Should().BeSuccessful();
+        result.ShouldBeSuccess();
     }
 }

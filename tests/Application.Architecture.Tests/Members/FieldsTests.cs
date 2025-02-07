@@ -28,8 +28,8 @@ public sealed class FieldsTests
         // Arrange
         var rules = SystemUnderTest
             .Types.Verify()
-            .Fields.That.ArePrivate()
-            .Or.AreProtected()
+            .Fields.That.AreNotConst()
+            .And(fields => fields.ArePrivate().Or.AreProtected())
             .Should.HaveNameCamelCased('_');
 
         // Act

@@ -3,9 +3,10 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="ArchGuard" Version="0.0.18" />
+    <PackageVersion Include="ArchGuard" Version="0.0.22" />
+    <PackageVersion Include="ArchGuard.Core" Version="0.0.22" />
     <PackageVersion Include="ArchGuard.Extensions.NFluent" Version="0.0.17" />
-    <PackageVersion Include="ArchGuard.Extensions.Shouldly" Version="0.0.18" />
+    <PackageVersion Include="ArchGuard.Extensions.Shouldly" Version="0.0.22" />
     <PackageVersion Include="Ardalis.GuardClauses" Version="5.0.0" />
     <PackageVersion Include="Ardalis.GuardClauses.Custom" Version="4.0.6" />
     <PackageVersion Include="Ardalis.Result" Version="10.1.0" />
@@ -29,6 +30,7 @@
     <PackageVersion Include="Meziantou.FluentAssertionsAnalyzers" Version="1.0.21" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.12.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers" Version="9.0.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.1" />
@@ -55,7 +57,7 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageVersion Include="Vogen" Version="6.0.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />
-    <PackageVersion Include="xunit.analyzers" Version="1.19.0" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.1" />
+    <PackageVersion Include="xunit.analyzers" Version="1.20.0" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
   </ItemGroup>
 </Project>
