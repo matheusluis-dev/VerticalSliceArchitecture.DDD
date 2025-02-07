@@ -1,9 +1,9 @@
-namespace Application.Infrastructure.Orders.Mappers;
+namespace Application.Infrastructure.Persistence.Orders.Mappers;
 
 using System.Diagnostics.CodeAnalysis;
 using Application.Domain.Orders.Aggregates;
 using Application.Domain.Orders.Entities;
-using Application.Infrastructure.Orders.Tables;
+using Application.Infrastructure.Persistence.Orders.Tables;
 
 public static class OrderMapper
 {

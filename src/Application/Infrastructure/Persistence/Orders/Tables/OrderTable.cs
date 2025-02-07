@@ -1,4 +1,4 @@
-namespace Application.Infrastructure.Orders.Tables;
+namespace Application.Infrastructure.Persistence.Orders.Tables;
 
 using System;
 using Application.Domain.Common.Entities;

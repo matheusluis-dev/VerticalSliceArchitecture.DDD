@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Application.Domain.Orders.ValueObjects;
-using Application.Infrastructure.Orders.Tables;
+using Application.Infrastructure.Persistence.Orders.Tables;
 using Microsoft.EntityFrameworkCore;
 
 public sealed partial class ApplicationDbContext : DbContext
