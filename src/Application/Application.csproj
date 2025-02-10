@@ -20,6 +20,7 @@
     <PackageReference Include="NLog.Web.AspNetCore" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Riok.Mapperly" />
+    <PackageReference Include="System.Linq.Expressions" />
     <PackageReference Include="Vogen" />
     <PackageReference Update="CSharpier.MsBuild">
       <PrivateAssets>all</PrivateAssets>

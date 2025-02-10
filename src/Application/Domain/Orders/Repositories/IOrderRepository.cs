@@ -2,14 +2,15 @@ namespace Application.Domain.Orders.Repositories;
 
 using Application.Domain.Common;
 using Application.Domain.Orders.Aggregates;
-using Application.Domain.Orders.Specifications.Builder;
 using Application.Domain.Orders.ValueObjects;
 
 public interface IOrderRepository
 {
-    IOrderSpecificationBuilderCriteria Specify { get; }
-
     Task<Order?> FindByIdAsync(OrderId id, CancellationToken ct = default);
+
+    Task<IList<Order>> FindAllPaidOrdersAsync();
+
+    Task<IList<Order>> FindAllPriceOver1000Async();
 
     Task<IPagedList<Order>> FindAllPagedAsync(
         int pageIndex,

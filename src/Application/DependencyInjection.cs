@@ -2,7 +2,6 @@ namespace Application;
 
 using System.Text.Json.Serialization;
 using Application.Domain.Orders.Repositories;
-using Application.Domain.Orders.Specifications.Builder;
 using Application.Infrastructure.Persistence;
 using Application.Infrastructure.Persistence.Orders;
 using Application.Infrastructure.Services;
@@ -61,18 +60,12 @@ public static class DependencyInjection
         services.AddTransient<IDateTimeService, DateTimeService>();
 
         AddRepositories();
-        AddSpecifications();
 
         return services;
 
         void AddRepositories()
         {
             services.AddScoped<IOrderRepository, OrderRepository>();
-        }
-
-        void AddSpecifications()
-        {
-            services.AddScoped<OrderSpecificationBuilder, OrderSpecificationBuilder>();
         }
     }
 }

@@ -1,49 +1,36 @@
 namespace Application.Infrastructure.Persistence.Orders;
 
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Application.Domain.Common;
 using Application.Domain.Orders.Aggregates;
 using Application.Domain.Orders.Repositories;
-using Application.Domain.Orders.Specifications.Builder;
+using Application.Domain.Orders.Specifications;
 using Application.Domain.Orders.ValueObjects;
 using Application.Infrastructure.Persistence;
 using Application.Infrastructure.Persistence.Orders.Mappers;
 using Application.Infrastructure.Persistence.Orders.Tables;
-using Ardalis.GuardClauses;
 using Microsoft.EntityFrameworkCore;
 
 public sealed class OrderRepository : IOrderRepository
 {
     private readonly DbSet<OrderTable> _orderSet;
 
-    private readonly OrderSpecificationBuilder _specificationBuilder;
-
-    public OrderRepository(
-        ApplicationDbContext context,
-        OrderSpecificationBuilder specificationBuilder
-    )
+    public OrderRepository(ApplicationDbContext context)
     {
-        Guard.Against.Null(context);
+        ArgumentNullException.ThrowIfNull(context);
 
         _orderSet = context.Order;
-        _specificationBuilder = specificationBuilder;
     }
 
-    private IQueryable<Order> GetQueryableFromSpecificationBuilder(
-        Expression<Func<Order, bool>> predicate
-    )
+    private IQueryable<OrderTable> GetDefaultQuery()
     {
-        return GetAll().Where(predicate);
+        return _orderSet.AsQueryable().Include(o => o.OrderItems);
     }
-
-    public IOrderSpecificationBuilderCriteria Specify =>
-        _specificationBuilder.SetQueryableCallback(GetQueryableFromSpecificationBuilder);
 
     public IQueryable<Order> GetAll()
     {
-        return _orderSet.AsQueryable().Include(o => o.OrderItems).ToEntityQueryable();
+        return GetDefaultQuery().ToEntityQueryable();
     }
 
     public async Task<Order?> FindByIdAsync(OrderId id, CancellationToken ct = default)
@@ -63,15 +50,29 @@ public sealed class OrderRepository : IOrderRepository
     )
     {
         return await PagedList<Order>.CreateAsync(
-            _orderSet
-                .AsQueryable()
-                .Include(order => order.OrderItems)
-                .AsNoTracking()
-                .ToEntityQueryable(),
+            GetDefaultQuery().AsNoTracking().ToEntityQueryable(),
             pageIndex,
             pageSize,
             ct
         );
+    }
+
+    public async Task<IList<Order>> FindAllPaidOrdersAsync()
+    {
+        return await GetDefaultQuery()
+            .AsNoTracking()
+            .ToEntityQueryable()
+            .Where(order => new ArePaidSpecification().IsSatisfiedBy(order))
+            .ToListAsync();
+    }
+
+    public async Task<IList<Order>> FindAllPriceOver1000Async()
+    {
+        return await GetDefaultQuery()
+            .AsNoTracking()
+            .ToEntityQueryable()
+            .Where(order => new TotalPriceHigherThan1000Specification().IsSatisfiedBy(order))
+            .ToListAsync();
     }
 
     public async Task<Order?> CreateAsync(Order order, CancellationToken ct = default)
