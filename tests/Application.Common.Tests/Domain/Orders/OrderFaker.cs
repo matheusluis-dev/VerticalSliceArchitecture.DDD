@@ -6,6 +6,7 @@ using Application.Domain.Orders.Aggregates;
 using Application.Domain.Orders.Entities;
 using Application.Domain.Orders.Enums;
 using Application.Domain.Orders.ValueObjects;
+using Application.Domain.User.ValueObjects;
 using Ardalis.GuardClauses;
 using LinqKit;
 
@@ -27,12 +28,9 @@ public static class OrderFaker
                 .RuleFor(order => order.Id, _ => orderId)
                 .RuleFor(order => order.Status, _ => status)
                 .RuleFor(order => order.Created, faker => faker.Date.Past())
-                .RuleFor(order => order.CreatedBy, faker => UserName.From(faker.Name.FullName()))
+                .RuleFor(order => order.CreatedBy, faker => UserId.Create())
                 .RuleFor(order => order.LastModified, faker => faker.Date.Future())
-                .RuleFor(
-                    order => order.LastModifiedBy,
-                    faker => UserName.From(faker.Name.FullName())
-                );
+                .RuleFor(order => order.LastModifiedBy, faker => UserId.Create());
 
             var order = orderFaker.Generate(1)[0];
             items.ForEach(item => order.AddOrderItem(item));

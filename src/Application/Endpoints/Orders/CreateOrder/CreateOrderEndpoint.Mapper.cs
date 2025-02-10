@@ -34,13 +34,10 @@ public sealed class OrderMapper : Mapper<Request, Response, Domain.Orders.Aggreg
                 })
                 .ToList() ?? [];
 
-        return Task.FromResult(
-            new Domain.Orders.Aggregates.Order
-            {
-                Id = id,
-                Status = OrderStatus.Pending,
-                OrderItems = orderItems,
-            }
-        );
+        var order = new Domain.Orders.Aggregates.Order { Id = id, Status = OrderStatus.Pending };
+
+        orderItems.ForEach(item => order.AddOrderItem(item));
+
+        return Task.FromResult(order);
     }
 }

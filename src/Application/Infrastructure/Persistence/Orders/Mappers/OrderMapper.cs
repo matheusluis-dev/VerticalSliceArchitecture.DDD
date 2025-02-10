@@ -16,12 +16,12 @@ public static class OrderMapper
 
     public static Order ToEntity([NotNull] this OrderTable orderModel)
     {
-        return new Order
-        {
-            Id = orderModel.Id,
-            Status = orderModel.Status,
-            OrderItems = orderModel.OrderItems.Select(i => i.ToEntity()).ToList(),
-        };
+        var items = orderModel.OrderItems.Select(i => i.ToEntity()).ToList();
+        var order = new Order { Id = orderModel.Id, Status = orderModel.Status };
+
+        items.ForEach(item => order.AddOrderItem(item));
+
+        return order;
     }
 
     public static OrderItem ToEntity([NotNull] this OrderItemTable orderItemModel)

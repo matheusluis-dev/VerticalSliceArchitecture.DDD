@@ -4,6 +4,7 @@ using System;
 using Application.Domain.Common.Entities;
 using Application.Domain.Common.ValueObjects;
 using Application.Domain.Orders.ValueObjects;
+using Application.Domain.User.ValueObjects;
 
 public sealed class OrderItem : IChildEntity, IAuditable
 {
@@ -14,7 +15,7 @@ public sealed class OrderItem : IChildEntity, IAuditable
     public Amount Price => UnitPrice.MultiplyByQuantity(Quantity);
 
     public DateTime Created { get; set; }
-    public UserName CreatedBy { get; set; }
+    public UserId CreatedBy { get; set; }
     public DateTime? LastModified { get; set; }
-    public UserName LastModifiedBy { get; set; }
+    public UserId LastModifiedBy { get; set; }
 }

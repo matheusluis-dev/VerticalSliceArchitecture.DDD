@@ -2,8 +2,10 @@ namespace Application;
 
 using System.Text.Json.Serialization;
 using Application.Domain.Orders.Repositories;
+using Application.Domain.Products.Repositories;
 using Application.Infrastructure.Persistence;
 using Application.Infrastructure.Persistence.Orders;
+using Application.Infrastructure.Persistence.Products;
 using Application.Infrastructure.Services;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
@@ -66,6 +68,7 @@ public static class DependencyInjection
         void AddRepositories()
         {
             services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
         }
     }
 }

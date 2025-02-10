@@ -1,14 +1,14 @@
 namespace Application.Domain.Common.Entities;
 
-using Application.Domain.Common.ValueObjects;
+using Application.Domain.User.ValueObjects;
 
 public interface IAuditable
 {
     DateTime Created { get; set; }
 
-    UserName CreatedBy { get; set; }
+    UserId CreatedBy { get; set; }
 
     DateTime? LastModified { get; set; }
 
-    UserName LastModifiedBy { get; set; }
+    UserId LastModifiedBy { get; set; }
 }

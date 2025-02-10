@@ -1,6 +1,6 @@
-namespace Application.Endpoints.Orders.CreateOrder;
+namespace Application.Endpoints.Products.CreateProduct;
 
-using Application.Domain.Orders.Repositories;
+using Application.Domain.Products.Repositories;
 using Application.Infrastructure.Persistence;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;
@@ -8,28 +8,28 @@ using Microsoft.AspNetCore.Http;
 public sealed class CreateProductEndpoint : Endpoint<Request, Response, OrderMapper>
 {
     private readonly ApplicationDbContext _context;
-    private readonly IOrderRepository _orderRepository;
+    private readonly IProductRepository _productRepository;
 
-    public CreateProductEndpoint(ApplicationDbContext context, IOrderRepository orderRepository)
+    public CreateProductEndpoint(ApplicationDbContext context, IProductRepository productRepository)
     {
         _context = context;
-        _orderRepository = orderRepository;
+        _productRepository = productRepository;
     }
 
     public override void Configure()
     {
-        Post("/orders");
+        Post("/products");
         AllowAnonymous();
         Validator<CreateOrderValidator>();
     }
 
     public override async Task HandleAsync(Request req, CancellationToken ct)
     {
-        var order = await Map.ToEntityAsync(req, ct);
+        var product = Map.ToEntity(req);
 
-        await _orderRepository.CreateAsync(order, ct);
+        await _productRepository.CreateAsync(product, ct);
         await _context.SaveChangesAsync(ct);
 
-        await SendMappedAsync(order, StatusCodes.Status201Created, ct);
+        await SendMappedAsync(product, StatusCodes.Status201Created, ct);
     }
 }
