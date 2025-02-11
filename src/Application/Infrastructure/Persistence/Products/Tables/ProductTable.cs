@@ -11,7 +11,7 @@ using Application.Infrastructure.Persistence.Orders.Tables;
 public sealed class ProductTable : IAuditable
 {
     public required ProductId Id { get; set; }
-    public InventoryId? InventoryId { get; set; }
+    public InventoryId InventoryId { get; set; }
     public ProductName Name { get; set; }
 
     public DateTime Created { get; set; }

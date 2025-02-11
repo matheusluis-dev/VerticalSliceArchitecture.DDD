@@ -20,12 +20,25 @@ public sealed class ProductRepository : IProductRepository
 
     public async Task<Product?> FindProductByIdAsync(ProductId id, CancellationToken ct = default)
     {
-        var order = await _productSet.FindAsync([id], ct);
+        var product = await _productSet.FindAsync([id], ct);
 
-        if (order is null)
+        if (product is null)
             return null;
 
-        return order.ToEntity();
+        return product.ToEntity();
+    }
+
+    public async Task<Product?> FindProductByNameAsync(
+        ProductName name,
+        CancellationToken ct = default
+    )
+    {
+        var product = await _productSet.FirstOrDefaultAsync(product => product.Name == name, ct);
+
+        if (product is null)
+            return null;
+
+        return product.ToEntity();
     }
 
     public async Task<Product?> CreateAsync(Product product, CancellationToken ct = default)

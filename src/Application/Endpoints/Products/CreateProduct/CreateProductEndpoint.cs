@@ -27,9 +27,15 @@ public sealed class CreateProductEndpoint : Endpoint<Request, Response, OrderMap
     {
         var product = Map.ToEntity(req);
 
+        if (await _productRepository.FindProductByNameAsync(product.Name, ct) is not null)
+        {
+            await SendAsync(null!, StatusCodes.Status400BadRequest, ct);
+            return;
+        }
+
         await _productRepository.CreateAsync(product, ct);
         await _context.SaveChangesAsync(ct);
 
-        await SendMappedAsync(product, StatusCodes.Status201Created, ct);
+        await SendAsync(Map.FromEntity(product), StatusCodes.Status201Created, ct);
     }
 }

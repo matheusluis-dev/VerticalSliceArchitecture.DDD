@@ -1,20 +1,51 @@
 namespace Application.Integration.Tests;
 
+using System.Net;
 using Application.Domain.Products.ValueObjects;
 using Application.Endpoints.Products.CreateProduct;
 using FastEndpoints;
 using FastEndpoints.Testing;
+using Shouldly;
 
 public sealed class Product(ApplicationFixture app) : TestBase<ApplicationFixture>
 {
     [Fact]
-    public async Task Test1()
+    public async Task Create_product()
     {
-        var (rsp, res) = await app.CreateClient()
-            .POSTAsync<CreateProductEndpoint, Request, Response>(
-                new Request(ProductName.From("Product 1"))
-            );
+        // Arrange
+        var productName = "Product";
+        var request = new Request(ProductName.From(productName));
 
-        Console.WriteLine();
+        // Act
+        var (response, dto) = await app.ProductClient.POSTAsync<
+            CreateProductEndpoint,
+            Request,
+            Response
+        >(request);
+
+        // Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.Created);
+
+        dto.Id.Value.ShouldNotBe(Guid.Empty);
+        dto.Name.Value.ShouldBe(productName.ToUpperInvariant());
+    }
+
+    [Fact]
+    public async Task Should_not_allow_two_products_with_same_name()
+    {
+        // Arrange
+        var productName = "Product";
+        var request = new Request(ProductName.From(productName));
+
+        // Act
+        _ = await app.ProductClient.POSTAsync<CreateProductEndpoint, Request, Response>(request);
+        var (response, _) = await app.ProductClient.POSTAsync<
+            CreateProductEndpoint,
+            Request,
+            Response
+        >(request);
+
+        // Assert
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 }

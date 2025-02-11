@@ -29,8 +29,7 @@ try
 
     await using var app = builder.Build();
 
-    app.UseHttpsRedirection();
-    app.UseFastEndpoints();
+    app.UseHttpsRedirection().UseDefaultExceptionHandler().UseFastEndpoints();
 
     await app.RunAsync();
 }
