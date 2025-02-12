@@ -1,8 +1,8 @@
 namespace Application.Endpoints.Orders.CreateOrder;
 
-using System.ComponentModel.DataAnnotations;
 using Application.Domain.Common.ValueObjects;
+using Application.Domain.Products.ValueObjects;
 
-public sealed record Request(IEnumerable<RequestItems>? Items);
+public sealed record Request(Email CustomerEmail, IEnumerable<RequestItems> Items);
 
-public sealed record RequestItems([Required] Quantity Quantity, [Required] Amount UnitPrice);
+public sealed record RequestItems(ProductId ProductId, Quantity Quantity, Amount UnitPrice);

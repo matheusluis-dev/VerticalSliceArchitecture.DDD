@@ -21,7 +21,7 @@ public static partial class GetOrdersPagedEndpoint
             var orders = e.Elements.Select(order => new Response.OrderResponse
             {
                 Status = order.Status,
-                TotalPrice = order.TotalPrice,
+                TotalPrice = order.GetTotalPrice(),
                 Items = order.OrderItems.Select(item => new Response.OrderItemResponse
                 {
                     Quantity = item.Quantity,

@@ -1,19 +1,21 @@
 namespace Application.Domain.Products.Entities;
 
-using System;
 using Application.Domain.Common.Entities;
 using Application.Domain.Inventories.ValueObjects;
 using Application.Domain.Products.ValueObjects;
-using Application.Domain.User.ValueObjects;
+using Ardalis.Result;
 
-public sealed class Product : IEntity, IAuditable
+public sealed class Product : IEntity
 {
-    public required ProductId Id { get; init; }
-    public InventoryId InventoryId { get; init; } = InventoryId.From(Guid.Empty);
-    public required ProductName Name { get; init; }
+    public ProductId Id { get; init; }
+    public InventoryId? InventoryId { get; init; }
+    public ProductName Name { get; init; }
 
-    public DateTime Created { get; set; }
-    public UserId CreatedBy { get; set; } = UserId.From(Guid.Empty);
-    public DateTime? LastModified { get; set; }
-    public UserId LastModifiedBy { get; set; } = UserId.From(Guid.Empty);
+    public static Result<Product> Create(ProductName name)
+    {
+        if (name.IsNullOrWhiteSpace())
+            return Result<Product>.Invalid(new ValidationError("Product name must be defined."));
+
+        return Result.Success<Product>(new() { Id = ProductId.Create(), Name = name });
+    }
 }

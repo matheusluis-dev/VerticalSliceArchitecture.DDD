@@ -1,4 +1,4 @@
-namespace Application.Domain.Orders.Repositories;
+namespace Application.Domain.Orders;
 
 using Application.Domain.Common;
 using Application.Domain.Orders.Aggregates;

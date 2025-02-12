@@ -2,7 +2,7 @@ namespace Application.Endpoints.Orders.DeleteOrder;
 
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Domain.Orders.Repositories;
+using Application.Domain.Orders;
 using Application.Infrastructure.Persistence;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;

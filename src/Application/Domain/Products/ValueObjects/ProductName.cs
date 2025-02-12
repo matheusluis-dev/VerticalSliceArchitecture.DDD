@@ -5,11 +5,9 @@ using Vogen;
 [ValueObject<string>(conversions: Conversions.Default | Conversions.EfCoreValueConverter)]
 public readonly partial struct ProductName
 {
-    private static Validation Validate(string input)
+    public bool IsNullOrWhiteSpace()
     {
-        return !string.IsNullOrWhiteSpace(input)
-            ? Validation.Ok
-            : Validation.Invalid("Product name must be defined.");
+        return string.IsNullOrWhiteSpace(Value);
     }
 
     private static string NormalizeInput(string input)

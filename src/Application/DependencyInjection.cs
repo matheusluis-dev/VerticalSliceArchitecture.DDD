@@ -1,9 +1,11 @@
 namespace Application;
 
 using System.Text.Json.Serialization;
-using Application.Domain.Orders.Repositories;
+using Application.Domain.Inventories;
+using Application.Domain.Orders;
 using Application.Domain.Products.Repositories;
 using Application.Infrastructure.Persistence;
+using Application.Infrastructure.Persistence.Inventories;
 using Application.Infrastructure.Persistence.Orders;
 using Application.Infrastructure.Persistence.Products;
 using Application.Infrastructure.Services;
@@ -61,14 +63,28 @@ public static class DependencyInjection
 
         services.AddTransient<IDateTimeService, DateTimeService>();
 
+        AddMappers();
         AddRepositories();
 
         return services;
+
+        void AddMappers()
+        {
+            services.AddSingleton<OrderMapper>();
+            services.AddSingleton<OrderItemMapper>();
+
+            services.AddSingleton<InventoryMapper>();
+            services.AddSingleton<AdjustmentMapper>();
+            services.AddSingleton<ReservationMapper>();
+
+            services.AddSingleton<ProductMapper>();
+        }
 
         void AddRepositories()
         {
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IInventoryRepository, InventoryRepository>();
         }
     }
 }

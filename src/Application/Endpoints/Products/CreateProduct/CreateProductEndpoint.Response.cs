@@ -1,6 +1,5 @@
 namespace Application.Endpoints.Products.CreateProduct;
 
-using System.ComponentModel.DataAnnotations;
 using Application.Domain.Products.ValueObjects;
 
-public sealed record Response([Required] ProductId Id, ProductName Name);
+public sealed record Response(ProductId Id, ProductName Name);

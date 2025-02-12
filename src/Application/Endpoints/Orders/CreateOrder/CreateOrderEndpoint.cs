@@ -1,19 +1,30 @@
 namespace Application.Endpoints.Orders.CreateOrder;
 
-using Application.Domain.Orders.Repositories;
+using System.Diagnostics.CodeAnalysis;
+using Application.Domain.Orders;
+using Application.Domain.Orders.Models;
 using Application.Infrastructure.Persistence;
+using Application.Infrastructure.Services;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;
+using Order = Domain.Orders.Aggregates.Order;
 
-public sealed class CreateProductEndpoint : Endpoint<Request, Response, OrderMapper>
+public sealed class CreateProductEndpoint : Endpoint<Request, Response>
 {
     private readonly ApplicationDbContext _context;
     private readonly IOrderRepository _orderRepository;
 
-    public CreateProductEndpoint(ApplicationDbContext context, IOrderRepository orderRepository)
+    private readonly IDateTimeService _dateTime;
+
+    public CreateProductEndpoint(
+        ApplicationDbContext context,
+        IOrderRepository orderRepository,
+        IDateTimeService dateTime
+    )
     {
         _context = context;
         _orderRepository = orderRepository;
+        _dateTime = dateTime;
     }
 
     public override void Configure()
@@ -23,13 +34,21 @@ public sealed class CreateProductEndpoint : Endpoint<Request, Response, OrderMap
         Validator<CreateOrderValidator>();
     }
 
-    public override async Task HandleAsync(Request req, CancellationToken ct)
+    public override async Task HandleAsync([NotNull] Request req, CancellationToken ct)
     {
-        var order = await Map.ToEntityAsync(req, ct);
+        var addItems = req.Items.Select(item => new AddOrderItemModel(
+            item.ProductId,
+            item.Quantity,
+            item.UnitPrice
+        ));
+
+        var order = Order.Create(_dateTime, addItems, req.CustomerEmail);
 
         await _orderRepository.CreateAsync(order, ct);
         await _context.SaveChangesAsync(ct);
 
-        await SendMappedAsync(order, StatusCodes.Status201Created, ct);
+        var response = new Response(order.Id);
+
+        await SendAsync(response, StatusCodes.Status201Created, ct);
     }
 }

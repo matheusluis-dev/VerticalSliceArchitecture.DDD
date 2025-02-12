@@ -3,7 +3,6 @@ namespace Application.Integration.Tests;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Application.Infrastructure.Persistence;
-using Application.Infrastructure.Persistence.Products.Tables;
 using FastEndpoints.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

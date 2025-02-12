@@ -1,11 +1,13 @@
 namespace Application.Endpoints.Products.CreateProduct;
 
+using Application.Domain.Products.Entities;
 using Application.Domain.Products.Repositories;
 using Application.Infrastructure.Persistence;
+using Ardalis.Result;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;
 
-public sealed class CreateProductEndpoint : Endpoint<Request, Response, OrderMapper>
+public sealed class CreateProductEndpoint : Endpoint<Request, Response>
 {
     private readonly ApplicationDbContext _context;
     private readonly IProductRepository _productRepository;
@@ -20,22 +22,33 @@ public sealed class CreateProductEndpoint : Endpoint<Request, Response, OrderMap
     {
         Post("/products");
         AllowAnonymous();
-        Validator<CreateOrderValidator>();
     }
 
-    public override async Task HandleAsync(Request req, CancellationToken ct)
+    public override async Task HandleAsync([NotNull] Request req, CancellationToken ct)
     {
-        var product = Map.ToEntity(req);
+        var resultProductWithSameName = await _productRepository.FindProductByNameAsync(
+            req.Name,
+            ct
+        );
 
-        if (await _productRepository.FindProductByNameAsync(product.Name, ct) is not null)
+        if (resultProductWithSameName.WasFound())
         {
             await SendAsync(null!, StatusCodes.Status400BadRequest, ct);
             return;
         }
 
+        var resultProduct = Product.Create(req.Name);
+        if (resultProduct.Status is ResultStatus.Invalid)
+        {
+            await this.SendInvalidResponseAsync(resultProduct, ct);
+            return;
+        }
+
+        var product = resultProduct.Value;
+
         await _productRepository.CreateAsync(product, ct);
         await _context.SaveChangesAsync(ct);
 
-        await SendAsync(Map.FromEntity(product), StatusCodes.Status201Created, ct);
+        await SendAsync(new Response(product.Id, product.Name), StatusCodes.Status201Created, ct);
     }
 }

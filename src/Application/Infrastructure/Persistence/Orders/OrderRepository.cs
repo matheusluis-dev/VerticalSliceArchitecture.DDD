@@ -3,24 +3,25 @@ namespace Application.Infrastructure.Persistence.Orders;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Domain.Common;
+using Application.Domain.Orders;
 using Application.Domain.Orders.Aggregates;
-using Application.Domain.Orders.Repositories;
 using Application.Domain.Orders.Specifications;
 using Application.Domain.Orders.ValueObjects;
 using Application.Infrastructure.Persistence;
-using Application.Infrastructure.Persistence.Orders.Mappers;
-using Application.Infrastructure.Persistence.Orders.Tables;
+using Application.Infrastructure.Persistence.Tables;
 using Microsoft.EntityFrameworkCore;
 
 public sealed class OrderRepository : IOrderRepository
 {
     private readonly DbSet<OrderTable> _orderSet;
+    private readonly OrderMapper _mapper;
 
-    public OrderRepository(ApplicationDbContext context)
+    public OrderRepository(ApplicationDbContext context, OrderMapper mapper)
     {
         ArgumentNullException.ThrowIfNull(context);
 
         _orderSet = context.Order;
+        _mapper = mapper;
     }
 
     private IQueryable<OrderTable> GetDefaultQuery()
@@ -30,7 +31,7 @@ public sealed class OrderRepository : IOrderRepository
 
     public IQueryable<Order> GetAll()
     {
-        return GetDefaultQuery().ToEntityQueryable();
+        return _mapper.ToEntityQueryable(GetDefaultQuery());
     }
 
     public async Task<Order?> FindByIdAsync(OrderId id, CancellationToken ct = default)
@@ -40,7 +41,7 @@ public sealed class OrderRepository : IOrderRepository
         if (order is null)
             return null;
 
-        return order.ToEntity();
+        return _mapper.ToEntity(order);
     }
 
     public async Task<IPagedList<Order>> FindAllPagedAsync(
@@ -50,7 +51,7 @@ public sealed class OrderRepository : IOrderRepository
     )
     {
         return await PagedList<Order>.CreateAsync(
-            GetDefaultQuery().AsNoTracking().ToEntityQueryable(),
+            _mapper.ToEntityQueryable(GetDefaultQuery().AsNoTracking()),
             pageIndex,
             pageSize,
             ct
@@ -59,25 +60,24 @@ public sealed class OrderRepository : IOrderRepository
 
     public async Task<IList<Order>> FindAllPaidOrdersAsync()
     {
-        return await GetDefaultQuery()
-            .AsNoTracking()
-            .ToEntityQueryable()
+        return await _mapper
+            .ToEntityQueryable(GetDefaultQuery().AsNoTracking())
             .Where(order => new ArePaidSpecification().IsSatisfiedBy(order))
             .ToListAsync();
     }
 
     public async Task<IList<Order>> FindAllPriceOver1000Async()
     {
-        return await GetDefaultQuery()
+        return await _mapper
+            .ToEntityQueryable(GetDefaultQuery())
             .AsNoTracking()
-            .ToEntityQueryable()
             .Where(order => new TotalPriceHigherThan1000Specification().IsSatisfiedBy(order))
             .ToListAsync();
     }
 
     public async Task<Order?> CreateAsync(Order order, CancellationToken ct = default)
     {
-        await _orderSet.AddAsync(order.FromEntity(), ct);
+        await _orderSet.AddAsync(_mapper.ToTable(order), ct);
 
         return order;
     }

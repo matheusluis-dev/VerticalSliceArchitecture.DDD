@@ -3,48 +3,51 @@ namespace Application.Infrastructure.Persistence.Products;
 using Application.Domain.Products.Entities;
 using Application.Domain.Products.Repositories;
 using Application.Domain.Products.ValueObjects;
-using Application.Infrastructure.Persistence.Products.Mappers;
-using Application.Infrastructure.Persistence.Products.Tables;
+using Application.Infrastructure.Persistence.Tables;
+using Ardalis.Result;
 using Microsoft.EntityFrameworkCore;
 
 public sealed class ProductRepository : IProductRepository
 {
-    private readonly DbSet<ProductTable> _productSet;
+    private readonly DbSet<ProductTable> _set;
+    private readonly ProductMapper _mapper;
 
-    public ProductRepository(ApplicationDbContext context)
+    public ProductRepository(ApplicationDbContext context, ProductMapper productMapper)
     {
         ArgumentNullException.ThrowIfNull(context);
 
-        _productSet = context.Product;
+        _set = context.Product;
+        _mapper = productMapper;
     }
 
-    public async Task<Product?> FindProductByIdAsync(ProductId id, CancellationToken ct = default)
+    public async Task<Result<Product>> FindProductByIdAsync(
+        ProductId id,
+        CancellationToken ct = default
+    )
     {
-        var product = await _productSet.FindAsync([id], ct);
+        var product = await _set.FindAsync([id], ct);
 
         if (product is null)
-            return null;
+            return Result<Product>.NotFound();
 
-        return product.ToEntity();
+        return _mapper.ToEntity(product);
     }
 
-    public async Task<Product?> FindProductByNameAsync(
+    public async Task<Result<Product>> FindProductByNameAsync(
         ProductName name,
         CancellationToken ct = default
     )
     {
-        var product = await _productSet.FirstOrDefaultAsync(product => product.Name == name, ct);
+        var product = await _set.FirstOrDefaultAsync(product => product.Name == name, ct);
 
         if (product is null)
-            return null;
+            return Result<Product>.NotFound();
 
-        return product.ToEntity();
+        return _mapper.ToEntity(product);
     }
 
-    public async Task<Product?> CreateAsync(Product product, CancellationToken ct = default)
+    public async Task CreateAsync(Product product, CancellationToken ct = default)
     {
-        await _productSet.AddAsync(product.FromEntity(), ct);
-
-        return product;
+        await _set.AddAsync(_mapper.ToTable(product), ct);
     }
 }

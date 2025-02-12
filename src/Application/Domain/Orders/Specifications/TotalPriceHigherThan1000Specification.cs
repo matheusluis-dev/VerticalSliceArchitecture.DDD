@@ -9,6 +9,6 @@ public sealed class TotalPriceHigherThan1000Specification : ISpecification<Order
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        return entity.TotalPrice.Value > 1000;
+        return entity.GetTotalPrice().Value > 1000;
     }
 }

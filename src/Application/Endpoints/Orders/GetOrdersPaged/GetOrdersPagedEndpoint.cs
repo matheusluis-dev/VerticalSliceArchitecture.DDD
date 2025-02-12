@@ -2,7 +2,7 @@ namespace Application.Endpoints.Orders.GetOrdersPaged;
 
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Domain.Orders.Repositories;
+using Application.Domain.Orders;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;
 

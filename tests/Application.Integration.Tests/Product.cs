@@ -31,7 +31,7 @@ public sealed class Product(ApplicationFixture app) : TestBase<ApplicationFixtur
     }
 
     [Fact]
-    public async Task Should_not_allow_two_products_with_same_name()
+    public async Task Should_not_allow_two_products_with_same_name_on_product_creation()
     {
         // Arrange
         var productName = "Product";
