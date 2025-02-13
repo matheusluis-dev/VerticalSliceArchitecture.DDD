@@ -1,6 +1,6 @@
 namespace Application.Infrastructure.Persistence.Inventories;
 
-using Application.Domain.Common;
+using Application.Domain.__Common;
 using Application.Domain.Inventories;
 using Application.Domain.Inventories.Aggregate;
 using Application.Domain.Inventories.ValueObjects;
@@ -25,7 +25,10 @@ public sealed class InventoryRepository : IInventoryRepository
         return _set.AsQueryable().Include(o => o.Adjustments).Include(o => o.Reservations);
     }
 
-    public async Task<Result<Inventory>> FindByIdAsync(InventoryId id, CancellationToken ct = default)
+    public async Task<Result<Inventory>> FindByIdAsync(
+        InventoryId id,
+        CancellationToken ct = default
+    )
     {
         var order = await _set.FindAsync([id], ct);
 

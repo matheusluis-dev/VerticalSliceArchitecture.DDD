@@ -1,5 +1,6 @@
 namespace Application.Domain.Inventories.Specifications;
-using Application.Domain.Common.Specifications;
+
+using Application.Domain.__Common.Specifications;
 using Application.Domain.Inventories.Aggregate;
 
 public sealed class InventoryWasNeverAdjustedSpecification : ISpecification<Inventory>

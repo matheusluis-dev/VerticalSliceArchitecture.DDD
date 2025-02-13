@@ -1,6 +1,6 @@
 namespace Application.Infrastructure.Persistence.Products;
 
-using Application.Domain.Common;
+using Application.Domain.__Common;
 using Application.Domain.Products.Entities;
 using Application.Domain.Products.Repositories;
 using Application.Domain.Products.ValueObjects;

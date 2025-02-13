@@ -1,9 +1,9 @@
 namespace Application.Endpoints.Products.GetProducts;
 
-using Application.Domain.Common;
+using Application.Domain.__Common;
 using Application.Domain.Products.Entities;
 using Application.Domain.Products.ValueObjects;
-using Application.Endpoints._Common;
+using Application.Endpoints.__Common;
 
 public sealed record Response(ProductId ProductId, ProductName ProductName);
 

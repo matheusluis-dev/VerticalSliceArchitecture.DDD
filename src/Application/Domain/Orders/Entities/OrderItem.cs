@@ -1,6 +1,6 @@
 namespace Application.Domain.Orders.Entities;
 
-using Application.Domain.Common.Entities;
+using Application.Domain.__Common.Entities;
 using Application.Domain.Common.ValueObjects;
 using Application.Domain.Inventories.ValueObjects;
 using Application.Domain.Orders.ValueObjects;

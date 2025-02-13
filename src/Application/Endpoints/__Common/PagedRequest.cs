@@ -1,4 +1,4 @@
-namespace Application.Endpoints._Common;
+namespace Application.Endpoints.__Common;
 
 public abstract record PagedRequest
 {

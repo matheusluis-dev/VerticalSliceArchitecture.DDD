@@ -1,7 +1,7 @@
-namespace Application.Endpoints._Common;
+namespace Application.Endpoints.__Common;
 
-using Application.Domain.Common;
-using Application.Domain.Common.Entities;
+using Application.Domain.__Common;
+using Application.Domain.__Common.Entities;
 
 public abstract record PagedResponse<TResponse, TEntity>
     where TResponse : class

@@ -1,7 +1,7 @@
 namespace Application.Domain.Products.Repositories;
 
 using System.Threading.Tasks;
-using Application.Domain.Common;
+using Application.Domain.__Common;
 using Application.Domain.Products.Entities;
 using Application.Domain.Products.ValueObjects;
 using Ardalis.Result;

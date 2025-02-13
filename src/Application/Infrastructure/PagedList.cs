@@ -1,7 +1,7 @@
 namespace Application.Infrastructure;
 
-using Application.Domain.Common;
-using Application.Domain.Common.Entities;
+using Application.Domain.__Common;
+using Application.Domain.__Common.Entities;
 using Microsoft.EntityFrameworkCore;
 
 public sealed class PagedList<TEntity> : IPagedList<TEntity>

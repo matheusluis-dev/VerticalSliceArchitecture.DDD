@@ -1,6 +1,6 @@
 namespace Application.Domain.Orders;
 
-using Application.Domain.Common;
+using Application.Domain.__Common;
 using Application.Domain.Orders.Aggregates;
 using Application.Domain.Orders.ValueObjects;
 

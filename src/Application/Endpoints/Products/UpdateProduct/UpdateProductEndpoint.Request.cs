@@ -1,4 +1,3 @@
-
 namespace Application.Endpoints.Products.UpdateProduct;
 
 using Application.Domain.Products.ValueObjects;

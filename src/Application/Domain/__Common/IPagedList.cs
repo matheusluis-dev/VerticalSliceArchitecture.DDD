@@ -1,7 +1,7 @@
-namespace Application.Domain.Common;
+namespace Application.Domain.__Common;
 
 using System.Collections.Generic;
-using Application.Domain.Common.Entities;
+using Application.Domain.__Common.Entities;
 
 public interface IPagedList<TEntity>
     where TEntity : class, IEntity

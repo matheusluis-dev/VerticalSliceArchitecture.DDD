@@ -1,11 +1,11 @@
 namespace Application.Domain.Products.Entities;
 
-using Application.Domain.Common.Entities;
+using Application.Domain.__Common.Entities;
 using Application.Domain.Inventories.ValueObjects;
 using Application.Domain.Products.Specifications;
 using Application.Domain.Products.ValueObjects;
 
-public sealed class Product : IEntity
+public sealed class Product : EntityBase
 {
     public required ProductId Id { get; init; }
     public required InventoryId? InventoryId { get; init; }

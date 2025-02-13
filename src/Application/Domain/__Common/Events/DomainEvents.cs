@@ -1,4 +1,4 @@
-namespace Application.Domain.Common.Events;
+namespace Application.Domain.__Common.Events;
 
 public sealed class DomainEvents
 {

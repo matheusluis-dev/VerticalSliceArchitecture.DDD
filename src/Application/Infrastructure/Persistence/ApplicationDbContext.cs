@@ -3,27 +3,20 @@ namespace Application.Infrastructure.Persistence;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Domain.__Common.Entities;
 using Application.Infrastructure.Persistence.Tables;
-using Application.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 
 public sealed class ApplicationDbContext : DbContext
 {
-    private readonly IDateTimeService _dateTime;
-
     public DbSet<OrderTable> Order { get; set; }
     public DbSet<OrderItemTable> OrderItem { get; set; }
     public DbSet<ProductTable> Product { get; set; }
     public DbSet<InventoryTable> Inventory { get; set; }
 
-    public ApplicationDbContext(
-        DbContextOptions<ApplicationDbContext> options,
-        IDateTimeService dateTime
-    )
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
-        _dateTime = dateTime;
-
         ChangeTracker.LazyLoadingEnabled = false;
     }
 
@@ -63,6 +56,20 @@ public sealed class ApplicationDbContext : DbContext
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
+        await PublishDomainEventsAsync();
+
         return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task PublishDomainEventsAsync()
+    {
+        var domainEvents = ChangeTracker
+            .Entries<EntityBase>()
+            .Select(entry => entry.Entity)
+            .SelectMany(entity => entity.GetDomainEvents())
+            .ToList();
+
+        foreach (var domainEvent in domainEvents)
+            await domainEvent.PublishAsync(Mode.WaitForAll);
     }
 }

@@ -1,6 +1,6 @@
 namespace Application.Domain.Products.Specifications;
 
-using Application.Domain.Common.Specifications;
+using Application.Domain.__Common.Specifications;
 using Application.Domain.Products.Entities;
 
 public class ProductNameMustNotBeEmptySpecification : ISpecification<Product>

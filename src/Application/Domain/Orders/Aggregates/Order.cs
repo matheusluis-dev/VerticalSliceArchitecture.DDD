@@ -2,7 +2,7 @@ namespace Application.Domain.Orders.Aggregates;
 
 using System;
 using System.Collections.Generic;
-using Application.Domain.Common.Entities;
+using Application.Domain.__Common.Entities;
 using Application.Domain.Common.ValueObjects;
 using Application.Domain.Orders.Entities;
 using Application.Domain.Orders.Enums;
@@ -13,7 +13,7 @@ using Application.Infrastructure.Services;
 using Ardalis.Result;
 using LinqKit;
 
-public sealed class Order : IAggregate
+public sealed class Order : EntityBase
 {
     public required OrderId Id { get; init; }
 

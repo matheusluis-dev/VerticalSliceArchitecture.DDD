@@ -1,6 +1,6 @@
 namespace Application.Endpoints.Products.GetProducts;
 
-using Application.Endpoints._Common;
+using Application.Endpoints.__Common;
 
 public sealed record Request : PagedRequest
 {

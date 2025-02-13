@@ -2,7 +2,7 @@ namespace Application.Domain.Inventories;
 
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Domain.Common;
+using Application.Domain.__Common;
 using Application.Domain.Inventories.Aggregate;
 using Application.Domain.Inventories.ValueObjects;
 

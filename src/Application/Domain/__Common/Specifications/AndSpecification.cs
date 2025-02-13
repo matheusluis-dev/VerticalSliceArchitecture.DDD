@@ -1,6 +1,6 @@
-namespace Application.Domain.Common.Specifications;
+namespace Application.Domain.__Common.Specifications;
 
-using Application.Domain.Common.Entities;
+using Application.Domain.__Common.Entities;
 
 public sealed class AndSpecification<TEntity> : ISpecification<TEntity>
     where TEntity : class, IEntity
