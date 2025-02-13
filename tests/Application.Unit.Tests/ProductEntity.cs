@@ -1,4 +1,5 @@
 namespace Application.Unit.Tests;
+
 public sealed class ProductEntity
 {
     [Fact]

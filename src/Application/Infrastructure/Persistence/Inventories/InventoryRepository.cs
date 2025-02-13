@@ -25,12 +25,12 @@ public sealed class InventoryRepository : IInventoryRepository
         return _set.AsQueryable().Include(o => o.Adjustments).Include(o => o.Reservations);
     }
 
-    public async Task<Inventory?> FindByIdAsync(InventoryId id, CancellationToken ct = default)
+    public async Task<Result<Inventory>> FindByIdAsync(InventoryId id, CancellationToken ct = default)
     {
         var order = await _set.FindAsync([id], ct);
 
         if (order is null)
-            return null;
+            return Result<Inventory>.NotFound();
 
         return _mapper.ToEntity(order);
     }

@@ -13,5 +13,5 @@ public interface IInventoryRepository
         int pageSize,
         CancellationToken ct = default
     );
-    Task<Inventory?> FindByIdAsync(InventoryId id, CancellationToken ct = default);
+    Task<Result<Inventory>> FindByIdAsync(InventoryId id, CancellationToken ct = default);
 }

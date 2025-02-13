@@ -11,5 +11,5 @@ public interface IPagedList<TEntity>
     bool HasPreviousPage { get; }
     bool HasNextPage { get; }
 
-    public IList<TEntity> Elements { get; }
+    IList<TEntity> Elements { get; }
 }
