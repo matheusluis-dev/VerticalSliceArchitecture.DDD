@@ -61,7 +61,7 @@ public sealed class ProductRepository : IProductRepository
         return _mapper.ToEntity(product);
     }
 
-    public async Task CreateAsync(Product product, CancellationToken ct = default)
+    public async Task AddAsync(Product product, CancellationToken ct = default)
     {
         await ProductSet.AddAsync(_mapper.ToTable(product), ct);
     }

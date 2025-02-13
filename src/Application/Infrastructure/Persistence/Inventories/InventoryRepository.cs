@@ -9,20 +9,25 @@ using Microsoft.EntityFrameworkCore;
 
 public sealed class InventoryRepository : IInventoryRepository
 {
+    private readonly ApplicationDbContext _context;
     private readonly DbSet<InventoryTable> _set;
     private readonly InventoryMapper _mapper;
 
     public InventoryRepository(ApplicationDbContext context, InventoryMapper inventoryMapper)
     {
-        ArgumentNullException.ThrowIfNull(context);
-
-        _set = context.Set<InventoryTable>();
+        _context = context;
+        _set = _context.Set<InventoryTable>();
         _mapper = inventoryMapper;
     }
 
     private IQueryable<InventoryTable> GetDefaultQuery()
     {
         return _set.AsQueryable().Include(o => o.Adjustments).Include(o => o.Reservations);
+    }
+
+    public async Task AddAsync(Inventory product, CancellationToken ct = default)
+    {
+        await _set.AddAsync(_mapper.ToTable(product), ct);
     }
 
     public async Task<Result<Inventory>> FindByIdAsync(
@@ -50,5 +55,10 @@ public sealed class InventoryRepository : IInventoryRepository
             pageSize,
             ct
         );
+    }
+
+    public async Task<int> SaveChangesAsync(CancellationToken ct = default)
+    {
+        return await _context.SaveChangesAsync(ct);
     }
 }

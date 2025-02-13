@@ -7,13 +7,13 @@ using Application.Domain.Inventories.ValueObjects;
 using Application.Domain.Orders.ValueObjects;
 using Application.Domain.Products.ValueObjects;
 
-public sealed class Inventory : IAggregate
+public sealed class Inventory : EntityBase
 {
     public InventoryId Id { get; init; }
 
     public ProductId ProductId { get; init; }
 
-    public Quantity Quantity { get; init; }
+    public Quantity Quantity { get; set; }
 
     private readonly List<Adjustment> _adjustments;
     public IReadOnlyCollection<Adjustment> Adjustments => _adjustments.AsReadOnly();
@@ -36,6 +36,18 @@ public sealed class Inventory : IAggregate
         _reservations = [.. reservations];
     }
 
+    public static Result<Inventory> CreateForProduct(ProductId productId, Quantity quantity)
+    {
+        if (quantity.Value <= 0)
+        {
+            return Result<Inventory>.Invalid(
+                new ValidationError("Initial quantity must be greater than 0.")
+            );
+        }
+
+        return new Inventory(InventoryId.Create(), productId, quantity, [], []);
+    }
+
     public Quantity GetAvailableStock()
     {
         return Quantity.From(Quantity.Value - GetReservedStock().Value);
@@ -48,23 +60,43 @@ public sealed class Inventory : IAggregate
         return Quantity.From(sum);
     }
 
-    public void ReserveStock(OrderItemId orderItemId, Quantity quantity)
+    internal void AddAdjustment(Adjustment adjustment)
+    {
+        ArgumentNullException.ThrowIfNull(adjustment);
+
+        _adjustments.Add(adjustment);
+    }
+
+    public Result<Reservation> ReserveStock(OrderItemId orderItemId, Quantity quantity)
     {
         if (quantity.Value <= 0)
-            throw new Exception("TODO");
+        {
+            return Result<Reservation>.Invalid(
+                new ValidationError("Quantity must be greater than 0")
+            );
+        }
 
-        if (quantity.Value > GetAvailableStock().Value)
-            throw new Exception("TODO");
+        var availableStock = GetAvailableStock();
+        if (quantity.Value > availableStock.Value)
+        {
+            return Result<Reservation>.Invalid(
+                new ValidationError(
+                    $"Reservation quantity ({quantity}) is greater than the available stock ({availableStock})"
+                )
+            );
+        }
 
-        _reservations.Add(
-            new()
-            {
-                Id = ReservationId.Create(),
-                InventoryId = Id,
-                OrderItemId = orderItemId,
-                Quantity = quantity,
-            }
-        );
+        var reservation = new Reservation
+        {
+            Id = ReservationId.Create(),
+            InventoryId = Id,
+            OrderItemId = orderItemId,
+            Quantity = quantity,
+        };
+
+        _reservations.Add(reservation);
+
+        return reservation;
     }
 
     public void ReleaseStock(OrderItemId orderItemId)

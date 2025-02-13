@@ -43,7 +43,7 @@ public sealed class CreateProductEndpoint : Endpoint<Request, Response>
 
         var product = resultProduct.Value;
 
-        await _productRepository.CreateAsync(product, ct);
+        await _productRepository.AddAsync(product, ct);
         await _productRepository.SaveChangesAsync(ct);
 
         await SendAsync(new Response(product.Id, product.Name), StatusCodes.Status201Created, ct);
