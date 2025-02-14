@@ -1,15 +1,15 @@
 namespace Application;
 
 using System.Text.Json.Serialization;
-using Application.Domain.Inventories;
-using Application.Domain.Orders;
-using Application.Domain.Products.Repositories;
-using Application.Infrastructure.Persistence;
-using Application.Infrastructure.Persistence.Inventories;
-using Application.Infrastructure.Persistence.Orders;
-using Application.Infrastructure.Persistence.Products;
-using Application.Infrastructure.Services;
+using Domain.Inventories;
+using Domain.Inventories.Services;
+using Domain.Orders;
+using Domain.Products;
 using FastEndpoints;
+using Infrastructure.Persistence;
+using Infrastructure.Persistence.Inventories;
+using Infrastructure.Persistence.Orders;
+using Infrastructure.Persistence.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -62,29 +62,38 @@ public static class DependencyInjection
         }
 
         services.AddTransient<IDateTimeService, DateTimeService>();
+        services.AddSingleton<IEmailService, EmailService>();
 
-        AddMappers();
-        AddRepositories();
+        AddOrder();
+        AddInventory();
+        AddProduct();
 
         return services;
 
-        void AddMappers()
+        void AddOrder()
         {
             services.AddSingleton<OrderMapper>();
             services.AddSingleton<OrderItemMapper>();
 
+            services.AddScoped<IOrderRepository, OrderRepository>();
+        }
+
+        void AddInventory()
+        {
             services.AddSingleton<InventoryMapper>();
             services.AddSingleton<AdjustmentMapper>();
             services.AddSingleton<ReservationMapper>();
 
-            services.AddSingleton<ProductMapper>();
+            services.AddSingleton<AdjustInventoryStockService>();
+
+            services.AddScoped<IInventoryRepository, InventoryRepository>();
         }
 
-        void AddRepositories()
+        void AddProduct()
         {
-            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddSingleton<ProductMapper>();
+
             services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<IInventoryRepository, InventoryRepository>();
         }
     }
 }

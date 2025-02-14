@@ -1,7 +1,7 @@
 namespace Application.Common.Tests.Domain.Orders;
 
-using Application.Domain.Orders.Enums;
 using Ardalis.GuardClauses;
+using global::Domain.Orders.Enums;
 
 public sealed class OrderFakerConfiguration
 {

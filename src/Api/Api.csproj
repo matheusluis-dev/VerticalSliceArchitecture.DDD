@@ -30,6 +30,8 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Application.Domain\Domain.csproj" />
+    <ProjectReference Include="..\Application.Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Application\Application.csproj" />
   </ItemGroup>
 </Project>

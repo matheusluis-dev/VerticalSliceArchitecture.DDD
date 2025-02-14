@@ -1,8 +1,8 @@
 namespace Application.Integration.Tests;
 
 using System.Net;
-using Application.Domain.Products.ValueObjects;
-using Application.Endpoints.Products.CreateProduct;
+using Application.Features.Products.CreateProduct;
+using Domain.Products.ValueObjects;
 using FastEndpoints;
 using FastEndpoints.Testing;
 using Shouldly;

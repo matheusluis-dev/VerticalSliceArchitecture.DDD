@@ -2,8 +2,8 @@ namespace Application.Integration.Tests;
 
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Application.Infrastructure.Persistence;
 using FastEndpoints.Testing;
+using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 

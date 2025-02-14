@@ -4,3 +4,5 @@ global using Application.Extensions;
 global using Ardalis.Result;
 global using FastEndpoints;
 global using FluentValidation;
+global using Infrastructure.Persistence;
+global using Infrastructure.Services;

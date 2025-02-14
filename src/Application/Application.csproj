@@ -26,6 +26,8 @@
     <PackageReference Include="Riok.Mapperly" />
     <PackageReference Include="System.Linq.Expressions" />
     <PackageReference Include="Vogen" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <PackageReference Update="CSharpier.MsBuild">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

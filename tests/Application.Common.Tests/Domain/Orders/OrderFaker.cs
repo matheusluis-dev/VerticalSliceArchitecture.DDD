@@ -1,11 +1,11 @@
 //namespace Application.Common.Tests.Domain.Orders;
 
 //using System.Diagnostics.CodeAnalysis;
-//using Application.Domain.Common.ValueObjects;
-//using Application.Domain.Orders.Aggregates;
-//using Application.Domain.Orders.Entities;
-//using Application.Domain.Orders.Enums;
-//using Application.Domain.Orders.ValueObjects;
+//using Domain.Common.ValueObjects;
+//using Domain.Orders.Aggregates;
+//using Domain.Orders.Entities;
+//using Domain.Orders.Enums;
+//using Domain.Orders.ValueObjects;
 //using Ardalis.GuardClauses;
 //using LinqKit;
 
