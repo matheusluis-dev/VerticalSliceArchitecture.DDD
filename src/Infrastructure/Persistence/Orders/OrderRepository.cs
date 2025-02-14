@@ -31,12 +31,12 @@ public sealed class OrderRepository : IOrderRepository
         return _mapper.ToEntityQueryable(GetDefaultQuery());
     }
 
-    public async Task<Order?> FindByIdAsync(OrderId id, CancellationToken ct = default)
+    public async Task<Result<Order>> FindByIdAsync(OrderId id, CancellationToken ct = default)
     {
         var order = await _orderSet.FindAsync([id], ct);
 
         if (order is null)
-            return null;
+            return Result.NotFound();
 
         return _mapper.ToEntity(order);
     }
@@ -79,15 +79,13 @@ public sealed class OrderRepository : IOrderRepository
         return order;
     }
 
-    public async Task<bool> DeleteAsync(OrderId orderId, CancellationToken ct = default)
+    public void Update(Order order)
     {
-        var order = await _orderSet.FirstOrDefaultAsync(order => order.Id == orderId, ct);
+        _orderSet.Update(_mapper.ToTable(order));
+    }
 
-        if (order is null)
-            return false;
-
-        _orderSet.Remove(order);
-
-        return true;
+    public void Delete(Order order)
+    {
+        _orderSet.Remove(_mapper.ToTable(order));
     }
 }

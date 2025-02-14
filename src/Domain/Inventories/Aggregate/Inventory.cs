@@ -3,7 +3,9 @@ namespace Domain.Inventories.Aggregate;
 using Domain.Common.Entities;
 using Domain.Common.ValueObjects;
 using Domain.Inventories.Entities;
+using Domain.Inventories.Enums;
 using Domain.Inventories.Events;
+using Domain.Inventories.Specifications;
 using Domain.Inventories.ValueObjects;
 using Domain.Orders.ValueObjects;
 using Domain.Products.ValueObjects;
@@ -81,13 +83,11 @@ public sealed class Inventory : EntityBase
             );
         }
 
-        // TODO: use specification
-        var availableStock = GetAvailableStock();
-        if (quantity.Value > availableStock.Value)
+        if (!new HasEnoughStockToDecreaseSpecification(quantity).IsSatisfiedBy(this))
         {
             return Result<Reservation>.Invalid(
                 new ValidationError(
-                    $"Reservation quantity ({quantity}) is greater than the available stock ({availableStock})"
+                    $"Reservation quantity ({quantity}) is greater than the available stock ({GetAvailableStock()})"
                 )
             );
         }
@@ -98,11 +98,31 @@ public sealed class Inventory : EntityBase
             InventoryId = Id,
             OrderItemId = orderItemId,
             Quantity = quantity,
+            Status = ReservationStatus.Pending,
         };
 
         _reservations.Add(reservation);
 
         return reservation;
+    }
+
+    public Result<Inventory> CancelStockReservation(OrderItemId orderItemId)
+    {
+        var reservation = _reservations.FirstOrDefault(r => r.OrderItemId == orderItemId);
+
+        if (reservation is null)
+        {
+            return Result<Inventory>.Invalid(
+                new ValidationError($"Reservation for order item '{orderItemId}' not found")
+            );
+        }
+
+        if (reservation.Status is not ReservationStatus.Pending)
+            return Result<Inventory>.Invalid(new ValidationError("Status must be pending"));
+
+        reservation.Status = ReservationStatus.Cancelled;
+
+        return this;
     }
 
     public void ReleaseStock(OrderItemId orderItemId)

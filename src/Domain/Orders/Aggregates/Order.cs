@@ -20,11 +20,11 @@ public sealed class Order : EntityBase
         get => _orderItems.AsReadOnly();
         init => _orderItems = [.. value];
     }
-    public required OrderStatus Status { get; init; }
+    public required OrderStatus Status { get; set; }
     public required Email CustomerEmail { get; init; }
     public required DateTime CreatedDate { get; init; }
     public DateTime? PaidDate { get; init; }
-    public DateTime? CanceledDate { get; init; }
+    public DateTime? CanceledDate { get; set; }
 
     public static Result<Order> Place(
         IList<AddOrderItemModel> items,
@@ -62,6 +62,19 @@ public sealed class Order : EntityBase
         order.RaiseDomainEvent(new OrderPlacedEvent(order));
 
         return order;
+    }
+
+    public Result<Order> Cancel(DateTime now)
+    {
+        if (Status is not OrderStatus.Pending)
+            return Result.Invalid(new ValidationError("Order must be pending"));
+
+        Status = OrderStatus.Canceled;
+        CanceledDate = now;
+
+        RaiseDomainEvent(new OrderCancelledEvent(this));
+
+        return this;
     }
 
     public Amount GetTotalPrice()

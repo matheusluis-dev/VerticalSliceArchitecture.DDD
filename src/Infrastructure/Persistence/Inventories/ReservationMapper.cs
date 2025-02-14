@@ -15,6 +15,7 @@ public sealed class ReservationMapper : IMapper<Reservation, ReservationTable>
             InventoryId = table.InventoryId,
             OrderItemId = table.OrderItemId,
             Quantity = table.Quantity,
+            Status = table.Status,
         };
     }
 
@@ -28,6 +29,7 @@ public sealed class ReservationMapper : IMapper<Reservation, ReservationTable>
             InventoryId = entity.InventoryId,
             OrderItemId = entity.OrderItemId,
             Quantity = entity.Quantity,
+            Status = entity.Status,
         };
     }
 }

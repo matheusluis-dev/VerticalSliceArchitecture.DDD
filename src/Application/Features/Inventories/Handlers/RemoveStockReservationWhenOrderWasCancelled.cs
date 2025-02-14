@@ -8,20 +8,20 @@ using Domain.Orders.Events;
 using Domain.Products.Specifications;
 using Microsoft.Extensions.DependencyInjection;
 
-public sealed class ReserveStockWhenOrderPlaced : IDomainEventHandler<OrderPlacedEvent>
+public sealed class RemoveStockReservationWhenOrderWasCancelled
+    : IDomainEventHandler<OrderCancelledEvent>
 {
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public ReserveStockWhenOrderPlaced(IServiceScopeFactory scopeFactory)
+    public RemoveStockReservationWhenOrderWasCancelled(IServiceScopeFactory scopeFactory)
     {
         _scopeFactory = scopeFactory;
     }
 
-    public async Task HandleAsync([NotNull] OrderPlacedEvent eventModel, CancellationToken ct)
+    public Task HandleAsync([NotNull] OrderCancelledEvent eventModel, CancellationToken ct)
     {
         using var scope = _scopeFactory.CreateScope();
 
-        var context = scope.Resolve<ApplicationDbContext>();
         var inventoryRepository = scope.Resolve<IInventoryRepository>();
 
         var itemsThatRequireStockReservation = eventModel.Order.OrderItems.Where(item =>
@@ -32,10 +32,10 @@ public sealed class ReserveStockWhenOrderPlaced : IDomainEventHandler<OrderPlace
         {
             var inventory = item.Product.Inventory!;
 
-            inventory.ReserveStock(item.Id, item.Quantity);
+            inventory.CancelStockReservation(item.Id);
             inventoryRepository.Update(inventory);
         }
 
-        await context.SaveChangesAsync(ct);
+        return Task.CompletedTask;
     }
 }

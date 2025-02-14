@@ -6,7 +6,7 @@ using Domain.Orders.ValueObjects;
 
 public interface IOrderRepository
 {
-    Task<Order?> FindByIdAsync(OrderId id, CancellationToken ct = default);
+    Task<Result<Order>> FindByIdAsync(OrderId id, CancellationToken ct = default);
 
     Task<IList<Order>> FindAllPaidOrdersAsync();
 
@@ -20,5 +20,7 @@ public interface IOrderRepository
 
     Task<Order?> CreateAsync(Order order, CancellationToken ct = default);
 
-    Task<bool> DeleteAsync(OrderId orderId, CancellationToken ct = default);
+    void Update(Order order);
+
+    void Delete(Order order);
 }
