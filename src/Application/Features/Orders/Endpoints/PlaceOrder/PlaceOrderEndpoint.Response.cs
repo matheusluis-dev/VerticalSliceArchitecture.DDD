@@ -1,4 +1,4 @@
-namespace Application.Features.Orders.DeleteOrder;
+namespace Application.Features.Orders.Endpoints.PlaceOrder;
 
 using Domain.Orders.ValueObjects;
 

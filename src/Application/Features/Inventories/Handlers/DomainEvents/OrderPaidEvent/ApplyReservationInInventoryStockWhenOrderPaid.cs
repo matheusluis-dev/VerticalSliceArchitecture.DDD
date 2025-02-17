@@ -1,4 +1,4 @@
-namespace Application.Features.Inventories.Handlers;
+namespace Application.Features.Inventories.Handlers.DomainEvents.OrderPaidEvent;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,16 +8,17 @@ using Domain.Orders.Events;
 using Domain.Products.Specifications;
 using Microsoft.Extensions.DependencyInjection;
 
-public sealed class ReserveStockReservationWhenOrderPlaced : IDomainEventHandler<OrderPlacedEvent>
+public sealed class ApplyReservationInInventoryStockWhenOrderPaid
+    : IDomainEventHandler<OrderPaidEvent>
 {
     private readonly IServiceScopeFactory _scopeFactory;
 
-    public ReserveStockReservationWhenOrderPlaced(IServiceScopeFactory scopeFactory)
+    public ApplyReservationInInventoryStockWhenOrderPaid(IServiceScopeFactory scopeFactory)
     {
         _scopeFactory = scopeFactory;
     }
 
-    public Task HandleAsync([NotNull] OrderPlacedEvent eventModel, CancellationToken ct)
+    public Task HandleAsync([NotNull] OrderPaidEvent eventModel, CancellationToken ct)
     {
         using var scope = _scopeFactory.CreateScope();
 
@@ -31,7 +32,7 @@ public sealed class ReserveStockReservationWhenOrderPlaced : IDomainEventHandler
         {
             var inventory = item.Product.Inventory!;
 
-            inventory.ReserveStock(item.Id, item.Quantity);
+            inventory.ReleaseStockReservation(item.Id);
             inventoryRepository.Update(inventory);
         }
 

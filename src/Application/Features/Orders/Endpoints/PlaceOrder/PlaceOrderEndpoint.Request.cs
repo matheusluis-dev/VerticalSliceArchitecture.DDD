@@ -1,4 +1,4 @@
-namespace Application.Features.Orders.PlaceOrder;
+namespace Application.Features.Orders.Endpoints.PlaceOrder;
 
 using Domain.Common.ValueObjects;
 using Domain.Products.ValueObjects;

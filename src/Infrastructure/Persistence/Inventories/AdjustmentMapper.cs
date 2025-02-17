@@ -13,7 +13,7 @@ public sealed class AdjustmentMapper : IMapper<Adjustment, AdjustmentTable>
         {
             Id = table.Id,
             InventoryId = table.InventoryId,
-            OrderId = table.OrderId,
+            OrderItemId = table.OrderItemId,
             Quantity = table.Quantity,
             Reason = table.Reason,
         };
@@ -27,7 +27,7 @@ public sealed class AdjustmentMapper : IMapper<Adjustment, AdjustmentTable>
         {
             Id = entity.Id,
             InventoryId = entity.InventoryId,
-            OrderId = entity.OrderId,
+            OrderItemId = entity.OrderItemId,
             Quantity = entity.Quantity,
             Reason = entity.Reason,
         };

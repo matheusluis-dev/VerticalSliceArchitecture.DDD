@@ -1,4 +1,4 @@
-namespace Application.Features.Orders.PlaceOrder;
+namespace Application.Features.Orders.Endpoints.PlaceOrder;
 
 using System.Diagnostics.CodeAnalysis;
 using Domain.Orders;
@@ -20,12 +20,14 @@ public sealed class CreateProductEndpoint : Endpoint<Request, Response>
     public CreateProductEndpoint(
         IDateTimeService dateTime,
         ApplicationDbContext context,
-        IOrderRepository orderRepository
+        IOrderRepository orderRepository,
+        IProductRepository productRepository
     )
     {
         _dateTime = dateTime;
         _context = context;
         _orderRepository = orderRepository;
+        _productRepository = productRepository;
     }
 
     public override void Configure()

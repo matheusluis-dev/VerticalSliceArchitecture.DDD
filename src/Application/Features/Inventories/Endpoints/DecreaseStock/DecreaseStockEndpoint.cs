@@ -31,7 +31,7 @@ public sealed class DecreaseStockEndpoint : Endpoint<Request, Response>
         var findResult = await _inventoryRepository.FindByIdAsync(req.Id, ct);
 
         if (findResult.IsNotFound())
-            ThrowError("Inventory not found");
+            ThrowError("Inventory not found", StatusCodes.Status404NotFound);
 
         var inventory = findResult.Value;
 

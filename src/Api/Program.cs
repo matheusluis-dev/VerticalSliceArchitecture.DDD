@@ -29,7 +29,9 @@ try
 
     await using var app = builder.Build();
 
-    app.UseHttpsRedirection().UseDefaultExceptionHandler().UseFastEndpoints();
+    app.UseHttpsRedirection().UseDefaultExceptionHandler();
+
+    app.UseFastEndpoints().UseJobQueues(options => options.MaxConcurrency = 4);
 
     await app.RunAsync();
 }

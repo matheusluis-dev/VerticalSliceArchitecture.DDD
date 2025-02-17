@@ -71,7 +71,7 @@ public sealed class Inventory : EntityBase
         Quantity = Quantity.From(Quantity.Value + adjustment.Quantity.Value);
 
         if (Quantity.Value == 0)
-            RaiseDomainEvent(new InventoryStockReachedZeroEvent(Id));
+            RaiseDomainEvent(new InventoryStockReachedZeroEvent(Id, ProductId));
     }
 
     public Result<Reservation> ReserveStock(OrderItemId orderItemId, Quantity quantity)
@@ -125,13 +125,32 @@ public sealed class Inventory : EntityBase
         return this;
     }
 
-    public void ReleaseStock(OrderItemId orderItemId)
+    public Result<Inventory> ReleaseStockReservation(OrderItemId orderItemId)
     {
         var reservation = _reservations.FirstOrDefault(r => r.OrderItemId == orderItemId);
 
         if (reservation is null)
-            return;
+        {
+            return Result<Inventory>.Invalid(
+                new ValidationError($"Reservation not found for order item '{orderItemId}'")
+            );
+        }
 
-        _reservations.Remove(reservation);
+        if (reservation.Status is ReservationStatus.Cancelled)
+        {
+            return Result<Inventory>.Invalid(
+                new ValidationError("Can not apply if reservation is cancelled")
+            );
+        }
+
+        if (reservation.Status is ReservationStatus.Applied)
+            return Result<Inventory>.Invalid(new ValidationError("Reservation already applied"));
+
+        var adjustment = Adjustment.CreateForOrderItemReservation(orderItemId, reservation);
+        _adjustments.Add(adjustment);
+
+        reservation.Status = ReservationStatus.Applied;
+
+        return this;
     }
 }

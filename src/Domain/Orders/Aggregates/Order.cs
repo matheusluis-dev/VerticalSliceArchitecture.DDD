@@ -23,7 +23,7 @@ public sealed class Order : EntityBase
     public required OrderStatus Status { get; set; }
     public required Email CustomerEmail { get; init; }
     public required DateTime CreatedDate { get; init; }
-    public DateTime? PaidDate { get; init; }
+    public DateTime? PaidDate { get; set; }
     public DateTime? CanceledDate { get; set; }
 
     public static Result<Order> Place(
@@ -64,12 +64,28 @@ public sealed class Order : EntityBase
         return order;
     }
 
+    public Result<Order> Pay(DateTime now)
+    {
+        if (Status is OrderStatus.Cancelled)
+            return Result.Invalid(new ValidationError("Can not pay cancelled order"));
+
+        if (Status is OrderStatus.Paid)
+            return Result.Invalid(new ValidationError("Order already paid"));
+
+        Status = OrderStatus.Paid;
+        PaidDate = now;
+
+        RaiseDomainEvent(new OrderPaidEvent(this));
+
+        return this;
+    }
+
     public Result<Order> Cancel(DateTime now)
     {
         if (Status is not OrderStatus.Pending)
             return Result.Invalid(new ValidationError("Order must be pending"));
 
-        Status = OrderStatus.Canceled;
+        Status = OrderStatus.Cancelled;
         CanceledDate = now;
 
         RaiseDomainEvent(new OrderCancelledEvent(this));

@@ -37,7 +37,7 @@ public sealed class AdjustInventoryStockService
         {
             Id = AdjustmentId.Create(),
             InventoryId = inventory.Id,
-            OrderId = null,
+            OrderItemId = null,
             Quantity = Quantity.From(quantity.Value * -1),
             Reason = reason,
         };
@@ -67,7 +67,7 @@ public sealed class AdjustInventoryStockService
         {
             Id = AdjustmentId.Create(),
             InventoryId = inventory.Id,
-            OrderId = null,
+            OrderItemId = null,
             Quantity = quantity,
             Reason = reason,
         };

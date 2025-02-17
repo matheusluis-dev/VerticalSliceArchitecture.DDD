@@ -6,6 +6,7 @@ using Domain.Inventories.Services;
 using Domain.Orders;
 using Domain.Products;
 using FastEndpoints;
+using Infrastructure;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Inventories;
 using Infrastructure.Persistence.Orders;
@@ -19,10 +20,10 @@ public static class DependencyInjection
     public static IServiceCollection AddConfiguredFastEndpoints(this IServiceCollection services)
     {
         services.AddFastEndpoints(options =>
-        {
-            options.SourceGeneratorDiscoveredTypes = DiscoveredTypes.All;
-            options.IncludeAbstractValidators = true;
-        });
+            options.SourceGeneratorDiscoveredTypes = DiscoveredTypes.All
+        );
+
+        services.AddJobQueues<JobRecord, JobProvider>();
 
         services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
             options.SerializerOptions.Converters.Add(new JsonStringEnumConverter())

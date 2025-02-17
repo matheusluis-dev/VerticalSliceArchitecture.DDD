@@ -1,4 +1,4 @@
-namespace Application.Features.Orders.DeleteOrder;
+namespace Application.Features.Orders.Endpoints.CancelOrder;
 
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +25,7 @@ public sealed class Endpoint : Endpoint<Request, Response>
 
     public override void Configure()
     {
-        Delete("orders/{id}");
+        Post("orders/cancel/{id}");
         AllowAnonymous();
     }
 
