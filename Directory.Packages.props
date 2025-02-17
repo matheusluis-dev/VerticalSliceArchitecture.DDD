@@ -28,17 +28,20 @@
     <PackageVersion Include="FluentAssertions.Analyzers" Version="0.34.1" />
     <PackageVersion Include="LinqKit" Version="1.3.8" />
     <PackageVersion Include="MediatR" Version="12.4.1" />
-    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.187" />
+    <PackageVersion Include="Meziantou.Analyzer" Version="2.0.188" />
     <PackageVersion Include="Meziantou.FluentAssertionsAnalyzers" Version="1.0.21" />
-    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.12.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.12.0" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers" Version="9.0.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.1" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.1" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.1" />
+    <PackageVersion Include="MongoDB.Analyzer" Version="1.5.0" />
+    <PackageVersion Include="MongoDB.Driver" Version="3.2.0" />
     <PackageVersion Include="Moq" Version="4.20.72" />
     <PackageVersion Include="NetArchTest.eNhancedEdition" Version="1.4.3" />
     <PackageVersion Include="NFluent" Version="3.1.0" />
@@ -59,8 +62,9 @@
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
     <PackageVersion Include="System.Linq.Expressions" Version="4.3.0" />
+    <PackageVersion Include="Testcontainers.MongoDb" Version="4.2.0" />
     <PackageVersion Include="Testcontainers.MsSql" Version="4.2.0" />
-    <PackageVersion Include="Vogen" Version="6.0.0" />
+    <PackageVersion Include="Vogen" Version="7.0.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.analyzers" Version="1.20.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.2" />
