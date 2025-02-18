@@ -13,4 +13,53 @@ public sealed class Reservation : IChildEntity
     public required OrderItemId OrderItemId { get; init; }
     public required Quantity Quantity { get; init; }
     public required ReservationStatus Status { get; set; }
+
+    private Reservation() { }
+
+    public static Result<Reservation> Create(
+        ReservationId id,
+        InventoryId? inventoryId,
+        OrderItemId? orderItemId,
+        Quantity quantity,
+        ReservationStatus status
+    )
+    {
+        var errors = new List<ValidationError>();
+
+        if (inventoryId is null)
+            errors.Add(new ValidationError($"{nameof(InventoryId)} must be informed"));
+
+        if (orderItemId is null)
+            errors.Add(new ValidationError($"{nameof(OrderItemId)} must be informed"));
+
+        if (quantity.Value <= 0)
+            errors.Add(new ValidationError("Quantity must be greater than zero"));
+
+        if (errors.Count > 0)
+            return Result.Invalid(errors);
+
+        return new Reservation
+        {
+            Id = id,
+            InventoryId = inventoryId!.Value,
+            OrderItemId = orderItemId!.Value,
+            Quantity = quantity,
+            Status = status,
+        };
+    }
+
+    internal Result<Reservation> AlterStatus(ReservationStatus status)
+    {
+        if (status == Status)
+            return Result.Invalid(new ValidationError("Can not set to same status"));
+
+        return new Reservation
+        {
+            Id = Id,
+            InventoryId = InventoryId,
+            OrderItemId = OrderItemId,
+            Quantity = Quantity,
+            Status = status,
+        };
+    }
 }

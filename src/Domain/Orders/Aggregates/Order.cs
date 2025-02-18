@@ -24,6 +24,9 @@ public sealed class Order : EntityBase
     public DateTime? PaidDate { get; set; }
     public DateTime? CanceledDate { get; set; }
 
+    public Order()
+        : base([]) { }
+
     public Result<Order> Pay(DateTime now)
     {
         if (Status is OrderStatus.Cancelled)

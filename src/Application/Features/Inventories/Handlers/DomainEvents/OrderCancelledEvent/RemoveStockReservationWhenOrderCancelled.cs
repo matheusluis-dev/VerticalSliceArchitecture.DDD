@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Domain.Common.DomainEvents;
 using Domain.Inventories;
+using Domain.Inventories.Services;
 using Domain.Orders.Events;
 using Domain.Products.Specifications;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,10 +13,15 @@ public sealed class RemoveStockReservationWhenOrderCancelled
     : IDomainEventHandler<OrderCancelledEvent>
 {
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly StockReservationService _stockReservation;
 
-    public RemoveStockReservationWhenOrderCancelled(IServiceScopeFactory scopeFactory)
+    public RemoveStockReservationWhenOrderCancelled(
+        IServiceScopeFactory scopeFactory,
+        StockReservationService stockReservation
+    )
     {
         _scopeFactory = scopeFactory;
+        _stockReservation = stockReservation;
     }
 
     public Task HandleAsync([NotNull] OrderCancelledEvent eventModel, CancellationToken ct)
@@ -32,7 +38,9 @@ public sealed class RemoveStockReservationWhenOrderCancelled
         {
             var inventory = item.Product.Inventory!;
 
-            inventory.CancelStockReservation(item.Id);
+            _stockReservation.CancelStockReservation(
+                new CancelStockReservationModel(item.Product.Inventory!, item.Id)
+            );
             inventoryRepository.Update(inventory);
         }
 

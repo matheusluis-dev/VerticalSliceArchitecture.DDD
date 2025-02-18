@@ -25,7 +25,7 @@ public sealed class InventoryMapper : IMapperWithQueryable<Inventory, InventoryT
     {
         ArgumentNullException.ThrowIfNull(table);
 
-        return new(
+        return Inventory.Create(
             table.Id,
             table.ProductId,
             table.Quantity,

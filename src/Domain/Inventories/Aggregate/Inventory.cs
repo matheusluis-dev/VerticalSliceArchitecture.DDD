@@ -1,5 +1,6 @@
 namespace Domain.Inventories.Aggregate;
 
+using Domain.Common.DomainEvents;
 using Domain.Common.Entities;
 using Domain.Common.ValueObjects;
 using Domain.Inventories.Entities;
@@ -13,27 +14,49 @@ public sealed class Inventory : EntityBase
 
     public ProductId ProductId { get; init; }
 
-    public Quantity Quantity { get; set; }
+    public Quantity Quantity { get; init; }
 
-    private readonly List<Adjustment> _adjustments;
-    public IReadOnlyCollection<Adjustment> Adjustments => _adjustments.AsReadOnly();
+    public IReadOnlyCollection<Adjustment> Adjustments { get; init; }
 
-    private readonly List<Reservation> _reservations;
-    public IReadOnlyCollection<Reservation> Reservations => _reservations.AsReadOnly();
+    public IReadOnlyCollection<Reservation> Reservations { get; init; }
 
-    public Inventory(
+    private Inventory(
         InventoryId id,
         ProductId productId,
         Quantity quantity,
         IEnumerable<Adjustment> adjustments,
-        IEnumerable<Reservation> reservations
+        IEnumerable<Reservation> reservations,
+        IList<IDomainEvent>? domainEvents = null
     )
+        : base(domainEvents ?? [])
     {
         Id = id;
         ProductId = productId;
         Quantity = quantity;
-        _adjustments = [.. adjustments];
-        _reservations = [.. reservations];
+        Adjustments = adjustments.ToList().AsReadOnly();
+        Reservations = reservations.ToList().AsReadOnly();
+    }
+
+    public static Result<Inventory> Create(
+        InventoryId id,
+        ProductId? productId,
+        Quantity quantity,
+        IEnumerable<Adjustment> adjustments,
+        IEnumerable<Reservation> reservations,
+        IList<IDomainEvent>? domainEvents = null
+    )
+    {
+        if (productId is null)
+            return Result.Invalid(new ValidationError($"{nameof(ProductId)} must be set"));
+
+        return new Inventory(
+            id,
+            productId.Value,
+            quantity,
+            adjustments,
+            reservations,
+            domainEvents
+        );
     }
 
     public static Result<Inventory> CreateForProduct(ProductId productId, Quantity quantity)
@@ -60,24 +83,38 @@ public sealed class Inventory : EntityBase
         return Quantity.From(sum);
     }
 
-    internal void AddAdjustment(Adjustment adjustment)
+    internal Result<Inventory> PlaceAdjustment(Adjustment adjustment)
     {
         ArgumentNullException.ThrowIfNull(adjustment);
 
-        _adjustments.Add(adjustment);
-        Quantity = Quantity.From(Quantity.Value + adjustment.Quantity.Value);
+        var quantity = Quantity.From(Quantity.Value + adjustment.Quantity.Value);
 
-        if (Quantity.Value == 0)
-            RaiseDomainEvent(new InventoryStockReachedZeroEvent(this, ProductId));
+        var buildResult = new InventoryBuilder()
+            .WithInventoryToClone(this)
+            .WithAdjustment(Adjustments)
+            .WithAdjustment(adjustment)
+            .WithQuantity(quantity)
+            .Build();
+
+        if (buildResult.IsInvalid())
+            return Result<Inventory>.Invalid(buildResult.ValidationErrors);
+
+        var inventory = buildResult.Value;
+
+        if (inventory.Quantity.Value == 0)
+            inventory.RaiseDomainEvent(new InventoryStockReachedZeroEvent(this, ProductId));
+
+        return inventory;
     }
 
-    internal void PlaceReservation(Reservation reservation)
+    internal Result<Inventory> PlaceReservation(Reservation reservation)
     {
-        _reservations.Add(reservation);
-    }
+        ArgumentNullException.ThrowIfNull(reservation);
 
-    internal void PlaceAdjustment(Adjustment adjustment)
-    {
-        _adjustments.Add(adjustment);
+        return new InventoryBuilder()
+            .WithInventoryToClone(this)
+            .WithReservation(Reservations)
+            .WithReservation(reservation)
+            .Build();
     }
 }

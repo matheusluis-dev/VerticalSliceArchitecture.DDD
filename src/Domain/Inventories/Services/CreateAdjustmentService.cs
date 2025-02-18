@@ -13,19 +13,20 @@ public sealed record CreateForOrderItemReservationModel(
 
 public sealed class CreateAdjustmentService
 {
-    public Result<Adjustment> CreateForOrderItemReservation(CreateForOrderItemReservationModel model)
+    public Result<Adjustment> CreateForOrderItemReservation(
+        CreateForOrderItemReservationModel model
+    )
     {
         var (inventory, orderItemId, reservation) = model;
 
         // only 1 reservation per order item
 
-        return new Adjustment
-        {
-            Id = AdjustmentId.Create(),
-            InventoryId = reservation.InventoryId,
-            OrderItemId = orderItemId,
-            Quantity = reservation.Quantity,
-            Reason = $"Applied adjustment for order item '{orderItemId}'",
-        };
+        return Adjustment.Create(
+            AdjustmentId.Create(),
+            reservation.InventoryId,
+            orderItemId,
+            reservation.Quantity,
+            $"Applied adjustment for order item '{orderItemId}'"
+        );
     }
 }

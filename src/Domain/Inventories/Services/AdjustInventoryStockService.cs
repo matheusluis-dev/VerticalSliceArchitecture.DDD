@@ -24,16 +24,18 @@ public sealed class AdjustInventoryStockService
         if (errors.Count > 0)
             return Result<Inventory>.Invalid(errors);
 
-        var adjustment = new Adjustment
-        {
-            Id = AdjustmentId.Create(),
-            InventoryId = inventory.Id,
-            OrderItemId = null,
-            Quantity = quantity,
-            Reason = reason,
-        };
+        var adjustment = Adjustment.Create(
+            AdjustmentId.Create(),
+            inventory.Id,
+            null,
+            quantity,
+            reason
+        );
 
-        inventory.AddAdjustment(adjustment);
+        if (adjustment.IsInvalid())
+            return Result.Invalid(adjustment.ValidationErrors);
+
+        inventory.PlaceAdjustment(adjustment);
 
         return inventory;
     }
@@ -63,16 +65,18 @@ public sealed class AdjustInventoryStockService
         if (errors.Count > 0)
             return Result<Inventory>.Invalid(errors);
 
-        var adjustment = new Adjustment
-        {
-            Id = AdjustmentId.Create(),
-            InventoryId = inventory.Id,
-            OrderItemId = null,
-            Quantity = Quantity.From(quantity.Value * -1),
-            Reason = reason,
-        };
+        var adjustment = Adjustment.Create(
+            AdjustmentId.Create(),
+            inventory.Id,
+            null,
+            Quantity.From(quantity.Value * -1),
+            reason
+        );
 
-        inventory.AddAdjustment(adjustment);
+        if (adjustment.IsInvalid())
+            return Result.Invalid(adjustment.ValidationErrors);
+
+        inventory.PlaceAdjustment(adjustment);
 
         return inventory;
     }

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Domain.Common.Entities;
 using FastEndpoints;
+using Infrastructure.JobStorage;
 using Infrastructure.Persistence.Tables;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,9 +33,7 @@ public sealed class ApplicationDbContext : DbContext
         [NotNull] ModelConfigurationBuilder configurationBuilder
     )
     {
-        configurationBuilder.ApplyVogenEfConvertersFromAssembly(
-            typeof(ApplicationDbContext).Assembly
-        );
+        configurationBuilder.ApplyVogenEfConvertersFromAssembly(typeof(EntityBase).Assembly);
     }
 
     protected override void OnModelCreating([NotNull] ModelBuilder modelBuilder)

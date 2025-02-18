@@ -9,14 +9,13 @@ public sealed class ReservationMapper : IMapper<Reservation, ReservationTable>
     {
         ArgumentNullException.ThrowIfNull(table);
 
-        return new()
-        {
-            Id = table.Id,
-            InventoryId = table.InventoryId,
-            OrderItemId = table.OrderItemId,
-            Quantity = table.Quantity,
-            Status = table.Status,
-        };
+        return Reservation.Create(
+            table.Id,
+            table.InventoryId,
+            table.OrderItemId,
+            table.Quantity,
+            table.Status
+        );
     }
 
     public ReservationTable ToTable(Reservation entity)

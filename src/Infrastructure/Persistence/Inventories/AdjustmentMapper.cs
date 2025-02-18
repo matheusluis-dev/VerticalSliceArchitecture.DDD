@@ -9,14 +9,13 @@ public sealed class AdjustmentMapper : IMapper<Adjustment, AdjustmentTable>
     {
         ArgumentNullException.ThrowIfNull(table);
 
-        return new()
-        {
-            Id = table.Id,
-            InventoryId = table.InventoryId,
-            OrderItemId = table.OrderItemId,
-            Quantity = table.Quantity,
-            Reason = table.Reason,
-        };
+        return Adjustment.Create(
+            table.Id,
+            table.InventoryId,
+            table.OrderItemId,
+            table.Quantity,
+            table.Reason
+        );
     }
 
     public AdjustmentTable ToTable(Adjustment entity)

@@ -4,6 +4,11 @@ using Domain.Common.DomainEvents;
 
 public abstract class EntityBase : IEntity
 {
+    protected EntityBase(IList<IDomainEvent> domainEvents)
+    {
+        _domainEvents = domainEvents ?? [];
+    }
+
     private readonly IList<IDomainEvent> _domainEvents = [];
 
     public IReadOnlyList<IDomainEvent> GetDomainEvents()

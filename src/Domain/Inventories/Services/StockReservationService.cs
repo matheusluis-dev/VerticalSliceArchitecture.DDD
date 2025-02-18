@@ -6,7 +6,6 @@ using Domain.Inventories.Entities;
 using Domain.Inventories.Enums;
 using Domain.Inventories.Specifications;
 using Domain.Inventories.ValueObjects;
-using Domain.Orders.Entities;
 using Domain.Orders.ValueObjects;
 
 public sealed record ReserveStockModel(
@@ -37,14 +36,16 @@ public sealed partial class StockReservationService
             );
         }
 
-        var reservation = new Reservation
-        {
-            Id = ReservationId.Create(),
-            InventoryId = inventory.Id,
-            OrderItemId = orderItemId,
-            Quantity = quantity,
-            Status = ReservationStatus.Pending,
-        };
+        var reservation = Reservation.Create(
+            ReservationId.Create(),
+            inventory.Id,
+            orderItemId,
+            quantity,
+            ReservationStatus.Pending
+        );
+
+        if (reservation.IsInvalid())
+            return Result.Invalid(reservation.ValidationErrors);
 
         inventory.PlaceReservation(reservation);
 
@@ -81,8 +82,3 @@ public sealed partial class StockReservationService
         return inventory;
     }
 }
-
-
-
-
-

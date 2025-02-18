@@ -1,4 +1,4 @@
-version: '3.8'
+name: api
 
 services:
   sqlserver:
@@ -10,7 +10,7 @@ services:
     ports:
       - "1433:1433"
     volumes:
-      - sqlserverdata:C:\var\opt\mssql
+      - sqlserverdata:/var/opt/mssql
 
   mongodb:
     image: mongo:latest
@@ -18,14 +18,14 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mongodata:C:\data\db
+      - mongodata:/data/db
 
   webapp:
     image: your-aspnetcore-app-image
     container_name: webapp
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../../ # Set the build context to the root of your solution
+      dockerfile: src/Api/Dockerfile # Specify the path to the Dockerfile
     ports:
       - "5000:80"
     depends_on:

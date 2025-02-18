@@ -7,7 +7,7 @@ using Domain.Orders;
 using Domain.Orders.Services;
 using Domain.Products;
 using FastEndpoints;
-using Infrastructure;
+using Infrastructure.JobStorage;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Inventories;
 using Infrastructure.Persistence.Orders;
@@ -15,6 +15,8 @@ using Infrastructure.Persistence.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 
 public static class DependencyInjection
 {
@@ -24,7 +26,7 @@ public static class DependencyInjection
             options.SourceGeneratorDiscoveredTypes = DiscoveredTypes.All
         );
 
-        services.AddJobQueues<JobRecord, JobProvider>();
+        services.AddJobQueues<JobRecord, JobStorage>();
 
         services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
             options.SerializerOptions.Converters.Add(new JsonStringEnumConverter())
@@ -44,33 +46,62 @@ public static class DependencyInjection
 
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
-        IConfiguration configuration
+        [NotNull] IConfiguration configuration
     )
     {
-        if (configuration.GetValue<bool>("UseInMemoryDatabase"))
-        {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseInMemoryDatabase("VSA")
-            );
-        }
-        else
-        {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    configuration.GetConnectionString("DefaultConnection"),
-                    b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)
-                )
-            );
-        }
+        AddDatabase();
+        AddJobStorage();
 
-        services.AddTransient<IDateTimeService, DateTimeService>();
-        services.AddSingleton<IEmailService, EmailService>();
+        AddInfrastructureServices();
 
         AddOrder();
         AddInventory();
         AddProduct();
 
         return services;
+
+        void AddDatabase()
+        {
+            if (configuration.GetValue<bool>("UseInMemoryDatabase"))
+            {
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseInMemoryDatabase("VSA")
+                );
+            }
+            else
+            {
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseSqlServer(
+                        configuration.GetConnectionString("DefaultConnection"),
+                        b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)
+                    )
+                );
+            }
+        }
+
+        void AddJobStorage()
+        {
+            services.Configure<MongoDbSettings>(configuration.GetSection("MongoDbSettings"));
+
+            services.AddSingleton<IMongoClient>(sp =>
+            {
+                var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
+                return new MongoClient(settings.ConnectionString);
+            });
+
+            services.AddSingleton(sp =>
+            {
+                var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
+                var client = sp.GetRequiredService<IMongoClient>();
+                return client.GetDatabase(settings.DatabaseName);
+            });
+        }
+
+        void AddInfrastructureServices()
+        {
+            services.AddTransient<IDateTimeService, DateTimeService>();
+            services.AddSingleton<IEmailService, EmailService>();
+        }
 
         void AddOrder()
         {
@@ -90,6 +121,9 @@ public static class DependencyInjection
             services.AddSingleton<ReservationMapper>();
 
             services.AddSingleton<AdjustInventoryStockService>();
+            services.AddSingleton<CreateAdjustmentService>();
+            services.AddSingleton<StockReleaseService>();
+            services.AddSingleton<StockReservationService>();
 
             services.AddScoped<IInventoryRepository, InventoryRepository>();
         }

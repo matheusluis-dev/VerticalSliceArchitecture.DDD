@@ -17,6 +17,9 @@ public sealed class Product : EntityBase
         init => _name = value;
     }
 
+    public Product()
+        : base([]) { }
+
     public static Result<Product> Create(ProductName name)
     {
         var product = new Product()
