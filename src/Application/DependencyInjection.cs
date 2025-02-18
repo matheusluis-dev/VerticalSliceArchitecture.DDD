@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using Domain.Inventories;
 using Domain.Inventories.Services;
 using Domain.Orders;
+using Domain.Orders.Services;
 using Domain.Products;
 using FastEndpoints;
 using Infrastructure;
@@ -75,6 +76,9 @@ public static class DependencyInjection
         {
             services.AddSingleton<OrderMapper>();
             services.AddSingleton<OrderItemMapper>();
+
+            services.AddSingleton<OrderPlacementService>();
+            services.AddSingleton<OrderItemManagementService>();
 
             services.AddScoped<IOrderRepository, OrderRepository>();
         }

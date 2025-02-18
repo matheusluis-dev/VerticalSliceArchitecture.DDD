@@ -3,7 +3,8 @@ namespace Domain.Inventories.Specifications;
 using Domain.Common.Specifications;
 using Domain.Inventories.Aggregate;
 
-public sealed class InventoryWasNeverAdjustedSpecification : ISpecification<Inventory>
+public sealed class InventoryWasNeverAdjustedAndHasNoReservationsSpecification
+    : ISpecification<Inventory>
 {
     public bool IsSatisfiedBy(Inventory entity)
     {

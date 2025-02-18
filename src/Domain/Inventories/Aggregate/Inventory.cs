@@ -3,11 +3,8 @@ namespace Domain.Inventories.Aggregate;
 using Domain.Common.Entities;
 using Domain.Common.ValueObjects;
 using Domain.Inventories.Entities;
-using Domain.Inventories.Enums;
 using Domain.Inventories.Events;
-using Domain.Inventories.Specifications;
 using Domain.Inventories.ValueObjects;
-using Domain.Orders.ValueObjects;
 using Domain.Products.ValueObjects;
 
 public sealed class Inventory : EntityBase
@@ -71,86 +68,16 @@ public sealed class Inventory : EntityBase
         Quantity = Quantity.From(Quantity.Value + adjustment.Quantity.Value);
 
         if (Quantity.Value == 0)
-            RaiseDomainEvent(new InventoryStockReachedZeroEvent(Id, ProductId));
+            RaiseDomainEvent(new InventoryStockReachedZeroEvent(this, ProductId));
     }
 
-    public Result<Reservation> ReserveStock(OrderItemId orderItemId, Quantity quantity)
+    internal void PlaceReservation(Reservation reservation)
     {
-        if (quantity.Value <= 0)
-        {
-            return Result<Reservation>.Invalid(
-                new ValidationError("Quantity must be greater than 0")
-            );
-        }
-
-        if (!new HasEnoughStockToDecreaseSpecification(quantity).IsSatisfiedBy(this))
-        {
-            return Result<Reservation>.Invalid(
-                new ValidationError(
-                    $"Reservation quantity ({quantity}) is greater than the available stock ({GetAvailableStock()})"
-                )
-            );
-        }
-
-        var reservation = new Reservation
-        {
-            Id = ReservationId.Create(),
-            InventoryId = Id,
-            OrderItemId = orderItemId,
-            Quantity = quantity,
-            Status = ReservationStatus.Pending,
-        };
-
         _reservations.Add(reservation);
-
-        return reservation;
     }
 
-    public Result<Inventory> CancelStockReservation(OrderItemId orderItemId)
+    internal void PlaceAdjustment(Adjustment adjustment)
     {
-        var reservation = _reservations.FirstOrDefault(r => r.OrderItemId == orderItemId);
-
-        if (reservation is null)
-        {
-            return Result<Inventory>.Invalid(
-                new ValidationError($"Reservation for order item '{orderItemId}' not found")
-            );
-        }
-
-        if (reservation.Status is not ReservationStatus.Pending)
-            return Result<Inventory>.Invalid(new ValidationError("Status must be pending"));
-
-        reservation.Status = ReservationStatus.Cancelled;
-
-        return this;
-    }
-
-    public Result<Inventory> ReleaseStockReservation(OrderItemId orderItemId)
-    {
-        var reservation = _reservations.FirstOrDefault(r => r.OrderItemId == orderItemId);
-
-        if (reservation is null)
-        {
-            return Result<Inventory>.Invalid(
-                new ValidationError($"Reservation not found for order item '{orderItemId}'")
-            );
-        }
-
-        if (reservation.Status is ReservationStatus.Cancelled)
-        {
-            return Result<Inventory>.Invalid(
-                new ValidationError("Can not apply if reservation is cancelled")
-            );
-        }
-
-        if (reservation.Status is ReservationStatus.Applied)
-            return Result<Inventory>.Invalid(new ValidationError("Reservation already applied"));
-
-        var adjustment = Adjustment.CreateForOrderItemReservation(orderItemId, reservation);
         _adjustments.Add(adjustment);
-
-        reservation.Status = ReservationStatus.Applied;
-
-        return this;
     }
 }

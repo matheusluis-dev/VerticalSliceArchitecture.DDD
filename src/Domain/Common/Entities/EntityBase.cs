@@ -15,7 +15,7 @@ public abstract class EntityBase : IEntity
         return events;
     }
 
-    protected void RaiseDomainEvent(IDomainEvent domainEvent)
+    protected internal void RaiseDomainEvent(IDomainEvent domainEvent)
     {
         _domainEvents.Add(domainEvent);
     }

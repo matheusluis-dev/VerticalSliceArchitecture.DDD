@@ -8,6 +8,36 @@ using Domain.Inventories.ValueObjects;
 
 public sealed class AdjustInventoryStockService
 {
+    public Result<Inventory> IncreaseQuantity(Inventory inventory, Quantity quantity, string reason)
+    {
+        ArgumentNullException.ThrowIfNull(inventory);
+        ArgumentNullException.ThrowIfNull(reason);
+
+        var errors = new List<ValidationError>();
+
+        if (quantity.Value <= 0)
+            errors.Add(new ValidationError("Quantity must be greater than 0"));
+
+        if (reason.Length <= 14)
+            errors.Add(new ValidationError("Reason must have at least 15 characters"));
+
+        if (errors.Count > 0)
+            return Result<Inventory>.Invalid(errors);
+
+        var adjustment = new Adjustment
+        {
+            Id = AdjustmentId.Create(),
+            InventoryId = inventory.Id,
+            OrderItemId = null,
+            Quantity = quantity,
+            Reason = reason,
+        };
+
+        inventory.AddAdjustment(adjustment);
+
+        return inventory;
+    }
+
     public Result<Inventory> DecreaseQuantity(Inventory inventory, Quantity quantity, string reason)
     {
         ArgumentNullException.ThrowIfNull(inventory);
@@ -39,36 +69,6 @@ public sealed class AdjustInventoryStockService
             InventoryId = inventory.Id,
             OrderItemId = null,
             Quantity = Quantity.From(quantity.Value * -1),
-            Reason = reason,
-        };
-
-        inventory.AddAdjustment(adjustment);
-
-        return inventory;
-    }
-
-    public Result<Inventory> IncreaseQuantity(Inventory inventory, Quantity quantity, string reason)
-    {
-        ArgumentNullException.ThrowIfNull(inventory);
-        ArgumentNullException.ThrowIfNull(reason);
-
-        var errors = new List<ValidationError>();
-
-        if (quantity.Value <= 0)
-            errors.Add(new ValidationError("Quantity must be greater than 0"));
-
-        if (reason.Length <= 14)
-            errors.Add(new ValidationError("Reason must have at least 15 characters"));
-
-        if (errors.Count > 0)
-            return Result<Inventory>.Invalid(errors);
-
-        var adjustment = new Adjustment
-        {
-            Id = AdjustmentId.Create(),
-            InventoryId = inventory.Id,
-            OrderItemId = null,
-            Quantity = quantity,
             Reason = reason,
         };
 

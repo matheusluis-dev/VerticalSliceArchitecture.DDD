@@ -3,6 +3,9 @@
     <UserSecretsId>6f7a1d5c-d555-42c6-ab0b-16c84cc23df9</UserSecretsId>
     <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
+    <RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
+    <EnableSdkContainerDebugging>True</EnableSdkContainerDebugging>
+    <ContainerBaseImage>mcr.microsoft.com/dotnet/aspnet:9.0</ContainerBaseImage>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Ardalis.Result.AspNetCore" />
@@ -39,5 +42,8 @@
     <ProjectReference Include="..\Application.Domain\Domain.csproj" />
     <ProjectReference Include="..\Application.Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Application\Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <ContainerPort Include="8081" />
   </ItemGroup>
 </Project>

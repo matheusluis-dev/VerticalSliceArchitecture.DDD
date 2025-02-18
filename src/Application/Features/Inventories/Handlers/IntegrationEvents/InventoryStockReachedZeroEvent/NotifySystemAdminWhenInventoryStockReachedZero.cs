@@ -17,7 +17,7 @@ public sealed class NotifySystemAdminWhenInventoryStockReachedZero
     )
     {
         return new NotifySystemAdminWhenInventoryStockReachedZeroCommand(
-            eventModel.InventoryId,
+            eventModel.Inventory.Id,
             eventModel.ProductId
         ).QueueJobAsync(ct: ct);
     }

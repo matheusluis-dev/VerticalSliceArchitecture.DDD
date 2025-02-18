@@ -52,7 +52,9 @@ public sealed class DeleteProductEndpoint : Endpoint<Request>
 
             if (
                 resultInventory.WasFound()
-                && !new InventoryWasNeverAdjustedSpecification().IsSatisfiedBy(resultInventory)
+                && !new InventoryWasNeverAdjustedAndHasNoReservationsSpecification().IsSatisfiedBy(
+                    resultInventory
+                )
             )
             {
                 ThrowError(

@@ -2,11 +2,10 @@ namespace Application.Features.Orders.Endpoints.PlaceOrder;
 
 using System.Diagnostics.CodeAnalysis;
 using Domain.Orders;
-using Domain.Orders.Models;
+using Domain.Orders.Services;
 using Domain.Products;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;
-using Order = Domain.Orders.Aggregates.Order;
 
 public sealed class CreateProductEndpoint : Endpoint<Request, Response>
 {
@@ -17,17 +16,21 @@ public sealed class CreateProductEndpoint : Endpoint<Request, Response>
     private readonly IOrderRepository _orderRepository;
     private readonly IProductRepository _productRepository;
 
+    private readonly OrderPlacementService _orderPlacement;
+
     public CreateProductEndpoint(
         IDateTimeService dateTime,
         ApplicationDbContext context,
         IOrderRepository orderRepository,
-        IProductRepository productRepository
+        IProductRepository productRepository,
+        OrderPlacementService orderPlacement
     )
     {
         _dateTime = dateTime;
         _context = context;
         _orderRepository = orderRepository;
         _productRepository = productRepository;
+        _orderPlacement = orderPlacement;
     }
 
     public override void Configure()
@@ -38,7 +41,7 @@ public sealed class CreateProductEndpoint : Endpoint<Request, Response>
 
     public override async Task HandleAsync([NotNull] Request req, CancellationToken ct)
     {
-        var addOrderItems = new List<AddOrderItemModel>();
+        var addOrderItems = new List<OrderItemPlacementModel>();
         foreach (var item in req.Items)
         {
             var product = await _productRepository.FindProductByIdAsync(item.ProductId, ct);
@@ -49,7 +52,12 @@ public sealed class CreateProductEndpoint : Endpoint<Request, Response>
             addOrderItems.Add(new(product, item.Quantity, item.UnitPrice));
         }
 
-        var result = Order.Place(addOrderItems, req.CustomerEmail, _dateTime.UtcNow.DateTime);
+        var model = new OrderPlacementModel(
+            addOrderItems,
+            req.CustomerEmail,
+            _dateTime.UtcNow.DateTime
+        );
+        var result = _orderPlacement.Place(model);
 
         if (result.IsInvalid())
         {
