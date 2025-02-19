@@ -7,6 +7,7 @@ using Domain.Orders;
 using Domain.Orders.Services;
 using Domain.Products;
 using FastEndpoints;
+using FastEndpoints.Swagger;
 using Infrastructure.JobStorage;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Inventories;
@@ -25,6 +26,8 @@ public static class DependencyInjection
         services.AddFastEndpoints(options =>
             options.SourceGeneratorDiscoveredTypes = DiscoveredTypes.All
         );
+
+        services.SwaggerDocument();
 
         services.AddJobQueues<JobRecord, JobStorage>();
 

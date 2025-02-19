@@ -6,6 +6,7 @@
 
 using Application;
 using FastEndpoints;
+using FastEndpoints.Swagger;
 using NLog;
 using NLog.Web;
 
@@ -31,7 +32,7 @@ try
 
     app.UseHttpsRedirection().UseDefaultExceptionHandler();
 
-    app.UseFastEndpoints().UseJobQueues(options => options.MaxConcurrency = 4);
+    app.UseFastEndpoints().UseSwaggerGen().UseJobQueues(options => options.MaxConcurrency = 4);
 
     await app.RunAsync();
 }

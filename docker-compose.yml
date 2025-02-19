@@ -1,5 +1,3 @@
-name: api
-
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2019-latest
@@ -20,17 +18,11 @@ services:
     volumes:
       - mongodata:/data/db
 
-  webapp:
-    image: your-aspnetcore-app-image
-    container_name: webapp
+  api:
+    image: ${DOCKER_REGISTRY-}api
     build:
-      context: ../../ # Set the build context to the root of your solution
-      dockerfile: src/Api/Dockerfile # Specify the path to the Dockerfile
-    ports:
-      - "5000:80"
-    depends_on:
-      - sqlserver
-      - mongodb
+      context: .
+      dockerfile: src/Api/Dockerfile
 
 volumes:
   sqlserverdata:

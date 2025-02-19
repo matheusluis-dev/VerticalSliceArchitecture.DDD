@@ -6,9 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+
     <PackageReference Include="ArchGuard" />
-    <PackageReference Include="ArchGuard.Core" />
+
     <PackageReference Include="ArchGuard.Extensions.Shouldly" />
+
     <PackageReference Include="Bogus" />
     <PackageReference Include="coverlet.collector">
       <PrivateAssets>all</PrivateAssets>

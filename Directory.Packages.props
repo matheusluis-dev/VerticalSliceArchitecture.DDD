@@ -3,10 +3,8 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="ArchGuard" Version="0.0.22" />
-    <PackageVersion Include="ArchGuard.Core" Version="0.0.22" />
-    <PackageVersion Include="ArchGuard.Extensions.NFluent" Version="0.0.17" />
-    <PackageVersion Include="ArchGuard.Extensions.Shouldly" Version="0.0.22" />
+    <PackageVersion Include="ArchGuard" Version="0.0.2" />
+    <PackageVersion Include="ArchGuard.Extensions.Shouldly" Version="0.0.2" />
     <PackageVersion Include="Ardalis.GuardClauses" Version="5.0.0" />
     <PackageVersion Include="Ardalis.GuardClauses.Custom" Version="4.0.6" />
     <PackageVersion Include="Ardalis.Result" Version="10.1.0" />
@@ -22,7 +20,7 @@
     <PackageVersion Include="FastEndpoints.Generator" Version="5.34.0" />
     <PackageVersion Include="FastEndpoints.OpenTelemetry" Version="2.3.0" />
     <PackageVersion Include="FastEndpoints.Security" Version="5.33.0" />
-    <PackageVersion Include="FastEndpoints.Swagger" Version="5.33.0" />
+    <PackageVersion Include="FastEndpoints.Swagger" Version="5.34.0" />
     <PackageVersion Include="FastEndpoints.Testing" Version="5.34.0" />
     <PackageVersion Include="FluentAssertions" Version="8.0.1" />
     <PackageVersion Include="FluentAssertions.Analyzers" Version="0.34.1" />

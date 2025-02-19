@@ -1,3 +1,5 @@
+# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 USER $APP_UID
@@ -5,42 +7,28 @@ WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
 
+
 # This stage is used to build the service project
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-
-# Copy the solution and project files
-COPY ["VerticalSliceArchitecture.DDD.sln", "."]
-COPY ["Directory.Build.props", "."]
 COPY ["Directory.Packages.props", "."]
-
+COPY ["Directory.Build.props", "."]
+COPY ["src/Api/Api.csproj", "src/Api/"]
 COPY ["src/Application/Application.csproj", "src/Application/"]
 COPY ["src/Domain/Domain.csproj", "src/Domain/"]
 COPY ["src/Infrastructure/Infrastructure.csproj", "src/Infrastructure/"]
-COPY ["src/Api/Api.csproj", "src/Api/"]
-COPY ["tests/Application.Architecture.Tests/Application.Architecture.Tests.csproj", "tests/Application.Architecture.Tests/"]
-COPY ["tests/Application.Common.Tests/Application.Common.Tests.csproj", "tests/Application.Common.Tests/"]
-COPY ["tests/Application.EndToEnd.Tests/Application.EndToEnd.Tests.csproj", "tests/Application.EndToEnd.Tests/"]
-COPY ["tests/Application.Integration.Tests/Application.Integration.Tests.csproj", "tests/Application.Integration.Tests/"]
-COPY ["tests/Application.Unit.Tests/Application.Unit.Tests.csproj", "tests/Application.Unit.Tests/"]
-
-# Restore dependencies
-RUN dotnet restore "VerticalSliceArchitecture.DDD.sln"
-
-# Copy the rest of the application code
+RUN dotnet restore "./src/Api/Api.csproj"
 COPY . .
+WORKDIR "/src/src/Api"
+RUN dotnet build "./Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# Build the project
-WORKDIR "/src/Api"
-RUN dotnet build "Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
-
-# Publish the project
+# This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# Final stage
+# This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
