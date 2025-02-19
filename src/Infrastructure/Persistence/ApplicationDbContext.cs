@@ -11,8 +11,6 @@ using Microsoft.EntityFrameworkCore;
 
 public sealed class ApplicationDbContext : DbContext
 {
-    public DbSet<JobRecord> JobRecord { get; set; }
-
     public DbSet<OrderTable> Order { get; set; }
     public DbSet<OrderItemTable> OrderItem { get; set; }
     public DbSet<ProductTable> Product { get; set; }
@@ -29,9 +27,7 @@ public sealed class ApplicationDbContext : DbContext
         optionsBuilder.UseUpperSnakeCaseNamingConvention();
     }
 
-    protected override void ConfigureConventions(
-        [NotNull] ModelConfigurationBuilder configurationBuilder
-    )
+    protected override void ConfigureConventions([NotNull] ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.ApplyVogenEfConvertersFromAssembly(typeof(EntityBase).Assembly);
     }
@@ -39,8 +35,6 @@ public sealed class ApplicationDbContext : DbContext
     protected override void OnModelCreating([NotNull] ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
-
-        modelBuilder.Entity<JobRecord>().HasKey(j => j.TrackingID);
 
         NormalizeTableName(modelBuilder);
     }
@@ -50,9 +44,7 @@ public sealed class ApplicationDbContext : DbContext
         foreach (var entity in modelBuilder.Model.GetEntityTypes())
         {
             var entityName = entity.GetTableName();
-            var withoutModel = entityName!.EndsWith("Table", StringComparison.Ordinal)
-                ? entityName[0..^5]
-                : entityName;
+            var withoutModel = entityName!.EndsWith("Table", StringComparison.Ordinal) ? entityName[0..^5] : entityName;
 
             entity.SetTableName(withoutModel);
         }

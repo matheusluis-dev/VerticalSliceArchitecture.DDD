@@ -8,11 +8,7 @@ using Domain.Inventories.Specifications;
 using Domain.Inventories.ValueObjects;
 using Domain.Orders.ValueObjects;
 
-public sealed record ReserveStockModel(
-    Inventory Inventory,
-    OrderItemId OrderItemId,
-    Quantity Quantity
-);
+public sealed record ReserveStockModel(Inventory Inventory, OrderItemId OrderItemId, Quantity Quantity);
 
 public sealed partial class StockReservationService
 {
@@ -22,9 +18,7 @@ public sealed partial class StockReservationService
 
         if (quantity.Value <= 0)
         {
-            return Result<Reservation>.Invalid(
-                new ValidationError("Quantity must be greater than 0")
-            );
+            return Result<Reservation>.Invalid(new ValidationError("Quantity must be greater than 0"));
         }
 
         if (!new HasEnoughStockToDecreaseSpecification(quantity).IsSatisfiedBy(inventory))
@@ -72,9 +66,7 @@ public sealed partial class StockReservationService
 
         if (reservation.Status is not ReservationStatus.Pending)
         {
-            return Result<Inventory>.Invalid(
-                new ValidationError("Reservation status must be pending")
-            );
+            return Result<Inventory>.Invalid(new ValidationError("Reservation status must be pending"));
         }
 
         reservation.Status = ReservationStatus.Cancelled;

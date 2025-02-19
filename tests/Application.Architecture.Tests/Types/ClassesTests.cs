@@ -51,11 +51,7 @@ public sealed class ClassesTests
     public void Non_Abstract_non_Static_classes_should_be_Sealed()
     {
         // Arrange
-        var rules = SystemUnderTest
-            .Types.That.AreClasses()
-            .And.AreNotStatic()
-            .And.AreNotAbstract()
-            .Should.BeSealed();
+        var rules = SystemUnderTest.Types.That.AreClasses().And.AreNotStatic().And.AreNotAbstract().Should.BeSealed();
 
         // Act
         var result = rules.GetResult(StringComparison.Ordinal);

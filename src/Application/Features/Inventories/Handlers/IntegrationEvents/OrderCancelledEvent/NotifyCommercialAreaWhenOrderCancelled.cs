@@ -5,14 +5,11 @@ using Domain.Common.ValueObjects;
 using Domain.Orders.Events;
 using Domain.Orders.ValueObjects;
 
-public sealed class NotifyCommercialAreaWhenOrderCancelled
-    : IDomainEventHandler<OrderCancelledEvent>
+public sealed class NotifyCommercialAreaWhenOrderCancelled : IDomainEventHandler<OrderCancelledEvent>
 {
     public Task HandleAsync([NotNull] OrderCancelledEvent eventModel, CancellationToken ct)
     {
-        return new NotifyCommercialAreaWhenOrderCancelledCommand(eventModel.Order.Id).QueueJobAsync(
-            ct: ct
-        );
+        return new NotifyCommercialAreaWhenOrderCancelledCommand(eventModel.Order.Id).QueueJobAsync(ct: ct);
     }
 }
 
@@ -28,10 +25,7 @@ public sealed class NotifyCommercialAreaWhenOrderCancelledCommandHandler
         _email = email;
     }
 
-    public Task ExecuteAsync(
-        [NotNull] NotifyCommercialAreaWhenOrderCancelledCommand command,
-        CancellationToken ct
-    )
+    public Task ExecuteAsync([NotNull] NotifyCommercialAreaWhenOrderCancelledCommand command, CancellationToken ct)
     {
         return _email.SendEmailAsync(
             Email.From("system@system.com"),

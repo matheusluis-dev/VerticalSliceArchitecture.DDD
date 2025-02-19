@@ -9,8 +9,7 @@ using Domain.Orders.Events;
 using Domain.Products.Specifications;
 using Microsoft.Extensions.DependencyInjection;
 
-public sealed class RemoveStockReservationWhenOrderCancelled
-    : IDomainEventHandler<OrderCancelledEvent>
+public sealed class RemoveStockReservationWhenOrderCancelled : IDomainEventHandler<OrderCancelledEvent>
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly StockReservationService _stockReservation;
@@ -38,9 +37,7 @@ public sealed class RemoveStockReservationWhenOrderCancelled
         {
             var inventory = item.Product.Inventory!;
 
-            _stockReservation.CancelStockReservation(
-                new CancelStockReservationModel(item.Product.Inventory!, item.Id)
-            );
+            _stockReservation.CancelStockReservation(new CancelStockReservationModel(item.Product.Inventory!, item.Id));
             inventoryRepository.Update(inventory);
         }
 

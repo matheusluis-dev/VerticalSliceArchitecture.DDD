@@ -24,10 +24,7 @@ public sealed class OrderFakerConfiguration
         return this;
     }
 
-    public OrderFakerConfiguration SetOrderStatus(
-        OrderStatus orderStatus,
-        IEnumerable<int> orderIndexes
-    )
+    public OrderFakerConfiguration SetOrderStatus(OrderStatus orderStatus, IEnumerable<int> orderIndexes)
     {
         Guard.Against.Null(orderIndexes);
 
@@ -46,10 +43,7 @@ public sealed class OrderFakerConfiguration
         return this;
     }
 
-    public OrderFakerConfiguration SetOrderItemCount(
-        int itemQuantity,
-        IEnumerable<int>? orderIndexes = null
-    )
+    public OrderFakerConfiguration SetOrderItemCount(int itemQuantity, IEnumerable<int>? orderIndexes = null)
     {
         orderIndexes ??= Enumerable.Range(0, OrderQuantity.GetValueOrDefault());
 

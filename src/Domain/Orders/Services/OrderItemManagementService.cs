@@ -7,12 +7,7 @@ using Domain.Orders.Entities;
 using Domain.Orders.ValueObjects;
 using Domain.Products.Entities;
 
-public sealed record CreateOrderItemModel(
-    Order Order,
-    Product Product,
-    Quantity Quantity,
-    Amount UnitPrice
-);
+public sealed record CreateOrderItemModel(Order Order, Product Product, Quantity Quantity, Amount UnitPrice);
 
 public sealed class OrderItemManagementService
 {
@@ -24,23 +19,17 @@ public sealed class OrderItemManagementService
 
         if (order.OrderItems.Any(item => item.Product.Id == product.Id))
         {
-            return Result<OrderItem>.Invalid(
-                new ValidationError($"There's already an item with product {product.Id}")
-            );
+            return Result<OrderItem>.Invalid(new ValidationError($"There's already an item with product {product.Id}"));
         }
 
         if (quantity.Value <= 0)
         {
-            return Result<OrderItem>.Invalid(
-                new ValidationError("Item quantity must be higher than 0")
-            );
+            return Result<OrderItem>.Invalid(new ValidationError("Item quantity must be higher than 0"));
         }
 
         if (unitPrice.Value <= 0)
         {
-            return Result<OrderItem>.Invalid(
-                new ValidationError("Item unit price must be higher than 0")
-            );
+            return Result<OrderItem>.Invalid(new ValidationError("Item unit price must be higher than 0"));
         }
 
         if (

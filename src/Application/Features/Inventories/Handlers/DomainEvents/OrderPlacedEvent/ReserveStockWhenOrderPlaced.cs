@@ -14,10 +14,7 @@ public sealed class ReserveStockWhenOrderPlaced : IDomainEventHandler<OrderPlace
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly StockReleaseService _stockRelease;
 
-    public ReserveStockWhenOrderPlaced(
-        IServiceScopeFactory scopeFactory,
-        StockReleaseService stockRelease
-    )
+    public ReserveStockWhenOrderPlaced(IServiceScopeFactory scopeFactory, StockReleaseService stockRelease)
     {
         _scopeFactory = scopeFactory;
         _stockRelease = stockRelease;

@@ -24,14 +24,9 @@ public sealed class InventoryBuilder
         var id = _inventoryToClone?.Id ?? _id ?? InventoryId.Create();
         var productId = _productId ?? _inventoryToClone?.ProductId;
         var quantity = _quantity ?? _inventoryToClone?.Quantity ?? Quantity.From(0);
-        var adjustments =
-            _adjustments.Count > 0
-                ? _adjustments.ToList().AsReadOnly()
-                : _inventoryToClone?.Adjustments;
+        var adjustments = _adjustments.Count > 0 ? _adjustments.ToList().AsReadOnly() : _inventoryToClone?.Adjustments;
         var reservations =
-            _reservations.Count > 0
-                ? _reservations.ToList().AsReadOnly()
-                : _inventoryToClone?.Reservations;
+            _reservations.Count > 0 ? _reservations.ToList().AsReadOnly() : _inventoryToClone?.Reservations;
 
         return Inventory.Create(
             id,

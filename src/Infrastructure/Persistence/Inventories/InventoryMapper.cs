@@ -2,26 +2,16 @@ namespace Infrastructure.Persistence.Inventories;
 
 using System.Linq;
 using Domain.Inventories.Aggregate;
-using Infrastructure.Persistence;
 using Infrastructure.Persistence.Tables;
 
-public sealed class InventoryMapper : IMapperWithQueryable<Inventory, InventoryTable>
+public static class InventoryMapper
 {
-    private readonly AdjustmentMapper _adjustmentMapper;
-    private readonly ReservationMapper _reservationMapper;
-
-    public InventoryMapper(AdjustmentMapper adjustmentMapper, ReservationMapper reservationMapper)
-    {
-        _adjustmentMapper = adjustmentMapper;
-        _reservationMapper = reservationMapper;
-    }
-
-    public IQueryable<Inventory> ToEntityQueryable(IQueryable<InventoryTable> queryable)
+    public static IQueryable<Inventory> ToEntityQueryable(IQueryable<InventoryTable> queryable)
     {
         return queryable.Select(q => ToEntity(q));
     }
 
-    public Inventory ToEntity(InventoryTable table)
+    public static Inventory ToEntity(InventoryTable table)
     {
         ArgumentNullException.ThrowIfNull(table);
 
@@ -29,12 +19,12 @@ public sealed class InventoryMapper : IMapperWithQueryable<Inventory, InventoryT
             table.Id,
             table.ProductId,
             table.Quantity,
-            table.Adjustments.Select(_adjustmentMapper.ToEntity),
-            table.Reservations.Select(_reservationMapper.ToEntity)
+            table.Adjustments.Select(AdjustmentMapper.ToEntity),
+            table.Reservations.Select(ReservationMapper.ToEntity)
         );
     }
 
-    public InventoryTable ToTable(Inventory entity)
+    public static InventoryTable ToTable(Inventory entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
@@ -43,8 +33,8 @@ public sealed class InventoryMapper : IMapperWithQueryable<Inventory, InventoryT
             Id = entity.Id,
             ProductId = entity.ProductId,
             Quantity = entity.Quantity,
-            Adjustments = entity.Adjustments.Select(_adjustmentMapper.ToTable).ToList(),
-            Reservations = entity.Reservations.Select(_reservationMapper.ToTable).ToList(),
+            Adjustments = entity.Adjustments.Select(AdjustmentMapper.ToTable).ToList(),
+            Reservations = entity.Reservations.Select(ReservationMapper.ToTable).ToList(),
         };
     }
 }

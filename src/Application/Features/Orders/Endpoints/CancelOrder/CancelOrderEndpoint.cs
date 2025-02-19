@@ -12,11 +12,7 @@ public sealed class Endpoint : Endpoint<Request, Response>
     private readonly ApplicationDbContext _context;
     private readonly IOrderRepository _orderRepository;
 
-    public Endpoint(
-        IDateTimeService dateTime,
-        ApplicationDbContext context,
-        IOrderRepository orderRepository
-    )
+    public Endpoint(IDateTimeService dateTime, ApplicationDbContext context, IOrderRepository orderRepository)
     {
         _dateTime = dateTime;
         _context = context;

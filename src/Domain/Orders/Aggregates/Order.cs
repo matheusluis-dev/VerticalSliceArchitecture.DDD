@@ -61,10 +61,7 @@ public sealed class Order : EntityBase
         return Amount.From(OrderItems.Sum(item => item.Quantity.Value * item.UnitPrice.Value));
     }
 
-    internal Result<OrderItem> AddItem(
-        OrderItemManagementService orderItemManagement,
-        CreateOrderItemModel model
-    )
+    internal Result<OrderItem> AddItem(OrderItemManagementService orderItemManagement, CreateOrderItemModel model)
     {
         ArgumentNullException.ThrowIfNull(orderItemManagement);
         ArgumentNullException.ThrowIfNull(model);

@@ -7,6 +7,8 @@
 using Application;
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using NLog;
 using NLog.Web;
 
@@ -31,6 +33,12 @@ try
     await using var app = builder.Build();
 
     app.UseHttpsRedirection().UseDefaultExceptionHandler();
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        await db.Database.MigrateAsync(app.Lifetime.ApplicationStopping);
+    }
 
     app.UseFastEndpoints().UseSwaggerGen().UseJobQueues(options => options.MaxConcurrency = 4);
 

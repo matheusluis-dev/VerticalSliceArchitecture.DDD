@@ -28,10 +28,7 @@ public sealed class UpdateProductEndpoint : Endpoint<Request, Response>
         if (product.IsNotFound())
             ThrowError("Product was not found", StatusCodes.Status404NotFound);
 
-        var anotherProductWithSameName = await _productRepository.FindProductByNameAsync(
-            req.Name,
-            ct
-        );
+        var anotherProductWithSameName = await _productRepository.FindProductByNameAsync(req.Name, ct);
 
         if (anotherProductWithSameName.WasFound())
         {

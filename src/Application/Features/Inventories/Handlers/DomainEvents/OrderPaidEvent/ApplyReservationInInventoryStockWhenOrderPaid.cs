@@ -9,8 +9,7 @@ using Domain.Orders.Events;
 using Domain.Products.Specifications;
 using Microsoft.Extensions.DependencyInjection;
 
-public sealed class ApplyReservationInInventoryStockWhenOrderPaid
-    : IDomainEventHandler<OrderPaidEvent>
+public sealed class ApplyReservationInInventoryStockWhenOrderPaid : IDomainEventHandler<OrderPaidEvent>
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly StockReleaseService _stockRelease;

@@ -4,16 +4,9 @@ using Domain.Orders.Entities;
 using Infrastructure.Persistence.Products;
 using Infrastructure.Persistence.Tables;
 
-public sealed class OrderItemMapper : IMapper<OrderItem, OrderItemTable>
+public static class OrderItemMapper
 {
-    private readonly ProductMapper _productMapper;
-
-    public OrderItemMapper(ProductMapper productMapper)
-    {
-        _productMapper = productMapper;
-    }
-
-    public OrderItem ToEntity(OrderItemTable table)
+    public static OrderItem ToEntity(OrderItemTable table)
     {
         ArgumentNullException.ThrowIfNull(table);
 
@@ -23,12 +16,12 @@ public sealed class OrderItemMapper : IMapper<OrderItem, OrderItemTable>
             OrderId = table.OrderId,
             Quantity = table.Quantity,
             UnitPrice = table.UnitPrice,
-            Product = _productMapper.ToEntity(table.Product),
+            Product = ProductMapper.ToEntity(table.Product),
             ReservationId = table.ReservationId,
         };
     }
 
-    public OrderItemTable ToTable(OrderItem entity)
+    public static OrderItemTable ToTable(OrderItem entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
@@ -38,7 +31,7 @@ public sealed class OrderItemMapper : IMapper<OrderItem, OrderItemTable>
             OrderId = entity.OrderId,
             Quantity = entity.Quantity,
             UnitPrice = entity.UnitPrice,
-            Product = _productMapper.ToTable(entity.Product),
+            Product = ProductMapper.ToTable(entity.Product),
             ReservationId = entity.ReservationId,
         };
     }

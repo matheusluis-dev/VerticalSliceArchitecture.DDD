@@ -3,22 +3,16 @@ namespace Infrastructure.Persistence.Inventories;
 using Domain.Inventories.Entities;
 using Infrastructure.Persistence.Tables;
 
-public sealed class ReservationMapper : IMapper<Reservation, ReservationTable>
+public static class ReservationMapper
 {
-    public Reservation ToEntity(ReservationTable table)
+    public static Reservation ToEntity(ReservationTable table)
     {
         ArgumentNullException.ThrowIfNull(table);
 
-        return Reservation.Create(
-            table.Id,
-            table.InventoryId,
-            table.OrderItemId,
-            table.Quantity,
-            table.Status
-        );
+        return Reservation.Create(table.Id, table.InventoryId, table.OrderItemId, table.Quantity, table.Status);
     }
 
-    public ReservationTable ToTable(Reservation entity)
+    public static ReservationTable ToTable(Reservation entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
 

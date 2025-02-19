@@ -45,16 +45,11 @@ public sealed class DeleteProductEndpoint : Endpoint<Request>
 
         if (product.Inventory is not null)
         {
-            var resultInventory = await _inventoryRepository.FindByIdAsync(
-                product.Inventory.Id,
-                ct
-            );
+            var resultInventory = await _inventoryRepository.FindByIdAsync(product.Inventory.Id, ct);
 
             if (
                 resultInventory.WasFound()
-                && !new InventoryWasNeverAdjustedAndHasNoReservationsSpecification().IsSatisfiedBy(
-                    resultInventory
-                )
+                && !new InventoryWasNeverAdjustedAndHasNoReservationsSpecification().IsSatisfiedBy(resultInventory)
             )
             {
                 ThrowError(

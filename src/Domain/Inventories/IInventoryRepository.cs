@@ -8,11 +8,7 @@ using Domain.Inventories.ValueObjects;
 
 public interface IInventoryRepository
 {
-    Task<IPagedList<Inventory>> FindAllPagedAsync(
-        int pageIndex,
-        int pageSize,
-        CancellationToken ct = default
-    );
+    Task<IPagedList<Inventory>> FindAllPagedAsync(int pageIndex, int pageSize, CancellationToken ct = default);
 
     Task<Result<Inventory>> FindByIdAsync(InventoryId id, CancellationToken ct = default);
 

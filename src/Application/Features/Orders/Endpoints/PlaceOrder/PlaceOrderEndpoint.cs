@@ -52,11 +52,7 @@ public sealed class CreateProductEndpoint : Endpoint<Request, Response>
             addOrderItems.Add(new(product, item.Quantity, item.UnitPrice));
         }
 
-        var model = new OrderPlacementModel(
-            addOrderItems,
-            req.CustomerEmail,
-            _dateTime.UtcNow.DateTime
-        );
+        var model = new OrderPlacementModel(addOrderItems, req.CustomerEmail, _dateTime.UtcNow.DateTime);
         var result = _orderPlacement.Place(model);
 
         if (result.IsInvalid())

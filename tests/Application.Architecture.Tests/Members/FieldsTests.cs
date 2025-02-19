@@ -53,11 +53,7 @@ public sealed class FieldsTests
     public void Non_static_fields_should_not_be_public_and_not_be_internal()
     {
         // Arrange
-        var rules = SystemUnderTest
-            .Types.Verify()
-            .Fields.That.AreNotStatic()
-            .Should.NotBePublic()
-            .And.NotBeInternal();
+        var rules = SystemUnderTest.Types.Verify().Fields.That.AreNotStatic().Should.NotBePublic().And.NotBeInternal();
 
         // Act
         var result = rules.GetResult(StringComparison.Ordinal);

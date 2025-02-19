@@ -11,13 +11,11 @@ public sealed class InventoryRepository : IInventoryRepository
 {
     private readonly ApplicationDbContext _context;
     private readonly DbSet<InventoryTable> _set;
-    private readonly InventoryMapper _mapper;
 
-    public InventoryRepository(ApplicationDbContext context, InventoryMapper inventoryMapper)
+    public InventoryRepository(ApplicationDbContext context)
     {
         _context = context;
         _set = _context.Set<InventoryTable>();
-        _mapper = inventoryMapper;
     }
 
     private IQueryable<InventoryTable> GetDefaultQuery()
@@ -27,25 +25,22 @@ public sealed class InventoryRepository : IInventoryRepository
 
     public async Task AddAsync(Inventory product, CancellationToken ct = default)
     {
-        await _set.AddAsync(_mapper.ToTable(product), ct);
+        await _set.AddAsync(InventoryMapper.ToTable(product), ct);
     }
 
     public void Update(Inventory product)
     {
-        _set.Update(_mapper.ToTable(product));
+        _set.Update(InventoryMapper.ToTable(product));
     }
 
-    public async Task<Result<Inventory>> FindByIdAsync(
-        InventoryId id,
-        CancellationToken ct = default
-    )
+    public async Task<Result<Inventory>> FindByIdAsync(InventoryId id, CancellationToken ct = default)
     {
         var order = await _set.FindAsync([id], ct);
 
         if (order is null)
             return Result<Inventory>.NotFound();
 
-        return _mapper.ToEntity(order);
+        return InventoryMapper.ToEntity(order);
     }
 
     public async Task<IPagedList<Inventory>> FindAllPagedAsync(
@@ -55,7 +50,7 @@ public sealed class InventoryRepository : IInventoryRepository
     )
     {
         return await PagedList<Inventory>.CreateAsync(
-            _mapper.ToEntityQueryable(GetDefaultQuery().AsNoTracking()),
+            InventoryMapper.ToEntityQueryable(GetDefaultQuery().AsNoTracking()),
             pageIndex,
             pageSize,
             ct

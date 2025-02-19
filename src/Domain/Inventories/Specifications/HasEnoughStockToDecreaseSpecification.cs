@@ -4,8 +4,7 @@ using Domain.Common.Specifications;
 using Domain.Common.ValueObjects;
 using Domain.Inventories.Aggregate;
 
-public sealed class HasEnoughStockToDecreaseSpecification(Quantity quantityToDecrease)
-    : ISpecification<Inventory>
+public sealed class HasEnoughStockToDecreaseSpecification(Quantity quantityToDecrease) : ISpecification<Inventory>
 {
     public bool IsSatisfiedBy(Inventory entity)
     {

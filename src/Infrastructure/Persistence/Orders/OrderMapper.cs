@@ -3,25 +3,18 @@ namespace Infrastructure.Persistence.Orders;
 using Domain.Orders.Aggregates;
 using Infrastructure.Persistence.Tables;
 
-public sealed class OrderMapper : IMapperWithQueryable<Order, OrderTable>
+public static class OrderMapper
 {
-    private readonly OrderItemMapper _orderItemMapper;
-
-    public OrderMapper(OrderItemMapper orderItemMapper)
-    {
-        _orderItemMapper = orderItemMapper;
-    }
-
-    public IQueryable<Order> ToEntityQueryable(IQueryable<OrderTable> queryable)
+    public static IQueryable<Order> ToEntityQueryable(IQueryable<OrderTable> queryable)
     {
         return queryable.Select(o => ToEntity(o));
     }
 
-    public Order ToEntity(OrderTable table)
+    public static Order ToEntity(OrderTable table)
     {
         ArgumentNullException.ThrowIfNull(table);
 
-        var items = table.OrderItems.Select(_orderItemMapper.ToEntity).ToList();
+        var items = table.OrderItems.Select(OrderItemMapper.ToEntity).ToList();
         return new Order
         {
             Id = table.Id,
@@ -34,7 +27,7 @@ public sealed class OrderMapper : IMapperWithQueryable<Order, OrderTable>
         };
     }
 
-    public OrderTable ToTable(Order entity)
+    public static OrderTable ToTable(Order entity)
     {
         ArgumentNullException.ThrowIfNull(entity);
 
@@ -42,7 +35,7 @@ public sealed class OrderMapper : IMapperWithQueryable<Order, OrderTable>
         {
             Id = entity.Id,
             Status = entity.Status,
-            OrderItems = entity.OrderItems.Select(_orderItemMapper.ToTable).ToList(),
+            OrderItems = entity.OrderItems.Select(OrderItemMapper.ToTable).ToList(),
             CanceledDate = entity.CanceledDate,
             CustomerEmail = entity.CustomerEmail,
             PaidDate = entity.PaidDate,

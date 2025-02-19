@@ -28,12 +28,7 @@ public sealed class CreateProductEndpoint : Endpoint<Request, Response>
         var productWithSameName = await _productRepository.FindProductByNameAsync(req.Name, ct);
 
         if (productWithSameName.WasFound())
-        {
-            ThrowError(
-                $"Product with name '{req.Name}' already exists",
-                StatusCodes.Status400BadRequest
-            );
-        }
+            ThrowError($"Product with name '{req.Name}' already exists", StatusCodes.Status400BadRequest);
 
         var result = Product.Create(req.Name);
         if (result.Status is ResultStatus.Invalid)

@@ -45,10 +45,7 @@ public sealed class MethodsConventionsTests
     public void Async_methods_should_have_Async_suffix()
     {
         // Arrange
-        var rules = SystemUnderTest
-            .Types.Verify()
-            .Methods.That.AreAsynchronous()
-            .Should.HaveNameEndingWith("Async");
+        var rules = SystemUnderTest.Types.Verify().Methods.That.AreAsynchronous().Should.HaveNameEndingWith("Async");
 
         // Act
         var result = rules.GetResult(StringComparison.Ordinal);

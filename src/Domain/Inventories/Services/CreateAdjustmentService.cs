@@ -13,9 +13,7 @@ public sealed record CreateForOrderItemReservationModel(
 
 public sealed class CreateAdjustmentService
 {
-    public Result<Adjustment> CreateForOrderItemReservation(
-        CreateForOrderItemReservationModel model
-    )
+    public Result<Adjustment> CreateForOrderItemReservation(CreateForOrderItemReservationModel model)
     {
         var (inventory, orderItemId, reservation) = model;
 

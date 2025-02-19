@@ -14,7 +14,7 @@ public sealed class ApplicationFixture : AppFixture<Program>
     const string MONGO_USERNAME = "root";
     const string MONGO_PASSWORD = "password";
 
-    public HttpClient Product { get; private set; }
+    public HttpClient ProductClient { get; private set; }
 
     protected override async ValueTask PreSetupAsync()
     {
@@ -27,13 +27,13 @@ public sealed class ApplicationFixture : AppFixture<Program>
 
         _mssqlContainer = new MsSqlBuilder().Build();
 
-        await _mongoContainer.StartAsync();
-        await _mssqlContainer.StartAsync();
+        await _mssqlContainer.StartAsync(Cancellation);
+        await _mongoContainer.StartAsync(Cancellation);
     }
 
     protected override ValueTask SetupAsync()
     {
-        Product = CreateClient();
+        ProductClient = CreateClient();
 
         return ValueTask.CompletedTask;
     }

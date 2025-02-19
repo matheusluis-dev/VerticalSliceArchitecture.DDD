@@ -8,13 +8,9 @@ using Domain.Inventories.Events;
 using Domain.Inventories.ValueObjects;
 using Domain.Products.ValueObjects;
 
-public sealed class NotifySystemAdminWhenInventoryStockReachedZero
-    : IDomainEventHandler<InventoryStockReachedZeroEvent>
+public sealed class NotifySystemAdminWhenInventoryStockReachedZero : IDomainEventHandler<InventoryStockReachedZeroEvent>
 {
-    public Task HandleAsync(
-        [NotNull] InventoryStockReachedZeroEvent eventModel,
-        CancellationToken ct
-    )
+    public Task HandleAsync([NotNull] InventoryStockReachedZeroEvent eventModel, CancellationToken ct)
     {
         return new NotifySystemAdminWhenInventoryStockReachedZeroCommand(
             eventModel.Inventory.Id,
@@ -23,10 +19,8 @@ public sealed class NotifySystemAdminWhenInventoryStockReachedZero
     }
 }
 
-public sealed record NotifySystemAdminWhenInventoryStockReachedZeroCommand(
-    InventoryId InventoryId,
-    ProductId ProductId
-) : ICommand;
+public sealed record NotifySystemAdminWhenInventoryStockReachedZeroCommand(InventoryId InventoryId, ProductId ProductId)
+    : ICommand;
 
 public sealed class NotifySystemAdminWhenInventoryStockReachedZeroCommandHandler
     : ICommandHandler<NotifySystemAdminWhenInventoryStockReachedZeroCommand>

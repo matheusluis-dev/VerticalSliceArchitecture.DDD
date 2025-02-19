@@ -23,9 +23,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddConfiguredFastEndpoints(this IServiceCollection services)
     {
-        services.AddFastEndpoints(options =>
-            options.SourceGeneratorDiscoveredTypes = DiscoveredTypes.All
-        );
+        services.AddFastEndpoints(options => options.SourceGeneratorDiscoveredTypes = DiscoveredTypes.All);
 
         services.SwaggerDocument();
 
@@ -67,9 +65,7 @@ public static class DependencyInjection
         {
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
             {
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseInMemoryDatabase("VSA")
-                );
+                services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("VSA"));
             }
             else
             {
@@ -108,9 +104,6 @@ public static class DependencyInjection
 
         void AddOrder()
         {
-            services.AddSingleton<OrderMapper>();
-            services.AddSingleton<OrderItemMapper>();
-
             services.AddSingleton<OrderPlacementService>();
             services.AddSingleton<OrderItemManagementService>();
 
@@ -119,22 +112,17 @@ public static class DependencyInjection
 
         void AddInventory()
         {
-            services.AddSingleton<InventoryMapper>();
-            services.AddSingleton<AdjustmentMapper>();
-            services.AddSingleton<ReservationMapper>();
-
             services.AddSingleton<AdjustInventoryStockService>();
             services.AddSingleton<CreateAdjustmentService>();
             services.AddSingleton<StockReleaseService>();
             services.AddSingleton<StockReservationService>();
+            services.AddSingleton<CreateInventoryService>();
 
             services.AddScoped<IInventoryRepository, InventoryRepository>();
         }
 
         void AddProduct()
         {
-            services.AddSingleton<ProductMapper>();
-
             services.AddScoped<IProductRepository, ProductRepository>();
         }
     }

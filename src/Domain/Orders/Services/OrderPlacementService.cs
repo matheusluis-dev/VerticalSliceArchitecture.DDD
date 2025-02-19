@@ -8,11 +8,7 @@ using Domain.Orders.Events;
 using Domain.Orders.ValueObjects;
 using Domain.Products.Entities;
 
-public sealed record OrderPlacementModel(
-    IEnumerable<OrderItemPlacementModel> Items,
-    Email CustomerEmail,
-    DateTime Now
-);
+public sealed record OrderPlacementModel(IEnumerable<OrderItemPlacementModel> Items, Email CustomerEmail, DateTime Now);
 
 public sealed record OrderItemPlacementModel(Product Product, Quantity Quantity, Amount UnitPrice)
 {

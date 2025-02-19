@@ -49,26 +49,7 @@ public sealed class Inventory : EntityBase
         if (productId is null)
             return Result.Invalid(new ValidationError($"{nameof(ProductId)} must be set"));
 
-        return new Inventory(
-            id,
-            productId.Value,
-            quantity,
-            adjustments,
-            reservations,
-            domainEvents
-        );
-    }
-
-    public static Result<Inventory> CreateForProduct(ProductId productId, Quantity quantity)
-    {
-        if (quantity.Value <= 0)
-        {
-            return Result<Inventory>.Invalid(
-                new ValidationError("Initial quantity must be greater than 0.")
-            );
-        }
-
-        return new Inventory(InventoryId.Create(), productId, quantity, [], []);
+        return new Inventory(id, productId.Value, quantity, adjustments, reservations, domainEvents);
     }
 
     public Quantity GetAvailableStock()

@@ -11,11 +11,7 @@ public sealed class PayOrderEndpoint : Endpoint<Request, Response>
     private readonly ApplicationDbContext _context;
     private readonly IOrderRepository _orderRepository;
 
-    public PayOrderEndpoint(
-        IDateTimeService dateTime,
-        ApplicationDbContext context,
-        IOrderRepository orderRepository
-    )
+    public PayOrderEndpoint(IDateTimeService dateTime, ApplicationDbContext context, IOrderRepository orderRepository)
     {
         _dateTime = dateTime;
         _context = context;

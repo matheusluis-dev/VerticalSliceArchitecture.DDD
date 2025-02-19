@@ -11,14 +11,12 @@ using Infrastructure.Persistence.Tables;
 public sealed class OrderRepository : IOrderRepository
 {
     private readonly DbSet<OrderTable> _orderSet;
-    private readonly OrderMapper _mapper;
 
-    public OrderRepository(ApplicationDbContext context, OrderMapper mapper)
+    public OrderRepository(ApplicationDbContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
 
         _orderSet = context.Order;
-        _mapper = mapper;
     }
 
     private IQueryable<OrderTable> GetDefaultQuery()
@@ -28,7 +26,7 @@ public sealed class OrderRepository : IOrderRepository
 
     public IQueryable<Order> GetAll()
     {
-        return _mapper.ToEntityQueryable(GetDefaultQuery());
+        return OrderMapper.ToEntityQueryable(GetDefaultQuery());
     }
 
     public async Task<Result<Order>> FindByIdAsync(OrderId id, CancellationToken ct = default)
@@ -38,17 +36,13 @@ public sealed class OrderRepository : IOrderRepository
         if (order is null)
             return Result.NotFound();
 
-        return _mapper.ToEntity(order);
+        return OrderMapper.ToEntity(order);
     }
 
-    public async Task<IPagedList<Order>> FindAllPagedAsync(
-        int pageIndex,
-        int pageSize,
-        CancellationToken ct = default
-    )
+    public async Task<IPagedList<Order>> FindAllPagedAsync(int pageIndex, int pageSize, CancellationToken ct = default)
     {
         return await PagedList<Order>.CreateAsync(
-            _mapper.ToEntityQueryable(GetDefaultQuery().AsNoTracking()),
+            OrderMapper.ToEntityQueryable(GetDefaultQuery().AsNoTracking()),
             pageIndex,
             pageSize,
             ct
@@ -57,7 +51,7 @@ public sealed class OrderRepository : IOrderRepository
 
     public async Task<IList<Order>> FindAllPaidOrdersAsync()
     {
-        return await _mapper
+        return await OrderMapper
             .ToEntityQueryable(GetDefaultQuery().AsNoTracking())
             .Where(order => new ArePaidSpecification().IsSatisfiedBy(order))
             .ToListAsync();
@@ -65,7 +59,7 @@ public sealed class OrderRepository : IOrderRepository
 
     public async Task<IList<Order>> FindAllPriceOver1000Async()
     {
-        return await _mapper
+        return await OrderMapper
             .ToEntityQueryable(GetDefaultQuery())
             .AsNoTracking()
             .Where(order => new TotalPriceHigherThan1000Specification().IsSatisfiedBy(order))
@@ -74,18 +68,18 @@ public sealed class OrderRepository : IOrderRepository
 
     public async Task<Order?> CreateAsync(Order order, CancellationToken ct = default)
     {
-        await _orderSet.AddAsync(_mapper.ToTable(order), ct);
+        await _orderSet.AddAsync(OrderMapper.ToTable(order), ct);
 
         return order;
     }
 
     public void Update(Order order)
     {
-        _orderSet.Update(_mapper.ToTable(order));
+        _orderSet.Update(OrderMapper.ToTable(order));
     }
 
     public void Delete(Order order)
     {
-        _orderSet.Remove(_mapper.ToTable(order));
+        _orderSet.Remove(OrderMapper.ToTable(order));
     }
 }

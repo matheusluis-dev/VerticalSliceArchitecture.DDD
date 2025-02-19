@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using FastEndpoints;
-using global::Infrastructure.Services;
+using Infrastructure.Services;
 using MongoDB.Driver;
 
 public sealed class JobStorage : IJobStorageProvider<JobRecord>
@@ -26,14 +26,9 @@ public sealed class JobStorage : IJobStorageProvider<JobRecord>
         return _jobs.InsertOneAsync(r, cancellationToken: ct);
     }
 
-    public async Task<IEnumerable<JobRecord>> GetNextBatchAsync(
-        PendingJobSearchParams<JobRecord> parameters
-    )
+    public async Task<IEnumerable<JobRecord>> GetNextBatchAsync(PendingJobSearchParams<JobRecord> parameters)
     {
-        var jobs = await _jobs.FindAsync(
-            parameters.Match,
-            cancellationToken: parameters.CancellationToken
-        );
+        var jobs = await _jobs.FindAsync(parameters.Match, cancellationToken: parameters.CancellationToken);
 
         return await jobs.ToListAsync(parameters.CancellationToken);
     }
@@ -51,18 +46,10 @@ public sealed class JobStorage : IJobStorageProvider<JobRecord>
         var job = await _jobs.Find(j => j.TrackingID == trackingId).FirstOrDefaultAsync(ct);
 
         job.IsComplete = true;
-        await _jobs.ReplaceOneAsync(
-            j => j.TrackingID == job.TrackingID,
-            job,
-            cancellationToken: ct
-        );
+        await _jobs.ReplaceOneAsync(j => j.TrackingID == job.TrackingID, job, cancellationToken: ct);
     }
 
-    public Task OnHandlerExecutionFailureAsync(
-        [NotNull] JobRecord r,
-        Exception exception,
-        CancellationToken ct
-    )
+    public Task OnHandlerExecutionFailureAsync([NotNull] JobRecord r, Exception exception, CancellationToken ct)
     {
         r.ExecuteAfter = _dateTime.UtcNow.DateTime.AddMinutes(1);
         return _jobs.ReplaceOneAsync(j => j.TrackingID == r.TrackingID, r, cancellationToken: ct);
@@ -70,9 +57,6 @@ public sealed class JobStorage : IJobStorageProvider<JobRecord>
 
     public Task PurgeStaleJobsAsync(StaleJobSearchParams<JobRecord> parameters)
     {
-        return _jobs.DeleteManyAsync(
-            parameters.Match,
-            cancellationToken: parameters.CancellationToken
-        );
+        return _jobs.DeleteManyAsync(parameters.Match, cancellationToken: parameters.CancellationToken);
     }
 }

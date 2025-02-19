@@ -38,9 +38,7 @@ public sealed class Product : EntityBase
     public Result<Product> UpdateName(ProductName name)
     {
         if (name == Name)
-            return Result<Product>.Invalid(
-                new ValidationError("Can not update name to the same name")
-            );
+            return Result<Product>.Invalid(new ValidationError("Can not update name to the same name"));
 
         _name = name;
 

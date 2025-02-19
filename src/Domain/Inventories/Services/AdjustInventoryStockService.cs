@@ -24,13 +24,7 @@ public sealed class AdjustInventoryStockService
         if (errors.Count > 0)
             return Result<Inventory>.Invalid(errors);
 
-        var adjustment = Adjustment.Create(
-            AdjustmentId.Create(),
-            inventory.Id,
-            null,
-            quantity,
-            reason
-        );
+        var adjustment = Adjustment.Create(AdjustmentId.Create(), inventory.Id, null, quantity, reason);
 
         if (adjustment.IsInvalid())
             return Result.Invalid(adjustment.ValidationErrors);

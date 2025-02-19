@@ -16,20 +16,14 @@ internal static class VogenExtensions
     {
         foreach (var type in assembly.GetTypes())
         {
-            if (
-                IsVogenValueObject(type)
-                && TryGetEfValueConverter(type, out var efCoreConverterType)
-            )
+            if (IsVogenValueObject(type) && TryGetEfValueConverter(type, out var efCoreConverterType))
             {
                 configurationBuilder.Properties(type).HaveConversion(efCoreConverterType);
             }
         }
     }
 
-    private static bool TryGetEfValueConverter(
-        Type type,
-        [NotNullWhen(true)] out Type? efCoreConverterType
-    )
+    private static bool TryGetEfValueConverter(Type type, [NotNullWhen(true)] out Type? efCoreConverterType)
     {
         foreach (var innerType in type.GetNestedTypes())
         {

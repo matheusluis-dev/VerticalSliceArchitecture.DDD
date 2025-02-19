@@ -10,18 +10,15 @@ public sealed class SendEmailsWhenOrderWasPaid : IEventHandler<OrderPaidEvent>
 {
     public Task HandleAsync([NotNull] OrderPaidEvent eventModel, CancellationToken ct)
     {
-        return new SendEmailsWhenOrderWasPaidCommand(
-            eventModel.Order.Id,
-            eventModel.Order.CustomerEmail
-        ).QueueJobAsync(ct: ct);
+        return new SendEmailsWhenOrderWasPaidCommand(eventModel.Order.Id, eventModel.Order.CustomerEmail).QueueJobAsync(
+            ct: ct
+        );
     }
 }
 
-public sealed record SendEmailsWhenOrderWasPaidCommand(OrderId OrderId, Email CustomerEmail)
-    : ICommand;
+public sealed record SendEmailsWhenOrderWasPaidCommand(OrderId OrderId, Email CustomerEmail) : ICommand;
 
-public sealed class SendEmailsWhenOrderWasPaidCommandHandler
-    : ICommandHandler<SendEmailsWhenOrderWasPaidCommand>
+public sealed class SendEmailsWhenOrderWasPaidCommandHandler : ICommandHandler<SendEmailsWhenOrderWasPaidCommand>
 {
     private readonly EmailService _email;
 
@@ -30,10 +27,7 @@ public sealed class SendEmailsWhenOrderWasPaidCommandHandler
         _email = emailService;
     }
 
-    public Task ExecuteAsync(
-        [NotNull] SendEmailsWhenOrderWasPaidCommand command,
-        CancellationToken ct
-    )
+    public Task ExecuteAsync([NotNull] SendEmailsWhenOrderWasPaidCommand command, CancellationToken ct)
     {
         var sendEmailToCostumer = _email.SendEmailAsync(
             command.CustomerEmail,

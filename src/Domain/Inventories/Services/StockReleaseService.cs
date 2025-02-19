@@ -7,9 +7,7 @@ using Domain.Orders.ValueObjects;
 
 public sealed record ReleaseStockReservationModel(Inventory Inventory, OrderItemId OrderItemId)
 {
-    public CreateForOrderItemReservationModel ToCreateForOrderItemReservationModel(
-        Reservation reservation
-    )
+    public CreateForOrderItemReservationModel ToCreateForOrderItemReservationModel(Reservation reservation)
     {
         return new(Inventory, OrderItemId, reservation);
     }
@@ -41,9 +39,7 @@ public sealed class StockReleaseService
 
         if (reservation.Status is ReservationStatus.Cancelled)
         {
-            return Result<Inventory>.Invalid(
-                new ValidationError("Can not apply if reservation is cancelled")
-            );
+            return Result<Inventory>.Invalid(new ValidationError("Can not apply if reservation is cancelled"));
         }
 
         if (reservation.Status is ReservationStatus.Applied)
