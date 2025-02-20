@@ -30,8 +30,10 @@ public sealed class Adjustment : IChildEntity
 
         if (string.IsNullOrWhiteSpace(reason))
             errors.Add(new ValidationError("Reason must be informed"));
+        else if (reason.Length < 15)
+            errors.Add(new ValidationError("Reason must have at least 15 characters"));
 
-        if (quantity.Value <= 0)
+        if (quantity.Value == 0)
             errors.Add(new ValidationError("Quantity must be greater than zero"));
 
         if (errors.Count > 0)

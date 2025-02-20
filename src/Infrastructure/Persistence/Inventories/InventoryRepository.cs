@@ -20,7 +20,7 @@ public sealed class InventoryRepository : IInventoryRepository
 
     private IQueryable<InventoryTable> GetDefaultQuery()
     {
-        return _set.AsQueryable().Include(o => o.Adjustments).Include(o => o.Reservations);
+        return _set.AsQueryable().Include(i => i.Product).Include(i => i.Adjustments).Include(i => i.Reservations);
     }
 
     public async Task AddAsync(Inventory product, CancellationToken ct = default)
@@ -35,12 +35,12 @@ public sealed class InventoryRepository : IInventoryRepository
 
     public async Task<Result<Inventory>> FindByIdAsync(InventoryId id, CancellationToken ct = default)
     {
-        var order = await _set.FindAsync([id], ct);
+        var inventory = await GetDefaultQuery().FirstOrDefaultAsync(i => i.Id == id, ct);
 
-        if (order is null)
+        if (inventory is null)
             return Result<Inventory>.NotFound();
 
-        return InventoryMapper.ToEntity(order);
+        return InventoryMapper.ToEntity(inventory);
     }
 
     public async Task<IPagedList<Inventory>> FindAllPagedAsync(

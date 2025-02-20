@@ -6,7 +6,6 @@ using Domain.Common.DomainEvents;
 using Domain.Inventories;
 using Domain.Inventories.Services;
 using Domain.Orders.Events;
-using Domain.Products.Specifications;
 using Microsoft.Extensions.DependencyInjection;
 
 public sealed class ReserveStockWhenOrderPlaced : IDomainEventHandler<OrderPlacedEvent>
@@ -26,9 +25,7 @@ public sealed class ReserveStockWhenOrderPlaced : IDomainEventHandler<OrderPlace
 
         var inventoryRepository = scope.Resolve<IInventoryRepository>();
 
-        var itemsThatRequireStockReservation = eventModel.Order.OrderItems.Where(item =>
-            new HasInventorySpecification().IsSatisfiedBy(item.Product)
-        );
+        var itemsThatRequireStockReservation = eventModel.Order.OrderItems.Where(item => item.Product.HasInventory);
 
         foreach (var item in itemsThatRequireStockReservation)
         {

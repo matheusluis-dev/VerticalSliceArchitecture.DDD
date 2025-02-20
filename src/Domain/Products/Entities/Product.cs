@@ -1,47 +1,44 @@
 namespace Domain.Products.Entities;
 
+using Domain.Common.DomainEvents;
 using Domain.Common.Entities;
 using Domain.Inventories.Aggregate;
-using Domain.Products.Specifications;
 using Domain.Products.ValueObjects;
 
 public sealed class Product : EntityBase
 {
     public required ProductId Id { get; init; }
     public required Inventory? Inventory { get; init; }
+    public required ProductName Name { get; init; }
 
-    private ProductName _name;
-    public required ProductName Name
+    public bool HasInventory => Inventory is not null;
+
+    private Product(IList<IDomainEvent>? domainEvents = null)
+        : base(domainEvents ?? []) { }
+
+    public static Result<Product> Create(ProductName name, ProductId? id = null, Inventory? inventory = null)
     {
-        get => _name;
-        init => _name = value;
-    }
+        if (name.IsNullOrWhiteSpace())
+            return Result.Invalid(new ValidationError("Can not create product with empty name."));
 
-    public Product()
-        : base([]) { }
-
-    public static Result<Product> Create(ProductName name)
-    {
-        var product = new Product()
+        return new Product
         {
-            Id = ProductId.Create(),
-            Inventory = null,
+            Id = id ?? ProductId.Create(),
+            Inventory = inventory,
             Name = name,
         };
-
-        if (!new ProductNameMustNotBeEmptySpecification().IsSatisfiedBy(product))
-            return Result<Product>.Invalid(new ValidationError("Product name must be defined"));
-
-        return product;
     }
 
     public Result<Product> UpdateName(ProductName name)
     {
         if (name == Name)
-            return Result<Product>.Invalid(new ValidationError("Can not update name to the same name"));
+            return Result.Invalid(new ValidationError("Can not update name to the same name"));
 
-        _name = name;
-
-        return this;
+        return new Product
+        {
+            Id = Id,
+            Name = name,
+            Inventory = Inventory,
+        };
     }
 }

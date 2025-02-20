@@ -3,54 +3,49 @@ namespace Application.Features.Products.DeleteProduct;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain.Inventories;
-using Domain.Inventories.Specifications;
 using Domain.Products;
+using Domain.Products.Specifications;
 using FastEndpoints;
 using Microsoft.AspNetCore.Http;
 
-public sealed class DeleteProductEndpoint : Endpoint<Request>
+public static partial class DeleteProduct
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IProductRepository _productRepository;
-    private readonly IInventoryRepository _inventoryRepository;
-
-    public DeleteProductEndpoint(
-        IProductRepository productRepository,
-        IInventoryRepository inventoryRepository,
-        ApplicationDbContext context
-    )
+    public sealed class Endpoint : Endpoint<Request>
     {
-        _productRepository = productRepository;
-        _inventoryRepository = inventoryRepository;
-        _context = context;
-    }
+        private readonly ApplicationDbContext _context;
+        private readonly IProductRepository _productRepository;
+        private readonly IInventoryRepository _inventoryRepository;
 
-    public override void Configure()
-    {
-        Delete("/product/{id}");
-        AllowAnonymous();
-    }
-
-    public override async Task HandleAsync([NotNull] Request req, CancellationToken ct)
-    {
-        var findResult = await _productRepository.FindProductByIdAsync(req.Id, ct);
-
-        if (findResult.IsNotFound())
+        public Endpoint(
+            IProductRepository productRepository,
+            IInventoryRepository inventoryRepository,
+            ApplicationDbContext context
+        )
         {
-            await SendNotFoundAsync(ct);
-            return;
+            _productRepository = productRepository;
+            _inventoryRepository = inventoryRepository;
+            _context = context;
         }
 
-        var product = findResult.Value;
-
-        if (product.Inventory is not null)
+        public override void Configure()
         {
-            var resultInventory = await _inventoryRepository.FindByIdAsync(product.Inventory.Id, ct);
+            Delete("/product/{id}");
+            AllowAnonymous();
+        }
 
-            if (
-                resultInventory.WasFound()
-                && !new InventoryWasNeverAdjustedAndHasNoReservationsSpecification().IsSatisfiedBy(resultInventory)
-            )
+        public override async Task HandleAsync([NotNull] Request req, CancellationToken ct)
+        {
+            var findResult = await _productRepository.FindProductByIdAsync(req.Id, ct);
+
+            if (findResult.IsNotFound())
+            {
+                await SendNotFoundAsync(ct);
+                return;
+            }
+
+            var product = findResult.Value;
+
+            if (product.HasInventory && !new ProductCanBeDeletedSpecification().IsSatisfiedBy(product))
             {
                 ThrowError(
                     "Can not delete product with a inventory that already was modified",
@@ -59,11 +54,11 @@ public sealed class DeleteProductEndpoint : Endpoint<Request>
 
                 return;
             }
+
+            _productRepository.Delete(product);
+            await _context.SaveChangesAsync(ct);
+
+            await SendOkAsync(ct);
         }
-
-        _productRepository.Delete(product);
-        await _context.SaveChangesAsync(ct);
-
-        await SendOkAsync(ct);
     }
 }

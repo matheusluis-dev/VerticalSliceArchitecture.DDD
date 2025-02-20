@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.__Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250219171058_Initial")]
+    [Migration("20250220170425_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -53,18 +53,18 @@ namespace Infrastructure.Persistence.__Migrations
                         .HasColumnName("REASON");
 
                     b.HasKey("Id")
-                        .HasName("PK_ADJUSTMENT_TABLE");
+                        .HasName("PK_ADJUSTMENT");
 
                     b.HasIndex("Id")
-                        .HasDatabaseName("IX_ADJUSTMENT_TABLE_ID");
+                        .HasDatabaseName("IX_ADJUSTMENT_ID");
 
                     b.HasIndex("InventoryId")
-                        .HasDatabaseName("IX_ADJUSTMENT_TABLE_INVENTORY_ID");
+                        .HasDatabaseName("IX_ADJUSTMENT_INVENTORY_ID");
 
                     b.HasIndex("OrderId")
-                        .HasDatabaseName("IX_ADJUSTMENT_TABLE_ORDER_ID");
+                        .HasDatabaseName("IX_ADJUSTMENT_ORDER_ID");
 
-                    b.ToTable("ADJUSTMENT_TABLE", (string)null);
+                    b.ToTable("ADJUSTMENT", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Tables.InventoryTable", b =>
@@ -222,19 +222,19 @@ namespace Infrastructure.Persistence.__Migrations
                         .HasColumnName("STATUS");
 
                     b.HasKey("Id")
-                        .HasName("PK_RESERVATION_TABLE");
+                        .HasName("PK_RESERVATION");
 
                     b.HasIndex("Id")
-                        .HasDatabaseName("IX_RESERVATION_TABLE_ID");
+                        .HasDatabaseName("IX_RESERVATION_ID");
 
                     b.HasIndex("InventoryId")
-                        .HasDatabaseName("IX_RESERVATION_TABLE_INVENTORY_ID");
+                        .HasDatabaseName("IX_RESERVATION_INVENTORY_ID");
 
                     b.HasIndex("OrderItemId")
                         .IsUnique()
-                        .HasDatabaseName("IX_RESERVATION_TABLE_ORDER_ITEM_ID");
+                        .HasDatabaseName("IX_RESERVATION_ORDER_ITEM_ID");
 
-                    b.ToTable("RESERVATION_TABLE", (string)null);
+                    b.ToTable("RESERVATION", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Persistence.Tables.AdjustmentTable", b =>
@@ -244,12 +244,12 @@ namespace Infrastructure.Persistence.__Migrations
                         .HasForeignKey("InventoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("FK_ADJUSTMENT_TABLE_INVENTORY_INVENTORY_ID");
+                        .HasConstraintName("FK_ADJUSTMENT_INVENTORY_INVENTORY_ID");
 
                     b.HasOne("Infrastructure.Persistence.Tables.OrderTable", "Order")
                         .WithMany()
                         .HasForeignKey("OrderId")
-                        .HasConstraintName("FK_ADJUSTMENT_TABLE_ORDER_ORDER_ID");
+                        .HasConstraintName("FK_ADJUSTMENT_ORDER_ORDER_ID");
 
                     b.Navigation("Inventory");
 
@@ -295,13 +295,13 @@ namespace Infrastructure.Persistence.__Migrations
                         .HasForeignKey("InventoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
-                        .HasConstraintName("FK_RESERVATION_TABLE_INVENTORY_INVENTORY_ID");
+                        .HasConstraintName("FK_RESERVATION_INVENTORY_INVENTORY_ID");
 
                     b.HasOne("Infrastructure.Persistence.Tables.OrderItemTable", "OrderItem")
                         .WithOne("Reservation")
                         .HasForeignKey("Infrastructure.Persistence.Tables.ReservationTable", "OrderItemId")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .HasConstraintName("FK_RESERVATION_TABLE_ORDER_ITEM_ORDER_ITEM_ID");
+                        .HasConstraintName("FK_RESERVATION_ORDER_ITEM_ORDER_ITEM_ID");
 
                     b.Navigation("Inventory");
 

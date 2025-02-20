@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain.Orders;
 using Domain.Orders.Aggregates;
-using Domain.Orders.Specifications;
+using Domain.Orders.Enums;
 using Domain.Orders.ValueObjects;
 using Infrastructure.Persistence.Tables;
 
@@ -53,16 +53,7 @@ public sealed class OrderRepository : IOrderRepository
     {
         return await OrderMapper
             .ToEntityQueryable(GetDefaultQuery().AsNoTracking())
-            .Where(order => new ArePaidSpecification().IsSatisfiedBy(order))
-            .ToListAsync();
-    }
-
-    public async Task<IList<Order>> FindAllPriceOver1000Async()
-    {
-        return await OrderMapper
-            .ToEntityQueryable(GetDefaultQuery())
-            .AsNoTracking()
-            .Where(order => new TotalPriceHigherThan1000Specification().IsSatisfiedBy(order))
+            .Where(order => order.Status == OrderStatus.Paid)
             .ToListAsync();
     }
 

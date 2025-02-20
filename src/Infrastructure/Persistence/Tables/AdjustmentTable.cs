@@ -1,8 +1,10 @@
 namespace Infrastructure.Persistence.Tables;
 
+using System.Diagnostics.CodeAnalysis;
 using Domain.Common.ValueObjects;
 using Domain.Inventories.ValueObjects;
 using Domain.Orders.ValueObjects;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public sealed class AdjustmentTable
 {
@@ -14,4 +16,13 @@ public sealed class AdjustmentTable
 
     public OrderTable? Order { get; set; }
     public InventoryTable Inventory { get; set; }
+}
+
+public sealed class AdjustmentTableConfiguration : IEntityTypeConfiguration<AdjustmentTable>
+{
+    public void Configure([NotNull] EntityTypeBuilder<AdjustmentTable> builder)
+    {
+        builder.HasKey(e => e.Id);
+        builder.HasIndex(e => e.Id);
+    }
 }

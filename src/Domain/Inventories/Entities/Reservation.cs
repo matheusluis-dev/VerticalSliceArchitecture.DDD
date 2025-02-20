@@ -12,7 +12,7 @@ public sealed class Reservation : IChildEntity
     public required InventoryId InventoryId { get; init; }
     public required OrderItemId OrderItemId { get; init; }
     public required Quantity Quantity { get; init; }
-    public required ReservationStatus Status { get; set; }
+    public required ReservationStatus Status { get; init; }
 
     private Reservation() { }
 
@@ -44,21 +44,6 @@ public sealed class Reservation : IChildEntity
             InventoryId = inventoryId!.Value,
             OrderItemId = orderItemId!.Value,
             Quantity = quantity,
-            Status = status,
-        };
-    }
-
-    internal Result<Reservation> AlterStatus(ReservationStatus status)
-    {
-        if (status == Status)
-            return Result.Invalid(new ValidationError("Can not set to same status"));
-
-        return new Reservation
-        {
-            Id = Id,
-            InventoryId = InventoryId,
-            OrderItemId = OrderItemId,
-            Quantity = Quantity,
             Status = status,
         };
     }

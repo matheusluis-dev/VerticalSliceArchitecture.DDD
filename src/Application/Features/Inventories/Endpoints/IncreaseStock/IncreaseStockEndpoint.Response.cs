@@ -4,4 +4,7 @@ using Domain.Common.ValueObjects;
 using Domain.Inventories.ValueObjects;
 using Domain.Products.ValueObjects;
 
-public sealed record Response(InventoryId Id, ProductId ProductId, Quantity Quantity);
+public static partial class IncreaseStock
+{
+    public sealed record Response(InventoryId Id, ProductId ProductId, Quantity Quantity);
+}

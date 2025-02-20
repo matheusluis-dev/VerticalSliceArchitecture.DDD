@@ -2,4 +2,7 @@ namespace Application.Features.Products.CreateProduct;
 
 using Domain.Products.ValueObjects;
 
-public sealed record Request(ProductName Name);
+public static partial class CreateProduct
+{
+    public sealed record Request(ProductName Name);
+}

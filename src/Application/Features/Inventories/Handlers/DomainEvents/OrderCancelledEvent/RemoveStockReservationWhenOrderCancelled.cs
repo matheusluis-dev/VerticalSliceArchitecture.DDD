@@ -6,7 +6,6 @@ using Domain.Common.DomainEvents;
 using Domain.Inventories;
 using Domain.Inventories.Services;
 using Domain.Orders.Events;
-using Domain.Products.Specifications;
 using Microsoft.Extensions.DependencyInjection;
 
 public sealed class RemoveStockReservationWhenOrderCancelled : IDomainEventHandler<OrderCancelledEvent>
@@ -29,9 +28,7 @@ public sealed class RemoveStockReservationWhenOrderCancelled : IDomainEventHandl
 
         var inventoryRepository = scope.Resolve<IInventoryRepository>();
 
-        var itemsThatRequireStockReservation = eventModel.Order.OrderItems.Where(item =>
-            new HasInventorySpecification().IsSatisfiedBy(item.Product)
-        );
+        var itemsThatRequireStockReservation = eventModel.Order.OrderItems.Where(item => item.Product.HasInventory);
 
         foreach (var item in itemsThatRequireStockReservation)
         {

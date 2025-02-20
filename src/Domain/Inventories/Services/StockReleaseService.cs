@@ -31,31 +31,28 @@ public sealed class StockReleaseService
         var reservation = inventory.Reservations.FirstOrDefault(r => r.OrderItemId == orderItemId);
 
         if (reservation is null)
-        {
-            return Result<Inventory>.Invalid(
-                new ValidationError($"Reservation not found for order item '{orderItemId}'")
-            );
-        }
+            return Result.Invalid(new ValidationError($"Reservation not found for order item '{orderItemId}'"));
 
         if (reservation.Status is ReservationStatus.Cancelled)
-        {
-            return Result<Inventory>.Invalid(new ValidationError("Can not apply if reservation is cancelled"));
-        }
+            return Result.Invalid(new ValidationError("Can not apply if reservation is cancelled"));
 
         if (reservation.Status is ReservationStatus.Applied)
-            return Result<Inventory>.Invalid(new ValidationError("Reservation already applied"));
+            return Result.Invalid(new ValidationError("Reservation already applied"));
 
         var adjustment = _createAdjustment.CreateForOrderItemReservation(
             model.ToCreateForOrderItemReservationModel(reservation)
         );
 
         if (adjustment.IsInvalid())
-            return Result<Inventory>.Invalid(adjustment.ValidationErrors);
+            return Result.Invalid(adjustment.ValidationErrors);
 
-        inventory.PlaceAdjustment(adjustment);
+        var adjustmentResult = inventory.PlaceAdjustment(adjustment);
 
-        reservation.Status = ReservationStatus.Applied;
+        if (adjustmentResult.IsInvalid())
+            return Result.Invalid(adjustmentResult.ValidationErrors);
 
-        return inventory;
+        var inventoryAfterAdjustment = adjustmentResult.Value;
+
+        return inventoryAfterAdjustment.AlterReservationStatus(reservation.Id, ReservationStatus.Applied);
     }
 }

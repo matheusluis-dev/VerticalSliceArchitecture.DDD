@@ -15,16 +15,16 @@ public static class OrderMapper
         ArgumentNullException.ThrowIfNull(table);
 
         var items = table.OrderItems.Select(OrderItemMapper.ToEntity).ToList();
-        return new Order
-        {
-            Id = table.Id,
-            Status = table.Status,
-            CreatedDate = table.CreatedDate,
-            PaidDate = table.PaidDate,
-            CustomerEmail = table.CustomerEmail,
-            CanceledDate = table.CanceledDate,
-            OrderItems = items,
-        };
+
+        return new OrderBuilder()
+            .WithId(table.Id)
+            .WithStatus(table.Status)
+            .WithCreatedDate(table.CreatedDate)
+            .WithPaidDate(table.PaidDate)
+            .WithCustomerEmail(table.CustomerEmail)
+            .WithCanceledDate(table.CanceledDate)
+            .WithOrderItems(items)
+            .Build();
     }
 
     public static OrderTable ToTable(Order entity)
@@ -36,7 +36,7 @@ public static class OrderMapper
             Id = entity.Id,
             Status = entity.Status,
             OrderItems = entity.OrderItems.Select(OrderItemMapper.ToTable).ToList(),
-            CanceledDate = entity.CanceledDate,
+            CanceledDate = entity.CancelledDate,
             CustomerEmail = entity.CustomerEmail,
             PaidDate = entity.PaidDate,
             CreatedDate = entity.CreatedDate,

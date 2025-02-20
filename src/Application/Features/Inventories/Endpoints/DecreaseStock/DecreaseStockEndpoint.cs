@@ -3,21 +3,15 @@ namespace Application.Features.Inventories.Endpoints.DecreaseStock;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain.Inventories;
-using Domain.Inventories.Services;
 using Microsoft.AspNetCore.Http;
 
 public sealed class DecreaseStockEndpoint : Endpoint<Request, Response>
 {
     private readonly IInventoryRepository _inventoryRepository;
-    private readonly AdjustInventoryStockService _adjustInventoryStock;
 
-    public DecreaseStockEndpoint(
-        IInventoryRepository inventoryRepository,
-        AdjustInventoryStockService adjustInventoryStock
-    )
+    public DecreaseStockEndpoint(IInventoryRepository inventoryRepository)
     {
         _inventoryRepository = inventoryRepository;
-        _adjustInventoryStock = adjustInventoryStock;
     }
 
     public override void Configure()
@@ -35,7 +29,7 @@ public sealed class DecreaseStockEndpoint : Endpoint<Request, Response>
 
         var inventory = findResult.Value;
 
-        var result = _adjustInventoryStock.DecreaseQuantity(inventory, req.Quantity, req.Reason);
+        var result = inventory.DecreaseStock(req.Quantity, req.Reason);
 
         if (result.IsInvalid())
         {

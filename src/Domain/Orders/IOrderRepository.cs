@@ -10,8 +10,6 @@ public interface IOrderRepository
 
     Task<IList<Order>> FindAllPaidOrdersAsync();
 
-    Task<IList<Order>> FindAllPriceOver1000Async();
-
     Task<IPagedList<Order>> FindAllPagedAsync(int pageIndex, int pageSize, CancellationToken ct = default);
 
     Task<Order?> CreateAsync(Order order, CancellationToken ct = default);

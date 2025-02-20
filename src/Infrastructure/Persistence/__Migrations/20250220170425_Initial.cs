@@ -95,7 +95,7 @@ namespace Infrastructure.Persistence.__Migrations
             );
 
             migrationBuilder.CreateTable(
-                name: "ADJUSTMENT_TABLE",
+                name: "ADJUSTMENT",
                 columns: table => new
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -107,16 +107,16 @@ namespace Infrastructure.Persistence.__Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ADJUSTMENT_TABLE", x => x.ID);
+                    table.PrimaryKey("PK_ADJUSTMENT", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_ADJUSTMENT_TABLE_INVENTORY_INVENTORY_ID",
+                        name: "FK_ADJUSTMENT_INVENTORY_INVENTORY_ID",
                         column: x => x.INVENTORY_ID,
                         principalTable: "INVENTORY",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict
                     );
                     table.ForeignKey(
-                        name: "FK_ADJUSTMENT_TABLE_ORDER_ORDER_ID",
+                        name: "FK_ADJUSTMENT_ORDER_ORDER_ID",
                         column: x => x.ORDER_ID,
                         principalTable: "ORDER",
                         principalColumn: "ID"
@@ -125,7 +125,7 @@ namespace Infrastructure.Persistence.__Migrations
             );
 
             migrationBuilder.CreateTable(
-                name: "RESERVATION_TABLE",
+                name: "RESERVATION",
                 columns: table => new
                 {
                     ID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -136,16 +136,16 @@ namespace Infrastructure.Persistence.__Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RESERVATION_TABLE", x => x.ID);
+                    table.PrimaryKey("PK_RESERVATION", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_RESERVATION_TABLE_INVENTORY_INVENTORY_ID",
+                        name: "FK_RESERVATION_INVENTORY_INVENTORY_ID",
                         column: x => x.INVENTORY_ID,
                         principalTable: "INVENTORY",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict
                     );
                     table.ForeignKey(
-                        name: "FK_RESERVATION_TABLE_ORDER_ITEM_ORDER_ITEM_ID",
+                        name: "FK_RESERVATION_ORDER_ITEM_ORDER_ITEM_ID",
                         column: x => x.ORDER_ITEM_ID,
                         principalTable: "ORDER_ITEM",
                         principalColumn: "ID",
@@ -154,19 +154,15 @@ namespace Infrastructure.Persistence.__Migrations
                 }
             );
 
-            migrationBuilder.CreateIndex(name: "IX_ADJUSTMENT_TABLE_ID", table: "ADJUSTMENT_TABLE", column: "ID");
+            migrationBuilder.CreateIndex(name: "IX_ADJUSTMENT_ID", table: "ADJUSTMENT", column: "ID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ADJUSTMENT_TABLE_INVENTORY_ID",
-                table: "ADJUSTMENT_TABLE",
+                name: "IX_ADJUSTMENT_INVENTORY_ID",
+                table: "ADJUSTMENT",
                 column: "INVENTORY_ID"
             );
 
-            migrationBuilder.CreateIndex(
-                name: "IX_ADJUSTMENT_TABLE_ORDER_ID",
-                table: "ADJUSTMENT_TABLE",
-                column: "ORDER_ID"
-            );
+            migrationBuilder.CreateIndex(name: "IX_ADJUSTMENT_ORDER_ID", table: "ADJUSTMENT", column: "ORDER_ID");
 
             migrationBuilder.CreateIndex(name: "IX_INVENTORY_ID", table: "INVENTORY", column: "ID");
 
@@ -189,17 +185,17 @@ namespace Infrastructure.Persistence.__Migrations
 
             migrationBuilder.CreateIndex(name: "IX_PRODUCT_NAME", table: "PRODUCT", column: "NAME", unique: true);
 
-            migrationBuilder.CreateIndex(name: "IX_RESERVATION_TABLE_ID", table: "RESERVATION_TABLE", column: "ID");
+            migrationBuilder.CreateIndex(name: "IX_RESERVATION_ID", table: "RESERVATION", column: "ID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RESERVATION_TABLE_INVENTORY_ID",
-                table: "RESERVATION_TABLE",
+                name: "IX_RESERVATION_INVENTORY_ID",
+                table: "RESERVATION",
                 column: "INVENTORY_ID"
             );
 
             migrationBuilder.CreateIndex(
-                name: "IX_RESERVATION_TABLE_ORDER_ITEM_ID",
-                table: "RESERVATION_TABLE",
+                name: "IX_RESERVATION_ORDER_ITEM_ID",
+                table: "RESERVATION",
                 column: "ORDER_ITEM_ID",
                 unique: true
             );
@@ -208,9 +204,9 @@ namespace Infrastructure.Persistence.__Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(name: "ADJUSTMENT_TABLE");
+            migrationBuilder.DropTable(name: "ADJUSTMENT");
 
-            migrationBuilder.DropTable(name: "RESERVATION_TABLE");
+            migrationBuilder.DropTable(name: "RESERVATION");
 
             migrationBuilder.DropTable(name: "INVENTORY");
 

@@ -15,6 +15,7 @@ public sealed class ApplicationFixture : AppFixture<Program>
     const string MONGO_PASSWORD = "password";
 
     public HttpClient ProductClient { get; private set; }
+    public HttpClient InventoryClient { get; private set; }
 
     protected override async ValueTask PreSetupAsync()
     {
@@ -34,6 +35,7 @@ public sealed class ApplicationFixture : AppFixture<Program>
     protected override ValueTask SetupAsync()
     {
         ProductClient = CreateClient();
+        InventoryClient = CreateClient();
 
         return ValueTask.CompletedTask;
     }

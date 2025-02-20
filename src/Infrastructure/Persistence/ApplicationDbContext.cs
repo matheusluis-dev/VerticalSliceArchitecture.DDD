@@ -15,6 +15,8 @@ public sealed class ApplicationDbContext : DbContext
     public DbSet<OrderItemTable> OrderItem { get; set; }
     public DbSet<ProductTable> Product { get; set; }
     public DbSet<InventoryTable> Inventory { get; set; }
+    public DbSet<AdjustmentTable> Adjustment { get; set; }
+    public DbSet<ReservationTable> Reservation { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

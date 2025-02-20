@@ -112,7 +112,6 @@ public static class DependencyInjection
 
         void AddInventory()
         {
-            services.AddSingleton<AdjustInventoryStockService>();
             services.AddSingleton<CreateAdjustmentService>();
             services.AddSingleton<StockReleaseService>();
             services.AddSingleton<StockReservationService>();

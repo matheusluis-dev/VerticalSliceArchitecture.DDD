@@ -1,5 +1,6 @@
 namespace Domain.Orders.Aggregates;
 
+using Domain.Common.DomainEvents;
 using Domain.Common.Entities;
 using Domain.Common.ValueObjects;
 using Domain.Orders.Entities;
@@ -11,21 +12,52 @@ using Domain.Orders.ValueObjects;
 public sealed class Order : EntityBase
 {
     public required OrderId Id { get; init; }
-
-    private readonly List<OrderItem> _orderItems = [];
-    public IReadOnlyList<OrderItem> OrderItems
-    {
-        get => _orderItems.AsReadOnly();
-        init => _orderItems = [.. value];
-    }
-    public required OrderStatus Status { get; set; }
+    public required IReadOnlyList<OrderItem> OrderItems { get; init; }
+    public required OrderStatus Status { get; init; }
     public required Email CustomerEmail { get; init; }
     public required DateTime CreatedDate { get; init; }
-    public DateTime? PaidDate { get; set; }
-    public DateTime? CanceledDate { get; set; }
+    public required DateTime? PaidDate { get; init; }
+    public required DateTime? CancelledDate { get; init; }
 
-    public Order()
-        : base([]) { }
+    private Order(IList<IDomainEvent>? domainEvents = null)
+        : base(domainEvents ?? []) { }
+
+    internal static Result<Order> Create(
+        OrderId id,
+        IEnumerable<OrderItem>? items,
+        OrderStatus status,
+        Email? customerEmail,
+        DateTime? createdDate,
+        DateTime? paidDate,
+        DateTime? cancelledDate,
+        IEnumerable<IDomainEvent>? domainEvents
+    )
+    {
+        var errors = new List<ValidationError>();
+
+        //if (items?.Any() != true)
+        //    errors.Add(new ValidationError("Order items must be provided"));
+
+        if (customerEmail is null)
+            errors.Add(new ValidationError("Customer email must be informed"));
+
+        if (createdDate is null)
+            errors.Add(new ValidationError("Created date must be informed"));
+
+        if (errors.Count > 0)
+            return Result.Invalid(errors);
+
+        return new Order(domainEvents?.ToList())
+        {
+            Id = id,
+            OrderItems = (items?.ToList() ?? []).AsReadOnly(),
+            Status = status,
+            CustomerEmail = customerEmail!.Value,
+            CreatedDate = createdDate!.Value,
+            PaidDate = paidDate,
+            CancelledDate = cancelledDate,
+        };
+    }
 
     public Result<Order> Pay(DateTime now)
     {
@@ -35,12 +67,14 @@ public sealed class Order : EntityBase
         if (Status is OrderStatus.Paid)
             return Result.Invalid(new ValidationError("Order already paid"));
 
-        Status = OrderStatus.Paid;
-        PaidDate = now;
+        var order = new OrderBuilder().WithOrderToClone(this).WithStatus(OrderStatus.Paid).WithPaidDate(now).Build();
 
-        RaiseDomainEvent(new OrderPaidEvent(this));
+        if (order.IsInvalid())
+            return Result.Invalid(order.ValidationErrors);
 
-        return this;
+        RaiseDomainEvent(new OrderPaidEvent(order));
+
+        return order;
     }
 
     public Result<Order> Cancel(DateTime now)
@@ -48,12 +82,18 @@ public sealed class Order : EntityBase
         if (Status is not OrderStatus.Pending)
             return Result.Invalid(new ValidationError("Order must be pending"));
 
-        Status = OrderStatus.Cancelled;
-        CanceledDate = now;
+        var order = new OrderBuilder()
+            .WithOrderToClone(this)
+            .WithStatus(OrderStatus.Cancelled)
+            .WithPaidDate(now)
+            .Build();
 
-        RaiseDomainEvent(new OrderCancelledEvent(this));
+        if (order.IsInvalid())
+            return Result.Invalid(order.ValidationErrors);
 
-        return this;
+        RaiseDomainEvent(new OrderCancelledEvent(order));
+
+        return order;
     }
 
     public Amount GetTotalPrice()
@@ -61,20 +101,24 @@ public sealed class Order : EntityBase
         return Amount.From(OrderItems.Sum(item => item.Quantity.Value * item.UnitPrice.Value));
     }
 
-    internal Result<OrderItem> AddItem(OrderItemManagementService orderItemManagement, CreateOrderItemModel model)
+    internal Result<Order> AddItem(OrderItemManagementService orderItemManagement, CreateOrderItemModel model)
     {
         ArgumentNullException.ThrowIfNull(orderItemManagement);
         ArgumentNullException.ThrowIfNull(model);
 
-        var result = orderItemManagement.CreateItem(model);
+        var createItem = orderItemManagement.CreateItem(model);
 
-        if (!result.IsSuccess)
-            return result;
+        if (createItem.IsInvalid())
+            return Result.Invalid(createItem.ValidationErrors);
 
-        var item = result.Value;
-        _orderItems.Add(item);
+        var item = createItem.Value;
 
-        return Result.Created(item);
+        var order = new OrderBuilder().WithOrderToClone(this).WithOrderItems(OrderItems).WithOrderItems(item).Build();
+
+        if (order.IsInvalid())
+            return Result.Invalid(order.ValidationErrors);
+
+        return order;
     }
 
     //public Result<OrderItem> UpdateItem(UpdateOrderItemModel model)

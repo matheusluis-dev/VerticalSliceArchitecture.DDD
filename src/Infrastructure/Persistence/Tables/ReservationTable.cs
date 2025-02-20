@@ -1,9 +1,11 @@
 namespace Infrastructure.Persistence.Tables;
 
+using System.Diagnostics.CodeAnalysis;
 using Domain.Common.ValueObjects;
 using Domain.Inventories.Enums;
 using Domain.Inventories.ValueObjects;
 using Domain.Orders.ValueObjects;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public sealed class ReservationTable
 {
@@ -15,4 +17,13 @@ public sealed class ReservationTable
 
     public OrderItemTable OrderItem { get; set; }
     public InventoryTable Inventory { get; set; }
+}
+
+public sealed class ReservationTableConfiguration : IEntityTypeConfiguration<ReservationTable>
+{
+    public void Configure([NotNull] EntityTypeBuilder<ReservationTable> builder)
+    {
+        builder.HasKey(e => e.Id);
+        builder.HasIndex(e => e.Id);
+    }
 }

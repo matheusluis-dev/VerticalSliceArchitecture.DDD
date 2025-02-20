@@ -74,7 +74,7 @@ public sealed class InventoryBuilder
         return this;
     }
 
-    public InventoryBuilder WithReservation(params IEnumerable<Reservation> reservations)
+    public InventoryBuilder WithReservations(params IEnumerable<Reservation> reservations)
     {
         ArgumentNullException.ThrowIfNull(reservations);
 

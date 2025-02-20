@@ -5,7 +5,6 @@ using Domain.Common.ValueObjects;
 using Domain.Orders.Aggregates;
 using Domain.Orders.Enums;
 using Domain.Orders.Events;
-using Domain.Orders.ValueObjects;
 using Domain.Products.Entities;
 
 public sealed record OrderPlacementModel(IEnumerable<OrderItemPlacementModel> Items, Email CustomerEmail, DateTime Now);
@@ -36,15 +35,16 @@ public sealed class OrderPlacementService
         if (!items.Any())
             return Result<Order>.Invalid(new ValidationError("Items must be provided"));
 
-        var order = new Order
-        {
-            Id = OrderId.Create(),
-            Status = OrderStatus.Pending,
-            CustomerEmail = customerEmail,
-            CreatedDate = now,
-            CanceledDate = null,
-            PaidDate = null,
-        };
+        var createOrder = new OrderBuilder()
+            .WithStatus(OrderStatus.Pending)
+            .WithCustomerEmail(customerEmail)
+            .WithCreatedDate(now)
+            .Build();
+
+        if (createOrder.IsInvalid())
+            return Result.Invalid(createOrder.ValidationErrors);
+
+        var order = createOrder.Value;
 
         var errorsAddingItem = new List<ValidationError>();
         foreach (var item in items)

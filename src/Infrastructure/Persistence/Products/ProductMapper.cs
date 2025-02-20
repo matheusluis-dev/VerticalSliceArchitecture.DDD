@@ -15,12 +15,11 @@ public static class ProductMapper
     {
         ArgumentNullException.ThrowIfNull(table);
 
-        return new()
-        {
-            Id = table.Id,
-            Inventory = table.Inventory is null ? null : InventoryMapper.ToEntity(table.Inventory),
-            Name = table.Name,
-        };
+        return Product.Create(
+            table.Name,
+            table.Id,
+            table.Inventory is null ? null : InventoryMapper.ToEntity(table.Inventory)
+        );
     }
 
     public static ProductTable ToTable(Product entity)
