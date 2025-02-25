@@ -1,6 +1,6 @@
 namespace Application.Features.Products.DeleteProduct;
 
-using Domain.Products.ValueObjects;
+using Domain.Products.Ids;
 
 public static partial class DeleteProduct
 {

@@ -3,7 +3,7 @@ namespace Infrastructure.Persistence.Inventories;
 using Domain.Common;
 using Domain.Inventories;
 using Domain.Inventories.Aggregate;
-using Domain.Inventories.ValueObjects;
+using Domain.Inventories.Ids;
 using Infrastructure.Persistence.Tables;
 using Microsoft.EntityFrameworkCore;
 

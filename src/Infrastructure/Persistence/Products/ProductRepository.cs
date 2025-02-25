@@ -3,6 +3,7 @@ namespace Infrastructure.Persistence.Products;
 using Ardalis.Result;
 using Domain.Products;
 using Domain.Products.Entities;
+using Domain.Products.Ids;
 using Domain.Products.ValueObjects;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Tables;

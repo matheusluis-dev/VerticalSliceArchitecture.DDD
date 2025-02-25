@@ -4,8 +4,8 @@ using Domain.Common.ValueObjects;
 using Domain.Inventories.Aggregate;
 using Domain.Inventories.Entities;
 using Domain.Inventories.Enums;
-using Domain.Inventories.ValueObjects;
-using Domain.Orders.ValueObjects;
+using Domain.Inventories.Ids;
+using Domain.Orders.Ids;
 
 public sealed record ReserveStockModel(Inventory Inventory, OrderItemId OrderItemId, Quantity Quantity);
 
@@ -24,14 +24,14 @@ public sealed partial class StockReservationService
         {
             return Result.Invalid(
                 new ValidationError(
-                    $"Reservation quantity ({quantity}) is greater than the available stock "
-                        + $"({inventory.GetAvailableStock()})"
+                    $"Reservation quantity ({quantity.Value}) is greater than the available stock "
+                        + $"({inventory.GetAvailableStock().Value})"
                 )
             );
         }
 
         var reservation = Reservation.Create(
-            ReservationId.Create(),
+            new ReservationId(Guid.NewGuid()),
             inventory.Id,
             orderItemId,
             quantity,

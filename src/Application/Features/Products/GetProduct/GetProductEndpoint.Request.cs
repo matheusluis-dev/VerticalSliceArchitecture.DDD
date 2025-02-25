@@ -1,5 +1,5 @@
 namespace Application.Features.Products.GetProduct;
 
-using Domain.Products.ValueObjects;
+using Domain.Products.Ids;
 
 public record Request(ProductId Id);

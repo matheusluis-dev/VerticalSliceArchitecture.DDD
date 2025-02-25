@@ -2,7 +2,7 @@ namespace Domain.Orders;
 
 using Domain.Common;
 using Domain.Orders.Aggregates;
-using Domain.Orders.ValueObjects;
+using Domain.Orders.Ids;
 
 public interface IOrderRepository
 {

@@ -3,6 +3,7 @@ namespace Domain.Products.Entities;
 using Domain.Common.DomainEvents;
 using Domain.Common.Entities;
 using Domain.Inventories.Aggregate;
+using Domain.Products.Ids;
 using Domain.Products.ValueObjects;
 
 public sealed class Product : EntityBase
@@ -18,12 +19,14 @@ public sealed class Product : EntityBase
 
     public static Result<Product> Create(ProductName name, ProductId? id = null, Inventory? inventory = null)
     {
-        if (name.IsNullOrWhiteSpace())
+        ArgumentNullException.ThrowIfNull(name);
+
+        if (!name.IsFilled())
             return Result.Invalid(new ValidationError("Can not create product with empty name."));
 
         return new Product
         {
-            Id = id ?? ProductId.Create(),
+            Id = id ?? new ProductId(Guid.NewGuid()),
             Inventory = inventory,
             Name = name,
         };

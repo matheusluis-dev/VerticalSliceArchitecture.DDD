@@ -3,6 +3,7 @@ namespace Domain.Orders.Services;
 using Domain.Common.ValueObjects;
 using Domain.Orders.Aggregates;
 using Domain.Orders.Entities;
+using Domain.Orders.Ids;
 using Domain.Orders.ValueObjects;
 using Domain.Products.Entities;
 
@@ -30,18 +31,17 @@ public sealed class OrderItemManagementService
             return Result<OrderItem>.Invalid(
                 new ValidationError(
                     $"Product '{product.Id}' has not enough stock for placing the order "
-                        + $"({product.Inventory.GetAvailableStock()})"
+                        + $"({product.Inventory.GetAvailableStock().Value})"
                 )
             );
         }
 
         return new OrderItem
         {
-            Id = OrderItemId.Create(),
+            Id = new OrderItemId(Guid.NewGuid()),
             OrderId = order.Id,
             Product = product,
-            Quantity = quantity,
-            UnitPrice = unitPrice,
+            OrderItemPrice = new OrderItemPrice(quantity.Value, unitPrice.Value),
         };
     }
 }

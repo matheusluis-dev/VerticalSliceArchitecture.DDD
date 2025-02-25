@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Domain.Common.ValueObjects;
 using Domain.Orders.Events;
-using Domain.Orders.ValueObjects;
+using Domain.Orders.Ids;
 
 public sealed class SendEmailsWhenOrderWasPaid : IEventHandler<OrderPaidEvent>
 {
@@ -31,13 +31,13 @@ public sealed class SendEmailsWhenOrderWasPaidCommandHandler : ICommandHandler<S
     {
         var sendEmailToCostumer = _email.SendEmailAsync(
             command.CustomerEmail,
-            Email.From("system@system.com"),
+            new Email("system@system.com"),
             $"Order {command.OrderId} paid successfully"
         );
 
         var sendEmailToCommercialArea = _email.SendEmailAsync(
-            Email.From("commercial@system.com"),
-            Email.From("system@system.com"),
+            new Email("commercial@system.com"),
+            new Email("system@system.com"),
             $"Order {command.OrderId} paid successfully"
         );
 

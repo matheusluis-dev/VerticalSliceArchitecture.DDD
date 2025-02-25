@@ -27,7 +27,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Riok.Mapperly" />
     <PackageReference Include="System.Linq.Expressions" />
-    <PackageReference Include="Vogen" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <PackageReference Update="CSharpier.MsBuild">
       <PrivateAssets>all</PrivateAssets>

@@ -2,8 +2,9 @@ namespace Infrastructure.Persistence.Tables;
 
 using System.Diagnostics.CodeAnalysis;
 using Domain.Common.ValueObjects;
-using Domain.Inventories.ValueObjects;
-using Domain.Orders.ValueObjects;
+using Domain.Inventories.Ids;
+using Domain.Orders.Ids;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public sealed class AdjustmentTable
@@ -24,5 +25,7 @@ public sealed class AdjustmentTableConfiguration : IEntityTypeConfiguration<Adju
     {
         builder.HasKey(e => e.Id);
         builder.HasIndex(e => e.Id);
+
+        builder.Property(b => b.Id).HasConversion(id => id.Value, guid => new AdjustmentId(guid));
     }
 }

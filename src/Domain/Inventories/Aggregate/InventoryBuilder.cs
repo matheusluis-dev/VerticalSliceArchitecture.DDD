@@ -2,8 +2,8 @@ namespace Domain.Inventories.Aggregate;
 
 using Domain.Common.ValueObjects;
 using Domain.Inventories.Entities;
-using Domain.Inventories.ValueObjects;
-using Domain.Products.ValueObjects;
+using Domain.Inventories.Ids;
+using Domain.Products.Ids;
 
 public sealed class InventoryBuilder
 {
@@ -21,9 +21,9 @@ public sealed class InventoryBuilder
 
     public Result<Inventory> Build()
     {
-        var id = _inventoryToClone?.Id ?? _id ?? InventoryId.Create();
+        var id = _inventoryToClone?.Id ?? _id ?? new InventoryId(Guid.NewGuid());
         var productId = _productId ?? _inventoryToClone?.ProductId;
-        var quantity = _quantity ?? _inventoryToClone?.Quantity ?? Quantity.From(0);
+        var quantity = _quantity ?? _inventoryToClone?.Quantity ?? new Quantity(0);
         var adjustments = _adjustments.Count > 0 ? _adjustments.ToList().AsReadOnly() : _inventoryToClone?.Adjustments;
         var reservations =
             _reservations.Count > 0 ? _reservations.ToList().AsReadOnly() : _inventoryToClone?.Reservations;

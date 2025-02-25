@@ -6,8 +6,8 @@ using Domain.Common.ValueObjects;
 using Domain.Orders.Entities;
 using Domain.Orders.Enums;
 using Domain.Orders.Events;
+using Domain.Orders.Ids;
 using Domain.Orders.Services;
-using Domain.Orders.ValueObjects;
 
 public sealed class Order : EntityBase
 {
@@ -52,7 +52,7 @@ public sealed class Order : EntityBase
             Id = id,
             OrderItems = (items?.ToList() ?? []).AsReadOnly(),
             Status = status,
-            CustomerEmail = customerEmail!.Value,
+            CustomerEmail = customerEmail!,
             CreatedDate = createdDate!.Value,
             PaidDate = paidDate,
             CancelledDate = cancelledDate,
@@ -98,7 +98,7 @@ public sealed class Order : EntityBase
 
     public Amount GetTotalPrice()
     {
-        return Amount.From(OrderItems.Sum(item => item.Quantity.Value * item.UnitPrice.Value));
+        return new Amount(OrderItems.Sum(item => item.OrderItemPrice.TotalPrice.Value));
     }
 
     internal Result<Order> AddItem(OrderItemManagementService orderItemManagement, CreateOrderItemModel model)

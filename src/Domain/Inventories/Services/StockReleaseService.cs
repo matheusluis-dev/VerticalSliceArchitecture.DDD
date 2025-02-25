@@ -3,7 +3,7 @@ namespace Domain.Inventories.Services;
 using Domain.Inventories.Aggregate;
 using Domain.Inventories.Entities;
 using Domain.Inventories.Enums;
-using Domain.Orders.ValueObjects;
+using Domain.Orders.Ids;
 
 public sealed record ReleaseStockReservationModel(Inventory Inventory, OrderItemId OrderItemId)
 {

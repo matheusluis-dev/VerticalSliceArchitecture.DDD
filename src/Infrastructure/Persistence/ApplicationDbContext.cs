@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Domain.Common.Entities;
 using FastEndpoints;
 using Infrastructure.JobStorage;
+using Infrastructure.Persistence.Conversors;
 using Infrastructure.Persistence.Tables;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,7 +32,9 @@ public sealed class ApplicationDbContext : DbContext
 
     protected override void ConfigureConventions([NotNull] ModelConfigurationBuilder configurationBuilder)
     {
-        configurationBuilder.ApplyVogenEfConvertersFromAssembly(typeof(EntityBase).Assembly);
+        base.ConfigureConventions(configurationBuilder);
+
+        configurationBuilder.Properties<TypedId<Guid>>().HaveConversion<TypedIdValueConverter<TypedId<Guid>, Guid>>();
     }
 
     protected override void OnModelCreating([NotNull] ModelBuilder modelBuilder)

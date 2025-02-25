@@ -1,17 +1,32 @@
 namespace Domain.Common.ValueObjects;
 
-using Vogen;
+using System.Collections.Generic;
 
-[ValueObject<decimal>(conversions: Conversions.Default | Conversions.EfCoreValueConverter)]
-public readonly partial struct Amount
+public sealed class Amount : ValueObject
 {
-    public static readonly Amount Zero = From(0);
+    public decimal Value { get; init; }
 
-    public Amount MultiplyByQuantity(Quantity quantity)
+    public Amount(decimal value)
     {
-        var quantityValue = (decimal)quantity.Value;
-        var amountValue = Value;
+        if (value < 0)
+            throw AmountException.AmountZeroOrLesser();
 
-        return From(amountValue * quantityValue);
+        Value = value;
+    }
+
+    protected override IEnumerable<object> GetAtomicValues()
+    {
+        yield return Value;
+    }
+}
+
+public sealed class AmountException : Exception
+{
+    private AmountException(string message)
+        : base(message) { }
+
+    public static AmountException AmountZeroOrLesser()
+    {
+        return new AmountException("Amount must be greater than zero");
     }
 }

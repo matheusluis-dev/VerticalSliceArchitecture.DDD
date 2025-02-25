@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Domain.Common.ValueObjects;
 using Domain.Orders.Entities;
 using Domain.Orders.Enums;
-using Domain.Orders.ValueObjects;
+using Domain.Orders.Ids;
 
 public sealed class OrderBuilder
 {
@@ -21,7 +21,7 @@ public sealed class OrderBuilder
 
     public Result<Order> Build()
     {
-        var id = _orderToClone?.Id ?? _id ?? OrderId.Create();
+        var id = _orderToClone?.Id ?? _id ?? new OrderId(Guid.NewGuid());
 
         var orderItems = _orderItems ?? _orderToClone?.OrderItems;
 

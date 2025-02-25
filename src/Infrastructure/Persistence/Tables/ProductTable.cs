@@ -1,7 +1,8 @@
 namespace Infrastructure.Persistence.Tables;
 
 using System.Diagnostics.CodeAnalysis;
-using Domain.Inventories.ValueObjects;
+using Domain.Inventories.Ids;
+using Domain.Products.Ids;
 using Domain.Products.ValueObjects;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

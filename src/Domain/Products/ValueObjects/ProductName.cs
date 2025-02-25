@@ -1,17 +1,33 @@
 namespace Domain.Products.ValueObjects;
 
-using Vogen;
+using System.Collections.Generic;
+using Domain.Common.ValueObjects;
 
-[ValueObject<string>(conversions: Conversions.Default | Conversions.EfCoreValueConverter)]
-public readonly partial struct ProductName
+public sealed class ProductName : ValueObject
 {
-    public bool IsNullOrWhiteSpace()
+    public string Name { get; init; }
+
+    public ProductName(string name)
     {
-        return string.IsNullOrWhiteSpace(Value);
+        ArgumentException.ThrowIfNullOrWhiteSpace(name);
+
+        Name = Normalize(name);
     }
 
-    private static string NormalizeInput(string input)
+    private static string Normalize(string name)
     {
-        return input.ToUpperInvariant();
+        ArgumentNullException.ThrowIfNull(name);
+
+        return name.ToUpperInvariant();
+    }
+
+    internal bool IsFilled()
+    {
+        return Name.Trim().Length > 0;
+    }
+
+    protected override IEnumerable<object> GetAtomicValues()
+    {
+        yield return Name;
     }
 }

@@ -14,8 +14,7 @@ public static class OrderItemMapper
         {
             Id = table.Id,
             OrderId = table.OrderId,
-            Quantity = table.Quantity,
-            UnitPrice = table.UnitPrice,
+            OrderItemPrice = table.OrderItemPrice,
             Product = ProductMapper.ToEntity(table.Product),
             ReservationId = table.ReservationId,
         };
@@ -29,8 +28,7 @@ public static class OrderItemMapper
         {
             Id = entity.Id,
             OrderId = entity.OrderId,
-            Quantity = entity.Quantity,
-            UnitPrice = entity.UnitPrice,
+            OrderItemPrice = entity.OrderItemPrice,
             Product = ProductMapper.ToTable(entity.Product),
             ReservationId = entity.ReservationId,
         };

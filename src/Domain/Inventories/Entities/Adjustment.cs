@@ -2,8 +2,8 @@ namespace Domain.Inventories.Entities;
 
 using Domain.Common.Entities;
 using Domain.Common.ValueObjects;
-using Domain.Inventories.ValueObjects;
-using Domain.Orders.ValueObjects;
+using Domain.Inventories.Ids;
+using Domain.Orders.Ids;
 
 public sealed class Adjustment : IChildEntity
 {
@@ -33,7 +33,7 @@ public sealed class Adjustment : IChildEntity
         else if (reason.Length < 15)
             errors.Add(new ValidationError("Reason must have at least 15 characters"));
 
-        if (quantity.Value == 0)
+        if (quantity is null)
             errors.Add(new ValidationError("Quantity must be greater than zero"));
 
         if (errors.Count > 0)
@@ -42,9 +42,9 @@ public sealed class Adjustment : IChildEntity
         return new Adjustment
         {
             Id = id,
-            InventoryId = inventoryId!.Value,
+            InventoryId = inventoryId!,
             OrderItemId = orderItemId,
-            Quantity = quantity,
+            Quantity = quantity!,
             Reason = reason,
         };
     }

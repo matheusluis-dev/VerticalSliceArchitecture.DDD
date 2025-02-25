@@ -13,7 +13,7 @@ public sealed class ProductTests
     public void Should_not_allow_empty_name_product(string name)
     {
         // Act
-        var result = Product.Create(ProductName.From(name));
+        var result = Product.Create(new ProductName(name));
 
         // Assert
         result.IsInvalid().ShouldBeTrue();
@@ -23,7 +23,7 @@ public sealed class ProductTests
     public void Should_not_allow_update_name_to_same_name()
     {
         // Arrange
-        var name = ProductName.From("ProductName");
+        var name = new ProductName("ProductName");
         var product = Product.Create(name).Value;
 
         // Act

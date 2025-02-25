@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Domain.Common;
 using Domain.Inventories.Aggregate;
-using Domain.Inventories.ValueObjects;
+using Domain.Inventories.Ids;
 
 public interface IInventoryRepository
 {

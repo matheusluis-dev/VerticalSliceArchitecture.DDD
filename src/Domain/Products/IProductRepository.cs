@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Ardalis.Result;
 using Domain.Common;
 using Domain.Products.Entities;
+using Domain.Products.Ids;
 using Domain.Products.ValueObjects;
 
 public interface IProductRepository

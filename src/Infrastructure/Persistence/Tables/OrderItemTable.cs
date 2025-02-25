@@ -1,10 +1,10 @@
 namespace Infrastructure.Persistence.Tables;
 
 using System.Diagnostics.CodeAnalysis;
-using Domain.Common.ValueObjects;
-using Domain.Inventories.ValueObjects;
+using Domain.Inventories.Ids;
+using Domain.Orders.Ids;
 using Domain.Orders.ValueObjects;
-using Domain.Products.ValueObjects;
+using Domain.Products.Ids;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public sealed class OrderItemTable
@@ -13,8 +13,7 @@ public sealed class OrderItemTable
     public OrderItemId Id { get; set; }
     public ProductId ProductId { get; set; }
     public ReservationId ReservationId { get; set; }
-    public Quantity Quantity { get; set; }
-    public Amount UnitPrice { get; set; }
+    public OrderItemPrice OrderItemPrice { get; set; }
 
     public OrderTable Order { get; set; }
     public ProductTable Product { get; set; }

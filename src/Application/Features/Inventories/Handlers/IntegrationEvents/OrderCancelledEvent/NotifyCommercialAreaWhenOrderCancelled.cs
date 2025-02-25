@@ -3,7 +3,7 @@ namespace Application.Features.Inventories.Handlers.IntegrationEvents.OrderCance
 using Domain.Common.DomainEvents;
 using Domain.Common.ValueObjects;
 using Domain.Orders.Events;
-using Domain.Orders.ValueObjects;
+using Domain.Orders.Ids;
 
 public sealed class NotifyCommercialAreaWhenOrderCancelled : IDomainEventHandler<OrderCancelledEvent>
 {
@@ -28,8 +28,8 @@ public sealed class NotifyCommercialAreaWhenOrderCancelledCommandHandler
     public Task ExecuteAsync([NotNull] NotifyCommercialAreaWhenOrderCancelledCommand command, CancellationToken ct)
     {
         return _email.SendEmailAsync(
-            Email.From("system@system.com"),
-            Email.From("commercial@system.com"),
+            new Email("system@system.com"),
+            new Email("commercial@system.com"),
             $"Order '{command.OrderId}' was cancelled"
         );
     }

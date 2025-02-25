@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Domain.Common.DomainEvents;
 using Domain.Common.ValueObjects;
 using Domain.Inventories.Events;
-using Domain.Inventories.ValueObjects;
-using Domain.Products.ValueObjects;
+using Domain.Inventories.Ids;
+using Domain.Products.Ids;
 
 public sealed class NotifySystemAdminWhenInventoryStockReachedZero : IDomainEventHandler<InventoryStockReachedZeroEvent>
 {
@@ -38,8 +38,8 @@ public sealed class NotifySystemAdminWhenInventoryStockReachedZeroCommandHandler
     )
     {
         return _email.SendEmailAsync(
-            Email.From("system@system.com"),
-            Email.From("admin@system.com"),
+            new Email("system@system.com"),
+            new Email("admin@system.com"),
             $"Inventory '{command.InventoryId}' from product '{command.ProductId}' stock reached zero"
         );
     }

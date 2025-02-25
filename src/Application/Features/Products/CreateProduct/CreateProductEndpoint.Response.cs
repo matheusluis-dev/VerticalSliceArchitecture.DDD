@@ -1,5 +1,6 @@
 namespace Application.Features.Products.CreateProduct;
 
+using Domain.Products.Ids;
 using Domain.Products.ValueObjects;
 
 public static partial class CreateProduct

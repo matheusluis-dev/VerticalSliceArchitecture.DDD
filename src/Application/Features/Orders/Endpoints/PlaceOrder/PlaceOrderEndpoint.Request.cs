@@ -1,7 +1,7 @@
 namespace Application.Features.Orders.Endpoints.PlaceOrder;
 
 using Domain.Common.ValueObjects;
-using Domain.Products.ValueObjects;
+using Domain.Products.Ids;
 
 public sealed record Request(Email CustomerEmail, IEnumerable<RequestItems> Items);
 

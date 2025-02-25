@@ -3,8 +3,8 @@ namespace Domain.Inventories.Entities;
 using Domain.Common.Entities;
 using Domain.Common.ValueObjects;
 using Domain.Inventories.Enums;
-using Domain.Inventories.ValueObjects;
-using Domain.Orders.ValueObjects;
+using Domain.Inventories.Ids;
+using Domain.Orders.Ids;
 
 public sealed class Reservation : IChildEntity
 {
@@ -32,7 +32,7 @@ public sealed class Reservation : IChildEntity
         if (orderItemId is null)
             errors.Add(new ValidationError($"{nameof(OrderItemId)} must be informed"));
 
-        if (quantity.Value <= 0)
+        if (quantity is null)
             errors.Add(new ValidationError("Quantity must be greater than zero"));
 
         if (errors.Count > 0)
@@ -41,9 +41,9 @@ public sealed class Reservation : IChildEntity
         return new Reservation
         {
             Id = id,
-            InventoryId = inventoryId!.Value,
-            OrderItemId = orderItemId!.Value,
-            Quantity = quantity,
+            InventoryId = inventoryId!,
+            OrderItemId = orderItemId!,
+            Quantity = quantity!,
             Status = status,
         };
     }

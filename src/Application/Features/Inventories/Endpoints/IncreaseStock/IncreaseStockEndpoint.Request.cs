@@ -1,7 +1,7 @@
 namespace Application.Features.Inventories.Endpoints.IncreaseStock;
 
 using Domain.Common.ValueObjects;
-using Domain.Inventories.ValueObjects;
+using Domain.Inventories.Ids;
 
 public static partial class IncreaseStock
 {

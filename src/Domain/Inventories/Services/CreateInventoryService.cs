@@ -2,7 +2,7 @@ namespace Domain.Inventories.Services;
 
 using Domain.Common.ValueObjects;
 using Domain.Inventories.Aggregate;
-using Domain.Inventories.ValueObjects;
+using Domain.Inventories.Ids;
 using Domain.Products.Entities;
 
 public sealed class CreateInventoryService
@@ -11,7 +11,7 @@ public sealed class CreateInventoryService
     {
         ArgumentNullException.ThrowIfNull(product);
 
-        if (quantity.Value <= 0)
+        if (quantity is null)
             return Result<Inventory>.Invalid(new ValidationError("Initial quantity must be greater than 0."));
 
         if (product.HasInventory)
@@ -21,6 +21,6 @@ public sealed class CreateInventoryService
             );
         }
 
-        return Inventory.Create(InventoryId.Create(), product.Id, quantity, [], []);
+        return Inventory.Create(new InventoryId(Guid.NewGuid()), product.Id, quantity, [], []);
     }
 }

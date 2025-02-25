@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Domain.Orders;
 using Domain.Orders.Aggregates;
 using Domain.Orders.Enums;
-using Domain.Orders.ValueObjects;
+using Domain.Orders.Ids;
 using Infrastructure.Persistence.Tables;
 
 public sealed class OrderRepository : IOrderRepository

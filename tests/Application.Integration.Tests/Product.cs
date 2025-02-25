@@ -16,7 +16,7 @@ public sealed class Product(ApplicationFixture app) : TestBase<ApplicationFixtur
     public async Task Can_not_create_2_products_with_same_name()
     {
         // Arrange
-        var requestWithSameName = new CreateProduct.Request(ProductName.From(Guid.NewGuid().ToString()));
+        var requestWithSameName = new CreateProduct.Request(new ProductName(Guid.NewGuid().ToString()));
 
         // Act
         var (http1, _) = await app.ProductClient.POSTAsync<
@@ -44,16 +44,16 @@ public sealed class Product(ApplicationFixture app) : TestBase<ApplicationFixtur
             CreateProduct.Endpoint,
             CreateProduct.Request,
             CreateProduct.Response
-        >(new CreateProduct.Request(ProductName.From(Guid.NewGuid().ToString())));
+        >(new CreateProduct.Request(new ProductName(Guid.NewGuid().ToString())));
 
         var (_, inventory) = await app.InventoryClient.POSTAsync<
             CreateInventory.Endpoint,
             CreateInventory.Request,
             CreateInventory.Response
-        >(new CreateInventory.Request(product.Id, Quantity.From(1)));
+        >(new CreateInventory.Request(product.Id, new Quantity(1)));
 
         await app.InventoryClient.POSTAsync<IncreaseStock.Endpoint, IncreaseStock.Request, IncreaseStock.Response>(
-            new IncreaseStock.Request(inventory.Id, Quantity.From(1), "Received from another company.")
+            new IncreaseStock.Request(inventory.Id, new Quantity(1), "Received from another company.")
         );
 
         // Act

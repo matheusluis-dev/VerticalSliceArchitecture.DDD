@@ -2,12 +2,11 @@ namespace Domain.Inventories.Aggregate;
 
 using Domain.Common.DomainEvents;
 using Domain.Common.Entities;
-using Domain.Common.ValueObjects;
 using Domain.Inventories.Entities;
 using Domain.Inventories.Enums;
 using Domain.Inventories.Events;
-using Domain.Inventories.ValueObjects;
-using Domain.Products.ValueObjects;
+using Domain.Inventories.Ids;
+using Domain.Products.Ids;
 
 public sealed class Inventory : EntityBase
 {
@@ -38,7 +37,7 @@ public sealed class Inventory : EntityBase
         if (productId is null)
             errors.Add(new ValidationError($"{nameof(ProductId)} must be set"));
 
-        if (quantity.Value == 0)
+        if (quantity is null)
             errors.Add(new ValidationError("Initial quantity must be greater than 0."));
 
         if (errors.Count > 0)
@@ -47,8 +46,8 @@ public sealed class Inventory : EntityBase
         return new Inventory(domainEvents)
         {
             Id = id,
-            ProductId = productId!.Value,
-            Quantity = quantity,
+            ProductId = productId!,
+            Quantity = quantity!,
             Adjustments = adjustments.ToList().AsReadOnly(),
             Reservations = reservations.ToList().AsReadOnly(),
         };
@@ -56,14 +55,14 @@ public sealed class Inventory : EntityBase
 
     public Quantity GetAvailableStock()
     {
-        return Quantity.From(Quantity.Value - GetReservedStock().Value);
+        return new Quantity(Quantity.Value - GetReservedStock().Value);
     }
 
     public Quantity GetReservedStock()
     {
         var sum = Reservations.Sum(reservation => reservation.Quantity.Value);
 
-        return Quantity.From(sum);
+        return new Quantity(sum);
     }
 
     internal bool HasEnoughStockToDecrease(Quantity quantity)
@@ -76,7 +75,7 @@ public sealed class Inventory : EntityBase
         if (quantity.Value <= 0)
             return Result.Invalid(new ValidationError("Quantity must be greater than 0"));
 
-        var adjustment = Adjustment.Create(AdjustmentId.Create(), Id, null, quantity, reason);
+        var adjustment = Adjustment.Create(new AdjustmentId(Guid.NewGuid()), Id, null, quantity, reason);
 
         if (adjustment.IsInvalid())
             return Result.Invalid(adjustment.ValidationErrors);
@@ -91,20 +90,24 @@ public sealed class Inventory : EntityBase
 
     public Result<Inventory> DecreaseStock(Quantity quantity, string reason)
     {
-        var normalizedQuantity = Quantity.From(quantity.Value < 0 ? quantity.Value * -1 : quantity.Value);
+        ArgumentNullException.ThrowIfNull(quantity);
+
+        var normalizedQuantity = new Quantity(quantity.Value < 0 ? quantity.Value * -1 : quantity.Value);
 
         if (!HasEnoughStockToDecrease(normalizedQuantity))
         {
             return Result.Invalid(
-                new ValidationError($"Quantity to decrease is greater than available stock ({GetAvailableStock()})")
+                new ValidationError(
+                    $"Quantity to decrease is greater than available stock ({GetAvailableStock().Value})"
+                )
             );
         }
 
         var adjustment = Adjustment.Create(
-            AdjustmentId.Create(),
+            new AdjustmentId(Guid.NewGuid()),
             Id,
             null,
-            Quantity.From(normalizedQuantity.Value * -1),
+            new Quantity(normalizedQuantity.Value * -1),
             reason
         );
 
@@ -123,7 +126,7 @@ public sealed class Inventory : EntityBase
     {
         ArgumentNullException.ThrowIfNull(adjustment);
 
-        var quantity = Quantity.From(Quantity.Value + adjustment.Quantity.Value);
+        var quantity = new Quantity(Quantity.Value + adjustment.Quantity.Value);
 
         var buildResult = new InventoryBuilder()
             .WithInventoryToClone(this)
