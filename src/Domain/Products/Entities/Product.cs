@@ -1,10 +1,7 @@
-namespace Domain.Products.Entities;
-
-using Domain.Common.DomainEvents;
-using Domain.Common.Entities;
 using Domain.Inventories.Aggregate;
-using Domain.Products.Ids;
 using Domain.Products.ValueObjects;
+
+namespace Domain.Products.Entities;
 
 public sealed class Product : EntityBase
 {
@@ -24,7 +21,7 @@ public sealed class Product : EntityBase
         if (!name.IsFilled())
             return Result.Invalid(new ValidationError("Can not create product with empty name."));
 
-        return new Product
+        return new Product(null)
         {
             Id = id ?? new ProductId(Guid.NewGuid()),
             Inventory = inventory,
@@ -37,7 +34,7 @@ public sealed class Product : EntityBase
         if (name == Name)
             return Result.Invalid(new ValidationError("Can not update name to the same name"));
 
-        return new Product
+        return new Product(null)
         {
             Id = Id,
             Name = name,

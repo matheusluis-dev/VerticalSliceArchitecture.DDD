@@ -1,9 +1,6 @@
-namespace Application.Features.Orders.Endpoints.PayOrder;
-
-using System.Threading;
-using System.Threading.Tasks;
 using Domain.Orders;
-using Microsoft.AspNetCore.Http;
+
+namespace Application.Features.Orders.Endpoints.PayOrder;
 
 public sealed class PayOrderEndpoint : Endpoint<Request, Response>
 {
@@ -24,14 +21,16 @@ public sealed class PayOrderEndpoint : Endpoint<Request, Response>
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync([NotNull] Request req, CancellationToken ct)
+    public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(req);
+
         var order = await _orderRepository.FindByIdAsync(req.Id, ct);
 
         if (order.IsNotFound())
             ThrowError($"Order '{req.Id}' was not found");
 
-        var pay = order.Value.Pay(_dateTime.UtcNow.DateTime);
+        var pay = order.Value!.Pay(_dateTime.UtcNow.DateTime);
 
         if (pay.IsInvalid())
         {
@@ -39,9 +38,9 @@ public sealed class PayOrderEndpoint : Endpoint<Request, Response>
             return;
         }
 
-        _orderRepository.Update(pay.Value);
+        _orderRepository.Update(pay.Value!);
         await _context.SaveChangesAsync(ct);
 
-        await SendAsync(new Response(pay.Value.Id), StatusCodes.Status200OK, ct);
+        await SendAsync(new Response(pay.Value!.Id), StatusCodes.Status200OK, ct);
     }
 }

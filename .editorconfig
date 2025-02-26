@@ -13,13 +13,13 @@ indent_size = 4
 insert_final_newline = true
 trim_trailing_whitespace = true
 csharp_indent_labels = one_less_than_current
-csharp_using_directive_placement = inside_namespace:warning
+csharp_using_directive_placement = outside_namespace:warning
 csharp_prefer_simple_using_statement = true:suggestion
-csharp_prefer_braces = when_multiline:warning
+csharp_prefer_braces = false:silent
 csharp_style_namespace_declarations = file_scoped:warning
 csharp_style_prefer_method_group_conversion = true:silent
 csharp_style_prefer_top_level_statements = true:silent
-csharp_style_prefer_primary_constructors = false:suggestion
+csharp_style_prefer_primary_constructors = false:silent
 csharp_prefer_system_threading_lock = true:suggestion
 csharp_style_expression_bodied_methods = false:warning
 csharp_style_expression_bodied_constructors = false:warning
@@ -110,7 +110,7 @@ dotnet_style_predefined_type_for_member_access = true:warning
 
 # Modifier preferences
 dotnet_style_require_accessibility_modifiers = always:warning
-csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:warning
+csharp_preferred_modifier_order = public,private,protected,internal,file,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:error
 visual_basic_preferred_modifier_order = Partial,Default,Private,Protected,Public,Friend,NotOverridable,Overridable,MustOverride,Overloads,Overrides,MustInherit,NotInheritable,Static,Shared,Shadows,ReadOnly,WriteOnly,Dim,Const,WithEvents,Widening,Narrowing,Custom,Async:warning
 dotnet_style_readonly_field = true:warning
 
@@ -189,7 +189,7 @@ csharp_prefer_braces = when_multiline:warning
 csharp_prefer_simple_using_statement = true:suggestion
 
 # 'using' directive preferences
-csharp_using_directive_placement = inside_namespace:warning
+# csharp_using_directive_placement = outside_namespace:warning
 
 # Modifier preferences
 csharp_prefer_static_local_function = true:warning
@@ -456,7 +456,7 @@ dotnet_naming_rule.parameters_rule.symbols              = parameters_group
 dotnet_naming_rule.parameters_rule.style = camel_case_style
 dotnet_naming_rule.parameters_rule.severity = warning
 
-
+dotnet_diagnostic.IDE0011.severity = none
 dotnet_diagnostic.IDE0005.severity = none # IDE0005: Remove unnecessary using directives
 
 # Code Analysis
@@ -714,3 +714,6 @@ dotnet_diagnostic.S1135.severity = none
 dotnet_diagnostic.CA1040.severity = none
 dotnet_diagnostic.CA1024.severity = none
 dotnet_diagnostic.CA1030.severity = none
+
+dotnet_diagnostic.IDE0290.severity = none
+dotnet_code_quality.CA1062.excluded_type_names_with_derived_types = Migration|ApplicationDbContext|Endpoint

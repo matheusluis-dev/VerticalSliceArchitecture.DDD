@@ -1,29 +1,21 @@
-namespace Application.Features.Products.DeleteProduct;
-
-using System.Threading;
-using System.Threading.Tasks;
-using Domain.Inventories;
 using Domain.Products;
+using Domain.Products.Ids;
 using Domain.Products.Specifications;
-using FastEndpoints;
-using Microsoft.AspNetCore.Http;
 
-public static partial class DeleteProduct
+namespace Application.Features.Products;
+
+public static class DeleteProductEndpoint
 {
+    public sealed record Request(ProductId Id);
+
     public sealed class Endpoint : Endpoint<Request>
     {
         private readonly ApplicationDbContext _context;
         private readonly IProductRepository _productRepository;
-        private readonly IInventoryRepository _inventoryRepository;
 
-        public Endpoint(
-            IProductRepository productRepository,
-            IInventoryRepository inventoryRepository,
-            ApplicationDbContext context
-        )
+        public Endpoint(IProductRepository productRepository, ApplicationDbContext context)
         {
             _productRepository = productRepository;
-            _inventoryRepository = inventoryRepository;
             _context = context;
         }
 
@@ -33,7 +25,7 @@ public static partial class DeleteProduct
             AllowAnonymous();
         }
 
-        public override async Task HandleAsync([NotNull] Request req, CancellationToken ct)
+        public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             var findResult = await _productRepository.FindProductByIdAsync(req.Id, ct);
 
@@ -43,7 +35,7 @@ public static partial class DeleteProduct
                 return;
             }
 
-            var product = findResult.Value;
+            var product = findResult.Value!;
 
             if (product.HasInventory && !new ProductCanBeDeletedSpecification().IsSatisfiedBy(product))
             {

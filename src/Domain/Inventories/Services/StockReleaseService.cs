@@ -1,9 +1,8 @@
-namespace Domain.Inventories.Services;
-
 using Domain.Inventories.Aggregate;
 using Domain.Inventories.Entities;
 using Domain.Inventories.Enums;
-using Domain.Orders.Ids;
+
+namespace Domain.Inventories.Services;
 
 public sealed record ReleaseStockReservationModel(Inventory Inventory, OrderItemId OrderItemId)
 {
@@ -44,14 +43,14 @@ public sealed class StockReleaseService
         );
 
         if (adjustment.IsInvalid())
-            return Result.Invalid(adjustment.ValidationErrors);
+            return Result.Invalid(adjustment.ValidationErrors!);
 
         var adjustmentResult = inventory.PlaceAdjustment(adjustment);
 
         if (adjustmentResult.IsInvalid())
-            return Result.Invalid(adjustmentResult.ValidationErrors);
+            return Result.Invalid(adjustmentResult.ValidationErrors!);
 
-        var inventoryAfterAdjustment = adjustmentResult.Value;
+        var inventoryAfterAdjustment = adjustmentResult.Value!;
 
         return inventoryAfterAdjustment.AlterReservationStatus(reservation.Id, ReservationStatus.Applied);
     }

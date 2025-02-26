@@ -1,14 +1,14 @@
-namespace Application.Features.Inventories.Handlers.IntegrationEvents.OrderCancelledEvent;
-
-using Domain.Common.DomainEvents;
-using Domain.Common.ValueObjects;
 using Domain.Orders.Events;
 using Domain.Orders.Ids;
 
+namespace Application.Features.Inventories.Handlers.IntegrationEvents.OrderCancelled;
+
 public sealed class NotifyCommercialAreaWhenOrderCancelled : IDomainEventHandler<OrderCancelledEvent>
 {
-    public Task HandleAsync([NotNull] OrderCancelledEvent eventModel, CancellationToken ct)
+    public Task HandleAsync(OrderCancelledEvent eventModel, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(eventModel);
+
         return new NotifyCommercialAreaWhenOrderCancelledCommand(eventModel.Order.Id).QueueJobAsync(ct: ct);
     }
 }
@@ -25,8 +25,10 @@ public sealed class NotifyCommercialAreaWhenOrderCancelledCommandHandler
         _email = email;
     }
 
-    public Task ExecuteAsync([NotNull] NotifyCommercialAreaWhenOrderCancelledCommand command, CancellationToken ct)
+    public Task ExecuteAsync(NotifyCommercialAreaWhenOrderCancelledCommand command, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(command);
+
         return _email.SendEmailAsync(
             new Email("system@system.com"),
             new Email("commercial@system.com"),

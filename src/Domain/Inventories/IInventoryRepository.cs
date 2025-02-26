@@ -1,10 +1,6 @@
-namespace Domain.Inventories;
-
-using System.Threading;
-using System.Threading.Tasks;
-using Domain.Common;
 using Domain.Inventories.Aggregate;
-using Domain.Inventories.Ids;
+
+namespace Domain.Inventories;
 
 public interface IInventoryRepository
 {

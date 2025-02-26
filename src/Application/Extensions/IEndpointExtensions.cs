@@ -1,6 +1,7 @@
-namespace Application.Extensions;
-
 using LinqKit;
+using IResult = Ardalis.Result.IResult;
+
+namespace Application.Extensions;
 
 public static class IEndpointExtensions
 {

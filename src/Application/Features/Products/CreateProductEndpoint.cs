@@ -1,13 +1,16 @@
-namespace Application.Features.Products.CreateProduct;
-
-using Ardalis.Result;
 using Domain.Products;
 using Domain.Products.Entities;
-using FastEndpoints;
-using Microsoft.AspNetCore.Http;
+using Domain.Products.Ids;
+using Domain.Products.ValueObjects;
 
-public static partial class CreateProduct
+namespace Application.Features.Products;
+
+public static class CreateProductEndpoint
 {
+    public sealed record Request(ProductName Name);
+
+    public sealed record Response(ProductId Id, ProductName Name);
+
     public sealed class Endpoint : Endpoint<Request, Response>
     {
         private readonly ApplicationDbContext _context;
@@ -25,7 +28,7 @@ public static partial class CreateProduct
             AllowAnonymous();
         }
 
-        public override async Task HandleAsync([NotNull] Request req, CancellationToken ct)
+        public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             var productWithSameName = await _productRepository.FindProductByNameAsync(req.Name, ct);
 
@@ -39,7 +42,7 @@ public static partial class CreateProduct
                 return;
             }
 
-            var product = result.Value;
+            var product = result.Value!;
 
             await _productRepository.AddAsync(product, ct);
             await _context.SaveChangesAsync(ct);

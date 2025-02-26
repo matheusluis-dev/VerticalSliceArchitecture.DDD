@@ -1,16 +1,12 @@
-namespace Application.Features.Inventories.Endpoints.CreateInventory;
-
-using System.Threading;
-using System.Threading.Tasks;
 using Domain.Inventories;
 using Domain.Inventories.Services;
 using Domain.Products;
-using Domain.Products.Entities;
-using Microsoft.AspNetCore.Http;
 
-public static partial class CreateInventory
+namespace Application.Features.Inventories.Endpoints.CreateInventory;
+
+public static partial class CreateInventoryEndpoint
 {
-    public sealed class Endpoint : Endpoint<Request, Response>
+    internal sealed class Endpoint : Endpoint<Request, Response>
     {
         private readonly ApplicationDbContext _context;
         private readonly IProductRepository _productRepository;
@@ -36,7 +32,7 @@ public static partial class CreateInventory
             AllowAnonymous();
         }
 
-        public override async Task HandleAsync([NotNull] Request req, CancellationToken ct)
+        public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             var product = await _productRepository.FindProductByIdAsync(req.ProductId, ct);
 
@@ -55,7 +51,7 @@ public static partial class CreateInventory
             await _context.SaveChangesAsync(ct);
 
             await SendAsync(
-                new Response(inventory.Value.Id, inventory.Value.ProductId, inventory.Value.Quantity),
+                new Response(inventory.Value!.Id, inventory.Value.ProductId, inventory.Value.Quantity),
                 StatusCodes.Status201Created,
                 ct
             );

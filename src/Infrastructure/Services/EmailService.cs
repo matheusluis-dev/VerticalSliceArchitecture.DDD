@@ -1,6 +1,6 @@
-namespace Infrastructure.Services;
-
 using Domain.Common.ValueObjects;
+
+namespace Infrastructure.Services;
 
 public interface IEmailService
 {

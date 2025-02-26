@@ -1,10 +1,6 @@
-namespace Application.Features.Products.GetProduct;
-
-using System.Threading;
-using System.Threading.Tasks;
 using Domain.Products;
-using FastEndpoints;
-using Microsoft.AspNetCore.Http;
+
+namespace Application.Features.Products.GetProduct;
 
 public sealed class GetProductEndpoint : Endpoint<Request, Response>
 {
@@ -21,8 +17,10 @@ public sealed class GetProductEndpoint : Endpoint<Request, Response>
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync([NotNull] Request req, CancellationToken ct)
+    public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(req);
+
         var result = await _repository.FindProductByIdAsync(req.Id, ct);
 
         if (result.IsNotFound())
@@ -31,7 +29,7 @@ public sealed class GetProductEndpoint : Endpoint<Request, Response>
             return;
         }
 
-        var product = result.Value;
+        var product = result.Value!;
         var response = new Response(product.Id, product.Name);
 
         await SendAsync(response, StatusCodes.Status200OK, ct);

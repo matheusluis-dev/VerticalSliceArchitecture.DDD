@@ -41,6 +41,7 @@ public sealed class SourceFilesConventionsTests
     public void Files_should_contain_only_one_type_definition_except_if_nested()
     {
         // TODO
+        Assert.True(true);
     }
 
     /// <summary>

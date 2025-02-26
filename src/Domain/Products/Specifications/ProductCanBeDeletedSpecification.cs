@@ -1,7 +1,7 @@
-namespace Domain.Products.Specifications;
-
 using Domain.Common.Specifications;
 using Domain.Products.Entities;
+
+namespace Domain.Products.Specifications;
 
 public sealed class ProductCanBeDeletedSpecification : ISpecification<Product>
 {

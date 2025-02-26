@@ -1,13 +1,10 @@
-namespace Application.Features.Inventories.Endpoints.IncreaseStock;
-
-using System.Threading;
-using System.Threading.Tasks;
 using Domain.Inventories;
-using Microsoft.AspNetCore.Http;
+
+namespace Application.Features.Inventories.Endpoints.IncreaseStock;
 
 public static partial class IncreaseStock
 {
-    public sealed class Endpoint : Endpoint<Request, Response>
+    internal sealed class Endpoint : Endpoint<Request, Response>
     {
         private readonly IInventoryRepository _inventoryRepository;
 
@@ -22,25 +19,25 @@ public static partial class IncreaseStock
             AllowAnonymous();
         }
 
-        public override async Task HandleAsync([NotNull] Request req, CancellationToken ct)
+        public override async Task HandleAsync(Request req, CancellationToken ct)
         {
             var findResult = await _inventoryRepository.FindByIdAsync(req.Id, ct);
 
             if (findResult.IsNotFound())
                 ThrowError("Inventory not found");
 
-            var inventory = findResult.Value;
+            var inventory = findResult.Value!;
 
-            var result = inventory.IncreaseStock(req.Quantity, req.Reason);
+            var increaseStock = inventory.IncreaseStock(req.Quantity, req.Reason);
 
-            if (result.IsInvalid())
+            if (increaseStock.IsInvalid())
             {
-                await this.SendInvalidResponseAsync(result, ct);
+                await this.SendInvalidResponseAsync(increaseStock, ct);
                 return;
             }
 
             await SendAsync(
-                new Response(result.Value.Id, result.Value.ProductId, result.Value.Quantity),
+                new Response(increaseStock.Value!.Id, increaseStock.Value.ProductId, increaseStock.Value.Quantity),
                 StatusCodes.Status200OK,
                 ct
             );

@@ -1,15 +1,13 @@
 namespace Domain.Common.Entities;
 
-using Domain.Common.DomainEvents;
-
 public abstract class EntityBase : IEntity
 {
-    protected EntityBase(IList<IDomainEvent> domainEvents)
+    protected EntityBase(IList<IDomainEvent>? domainEvents)
     {
         _domainEvents = domainEvents ?? [];
     }
 
-    private readonly IList<IDomainEvent> _domainEvents = [];
+    private readonly IList<IDomainEvent> _domainEvents;
 
     public IReadOnlyList<IDomainEvent> GetDomainEvents()
     {

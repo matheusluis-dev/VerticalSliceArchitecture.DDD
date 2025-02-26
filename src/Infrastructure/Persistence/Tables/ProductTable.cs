@@ -1,10 +1,11 @@
-namespace Infrastructure.Persistence.Tables;
-
 using System.Diagnostics.CodeAnalysis;
 using Domain.Inventories.Ids;
 using Domain.Products.Ids;
 using Domain.Products.ValueObjects;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+
+namespace Infrastructure.Persistence.Tables;
 
 public sealed class ProductTable
 {
@@ -25,6 +26,8 @@ public sealed class ProductTableConfiguration : IEntityTypeConfiguration<Product
 
         builder.HasIndex(m => m.Name).IsUnique(true);
 
+        builder.Property(p => p.Name).HasConversion<ProductNameConverter>();
+
         builder
             .HasOne(product => product.Inventory)
             .WithOne(inventory => inventory.Product)
@@ -32,4 +35,10 @@ public sealed class ProductTableConfiguration : IEntityTypeConfiguration<Product
             .IsRequired(false)
             .OnDelete(DeleteBehavior.Restrict);
     }
+}
+
+public sealed class ProductNameConverter : ValueConverter<ProductName, string>
+{
+    public ProductNameConverter()
+        : base(productName => productName.Value, @string => new ProductName(@string)) { }
 }

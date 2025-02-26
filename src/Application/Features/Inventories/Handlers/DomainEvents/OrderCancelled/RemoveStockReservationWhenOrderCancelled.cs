@@ -1,12 +1,9 @@
-namespace Application.Features.Inventories.Handlers.DomainEvents.OrderCancelledEvent;
-
-using System.Threading;
-using System.Threading.Tasks;
-using Domain.Common.DomainEvents;
 using Domain.Inventories;
 using Domain.Inventories.Services;
 using Domain.Orders.Events;
 using Microsoft.Extensions.DependencyInjection;
+
+namespace Application.Features.Inventories.Handlers.DomainEvents.OrderCancelled;
 
 public sealed class RemoveStockReservationWhenOrderCancelled : IDomainEventHandler<OrderCancelledEvent>
 {
@@ -22,10 +19,11 @@ public sealed class RemoveStockReservationWhenOrderCancelled : IDomainEventHandl
         _stockReservation = stockReservation;
     }
 
-    public Task HandleAsync([NotNull] OrderCancelledEvent eventModel, CancellationToken ct)
+    public Task HandleAsync(OrderCancelledEvent eventModel, CancellationToken ct)
     {
-        using var scope = _scopeFactory.CreateScope();
+        ArgumentNullException.ThrowIfNull(eventModel);
 
+        using var scope = _scopeFactory.CreateScope();
         var inventoryRepository = scope.Resolve<IInventoryRepository>();
 
         var itemsThatRequireStockReservation = eventModel.Order.OrderItems.Where(item => item.Product.HasInventory);

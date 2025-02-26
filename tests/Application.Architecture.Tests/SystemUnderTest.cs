@@ -1,7 +1,5 @@
 namespace Application.Architecture.Tests;
 
-using ArchGuard;
-
 internal static class SystemUnderTest
 {
     internal static ITypeFilterEntryPoint Types =>

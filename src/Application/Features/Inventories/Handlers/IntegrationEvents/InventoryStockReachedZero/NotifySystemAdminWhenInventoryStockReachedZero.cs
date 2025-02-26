@@ -1,17 +1,15 @@
-namespace Application.Features.Inventories.Handlers.IntegrationEvents.InventoryStockReachedZeroEvent;
-
-using System.Threading;
-using System.Threading.Tasks;
-using Domain.Common.DomainEvents;
-using Domain.Common.ValueObjects;
 using Domain.Inventories.Events;
 using Domain.Inventories.Ids;
 using Domain.Products.Ids;
 
+namespace Application.Features.Inventories.Handlers.IntegrationEvents.InventoryStockReachedZero;
+
 public sealed class NotifySystemAdminWhenInventoryStockReachedZero : IDomainEventHandler<InventoryStockReachedZeroEvent>
 {
-    public Task HandleAsync([NotNull] InventoryStockReachedZeroEvent eventModel, CancellationToken ct)
+    public Task HandleAsync(InventoryStockReachedZeroEvent eventModel, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(eventModel);
+
         return new NotifySystemAdminWhenInventoryStockReachedZeroCommand(
             eventModel.Inventory.Id,
             eventModel.ProductId
@@ -32,11 +30,10 @@ public sealed class NotifySystemAdminWhenInventoryStockReachedZeroCommandHandler
         _email = email;
     }
 
-    public Task ExecuteAsync(
-        [NotNull] NotifySystemAdminWhenInventoryStockReachedZeroCommand command,
-        CancellationToken ct
-    )
+    public Task ExecuteAsync(NotifySystemAdminWhenInventoryStockReachedZeroCommand command, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(command);
+
         return _email.SendEmailAsync(
             new Email("system@system.com"),
             new Email("admin@system.com"),

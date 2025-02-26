@@ -1,8 +1,5 @@
 namespace Domain.Common;
 
-using System.Collections.Generic;
-using Domain.Common.Entities;
-
 public interface IPagedList<TEntity>
     where TEntity : class, IEntity
 {

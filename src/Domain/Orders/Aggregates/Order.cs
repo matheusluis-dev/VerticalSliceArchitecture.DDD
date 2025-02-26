@@ -1,13 +1,9 @@
-namespace Domain.Orders.Aggregates;
-
-using Domain.Common.DomainEvents;
-using Domain.Common.Entities;
-using Domain.Common.ValueObjects;
 using Domain.Orders.Entities;
 using Domain.Orders.Enums;
 using Domain.Orders.Events;
-using Domain.Orders.Ids;
 using Domain.Orders.Services;
+
+namespace Domain.Orders.Aggregates;
 
 public sealed class Order : EntityBase
 {
@@ -59,24 +55,26 @@ public sealed class Order : EntityBase
         };
     }
 
+    [return: NotNull]
     public Result<Order> Pay(DateTime now)
     {
-        if (Status is OrderStatus.Cancelled)
+        if (Status == OrderStatus.Cancelled)
             return Result.Invalid(new ValidationError("Can not pay cancelled order"));
 
-        if (Status is OrderStatus.Paid)
+        if (Status == OrderStatus.Paid)
             return Result.Invalid(new ValidationError("Order already paid"));
 
         var order = new OrderBuilder().WithOrderToClone(this).WithStatus(OrderStatus.Paid).WithPaidDate(now).Build();
 
         if (order.IsInvalid())
-            return Result.Invalid(order.ValidationErrors);
+            return Result.Invalid(order.ValidationErrors!);
 
         RaiseDomainEvent(new OrderPaidEvent(order));
 
         return order;
     }
 
+    [return: NotNull]
     public Result<Order> Cancel(DateTime now)
     {
         if (Status is not OrderStatus.Pending)
@@ -89,18 +87,14 @@ public sealed class Order : EntityBase
             .Build();
 
         if (order.IsInvalid())
-            return Result.Invalid(order.ValidationErrors);
+            return Result.Invalid(order.ValidationErrors!);
 
         RaiseDomainEvent(new OrderCancelledEvent(order));
 
         return order;
     }
 
-    public Amount GetTotalPrice()
-    {
-        return new Amount(OrderItems.Sum(item => item.OrderItemPrice.TotalPrice.Value));
-    }
-
+    [return: NotNull]
     internal Result<Order> AddItem(OrderItemManagementService orderItemManagement, CreateOrderItemModel model)
     {
         ArgumentNullException.ThrowIfNull(orderItemManagement);
@@ -115,10 +109,7 @@ public sealed class Order : EntityBase
 
         var order = new OrderBuilder().WithOrderToClone(this).WithOrderItems(OrderItems).WithOrderItems(item).Build();
 
-        if (order.IsInvalid())
-            return Result.Invalid(order.ValidationErrors);
-
-        return order;
+        return order.IsInvalid() ? Result.Invalid(order.ValidationErrors) : order;
     }
 
     //public Result<OrderItem> UpdateItem(UpdateOrderItemModel model)

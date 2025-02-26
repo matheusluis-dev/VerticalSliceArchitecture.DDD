@@ -1,7 +1,5 @@
 namespace Domain.Common.Specifications;
 
-using Domain.Common.Entities;
-
 public sealed class OrSpecification<TEntity> : ISpecification<TEntity>
     where TEntity : class, IEntity
 {

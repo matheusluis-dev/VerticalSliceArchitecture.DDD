@@ -1,10 +1,6 @@
-namespace Application.Features.Products.GetProducts;
-
-using System.Threading;
-using System.Threading.Tasks;
 using Domain.Products;
-using FastEndpoints;
-using Microsoft.AspNetCore.Http;
+
+namespace Application.Features.Products.GetProducts;
 
 public sealed class GetProductsEndpoint : Endpoint<Request, PagedResponse>
 {
@@ -21,8 +17,10 @@ public sealed class GetProductsEndpoint : Endpoint<Request, PagedResponse>
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync([NotNull] Request req, CancellationToken ct)
+    public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(req);
+
         var paged = await _productRepository.GetAllAsync(req.Page, req.Size, ct);
         var response = new PagedResponse(paged);
 

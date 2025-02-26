@@ -1,11 +1,11 @@
-namespace Infrastructure.Persistence.Tables;
-
 using System.Diagnostics.CodeAnalysis;
 using Domain.Inventories.Ids;
 using Domain.Orders.Ids;
 using Domain.Orders.ValueObjects;
 using Domain.Products.Ids;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Infrastructure.Persistence.Tables;
 
 public sealed class OrderItemTable
 {
@@ -26,6 +26,17 @@ public sealed class OrderItemTableConfiguration : IEntityTypeConfiguration<Order
     {
         builder.HasKey(orderItem => orderItem.Id);
         builder.HasIndex(orderItem => orderItem.Id);
+
+        builder.ComplexProperty(
+            c => c.OrderItemPrice,
+            c =>
+            {
+                c.IsRequired(true);
+
+                c.Property(p => p.Quantity).HasColumnName("QUANTITY");
+                c.Property(p => p.UnitPrice).HasColumnName("UNIT_PRICE");
+            }
+        );
 
         builder
             .HasOne(orderItem => orderItem.Order)

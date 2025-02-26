@@ -1,11 +1,9 @@
-namespace Domain.Orders.Services;
-
-using Domain.Common.ValueObjects;
 using Domain.Orders.Aggregates;
 using Domain.Orders.Entities;
-using Domain.Orders.Ids;
 using Domain.Orders.ValueObjects;
 using Domain.Products.Entities;
+
+namespace Domain.Orders.Services;
 
 public sealed record CreateOrderItemModel(Order Order, Product Product, Quantity Quantity, Amount UnitPrice);
 
@@ -36,12 +34,12 @@ public sealed class OrderItemManagementService
             );
         }
 
-        return new OrderItem
-        {
-            Id = new OrderItemId(Guid.NewGuid()),
-            OrderId = order.Id,
-            Product = product,
-            OrderItemPrice = new OrderItemPrice(quantity.Value, unitPrice.Value),
-        };
+        return new OrderItem(
+            new OrderItemId(Guid.NewGuid()),
+            order.Id,
+            product,
+            null,
+            new OrderItemPrice(quantity.Value, unitPrice.Value)
+        );
     }
 }

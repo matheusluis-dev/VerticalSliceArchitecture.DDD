@@ -1,5 +1,3 @@
-namespace Application.Unit.Tests;
-
 using Ardalis.Result;
 using Domain.Common.ValueObjects;
 using Domain.Inventories.Aggregate;
@@ -9,13 +7,15 @@ using Domain.Products.Entities;
 using Domain.Products.ValueObjects;
 using Shouldly;
 
+namespace Application.Unit.Tests;
+
 public sealed class InventoryTests
 {
     [Fact]
     public void Can_not_create_inventory_if_product_already_has_one()
     {
         // Arrange
-        var product = Product.Create(new ProductName("name")).Value;
+        var product = Product.Create(new ProductName("name")).Value!;
         var inventory = Inventory.Create(new InventoryId(Guid.NewGuid()), product.Id, new Quantity(1), [], []).Value;
         var productWithInventory = Product.Create(product.Name, product.Id, inventory);
 
@@ -34,7 +34,7 @@ public sealed class InventoryTests
     public void Can_not_create_inventory_with_quantity_lower_or_equal_zero(int quantity)
     {
         // Arrange
-        var product = Product.Create(new ProductName("name")).Value;
+        var product = Product.Create(new ProductName("name")).Value!;
         var sut = new CreateInventoryService();
 
         // Act

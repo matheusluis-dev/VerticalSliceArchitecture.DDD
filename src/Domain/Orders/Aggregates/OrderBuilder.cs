@@ -1,11 +1,7 @@
-namespace Domain.Orders.Aggregates;
-
-using System;
-using System.Collections.Generic;
-using Domain.Common.ValueObjects;
 using Domain.Orders.Entities;
 using Domain.Orders.Enums;
-using Domain.Orders.Ids;
+
+namespace Domain.Orders.Aggregates;
 
 public sealed class OrderBuilder
 {

@@ -1,7 +1,5 @@
-namespace Domain.Inventories.Events;
-
-using Domain.Common.DomainEvents;
 using Domain.Inventories.Aggregate;
-using Domain.Products.Ids;
+
+namespace Domain.Inventories.Events;
 
 public sealed record InventoryStockReachedZeroEvent(Inventory Inventory, ProductId ProductId) : IDomainEvent;

@@ -1,8 +1,7 @@
-namespace Infrastructure;
-
-using Domain.Common;
+using System.Diagnostics.CodeAnalysis;
 using Domain.Common.Entities;
-using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure;
 
 public sealed class PagedList<TEntity> : IPagedList<TEntity>
     where TEntity : class, IEntity
@@ -25,6 +24,7 @@ public sealed class PagedList<TEntity> : IPagedList<TEntity>
         Elements = items;
     }
 
+    [SuppressMessage("Design", "CA1000:Do not declare static members on generic types")]
     public static async Task<PagedList<TEntity>> CreateAsync(
         IQueryable<TEntity> source,
         int pageIndex,

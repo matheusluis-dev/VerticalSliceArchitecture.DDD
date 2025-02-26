@@ -1,23 +1,24 @@
-namespace Domain.Common.ValueObjects;
-
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
+
+namespace Domain.Common.ValueObjects;
 
 public sealed partial class Email : ValueObject
 {
-    public string Address { get; init; }
+    public string Value { get; init; } = null!;
+
+    public Email() { }
 
     public Email(string address)
     {
         if (!EmailRegex().IsMatch(address))
             throw EmailException.InvalidFormat(address);
 
-        Address = address;
+        Value = address;
     }
 
     protected override IEnumerable<object> GetAtomicValues()
     {
-        yield return Address;
+        yield return Value;
     }
 
     [GeneratedRegex(
@@ -33,7 +34,7 @@ public sealed class EmailException : Exception
     private EmailException(string message)
         : base(message) { }
 
-    public static EmailException InvalidFormat(string emailAddress)
+    internal static EmailException InvalidFormat(string emailAddress)
     {
         return new EmailException($"'{emailAddress}' has an invalid format");
     }

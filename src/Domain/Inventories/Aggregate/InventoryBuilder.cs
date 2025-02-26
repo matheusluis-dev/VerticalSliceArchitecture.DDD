@@ -1,9 +1,6 @@
-namespace Domain.Inventories.Aggregate;
-
-using Domain.Common.ValueObjects;
 using Domain.Inventories.Entities;
-using Domain.Inventories.Ids;
-using Domain.Products.Ids;
+
+namespace Domain.Inventories.Aggregate;
 
 public sealed class InventoryBuilder
 {

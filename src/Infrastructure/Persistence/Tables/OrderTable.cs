@@ -1,10 +1,10 @@
-namespace Infrastructure.Persistence.Tables;
-
 using System.Diagnostics.CodeAnalysis;
 using Domain.Common.ValueObjects;
 using Domain.Orders.Enums;
 using Domain.Orders.Ids;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Infrastructure.Persistence.Tables;
 
 public sealed class OrderTable
 {

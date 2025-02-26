@@ -1,15 +1,14 @@
-namespace Application.Features.Orders.Handlers.IntegrationEvents.OrderPaidEvent;
-
-using System.Threading;
-using System.Threading.Tasks;
-using Domain.Common.ValueObjects;
 using Domain.Orders.Events;
 using Domain.Orders.Ids;
 
+namespace Application.Features.Orders.Handlers.IntegrationEvents.OrderPaid;
+
 public sealed class SendEmailsWhenOrderWasPaid : IEventHandler<OrderPaidEvent>
 {
-    public Task HandleAsync([NotNull] OrderPaidEvent eventModel, CancellationToken ct)
+    public Task HandleAsync(OrderPaidEvent eventModel, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(eventModel);
+
         return new SendEmailsWhenOrderWasPaidCommand(eventModel.Order.Id, eventModel.Order.CustomerEmail).QueueJobAsync(
             ct: ct
         );
@@ -27,8 +26,10 @@ public sealed class SendEmailsWhenOrderWasPaidCommandHandler : ICommandHandler<S
         _email = emailService;
     }
 
-    public Task ExecuteAsync([NotNull] SendEmailsWhenOrderWasPaidCommand command, CancellationToken ct)
+    public Task ExecuteAsync(SendEmailsWhenOrderWasPaidCommand command, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(command);
+
         var sendEmailToCostumer = _email.SendEmailAsync(
             command.CustomerEmail,
             new Email("system@system.com"),

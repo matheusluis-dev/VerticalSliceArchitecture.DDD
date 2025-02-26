@@ -1,11 +1,8 @@
-namespace Domain.Inventories.Services;
-
-using Domain.Common.ValueObjects;
 using Domain.Inventories.Aggregate;
 using Domain.Inventories.Entities;
 using Domain.Inventories.Enums;
-using Domain.Inventories.Ids;
-using Domain.Orders.Ids;
+
+namespace Domain.Inventories.Services;
 
 public sealed record ReserveStockModel(Inventory Inventory, OrderItemId OrderItemId, Quantity Quantity);
 
@@ -16,9 +13,7 @@ public sealed partial class StockReservationService
         var (inventory, orderItemId, quantity) = model;
 
         if (quantity.Value <= 0)
-        {
             return Result.Invalid(new ValidationError("Quantity must be greater than 0"));
-        }
 
         if (!inventory.HasEnoughStockToDecrease(quantity))
         {
@@ -39,7 +34,7 @@ public sealed partial class StockReservationService
         );
 
         if (reservation.IsInvalid())
-            return Result.Invalid(reservation.ValidationErrors);
+            return Result.Invalid(reservation.ValidationErrors!);
 
         return inventory.PlaceReservation(reservation);
     }
@@ -56,14 +51,10 @@ public sealed partial class StockReservationService
         var reservation = inventory.Reservations.FirstOrDefault(r => r.OrderItemId == orderItemId);
 
         if (reservation is null)
-        {
-            return Result<Inventory>.Invalid(
-                new ValidationError($"Reservation for order item '{orderItemId}' not found")
-            );
-        }
+            return Result.Invalid(new ValidationError($"Reservation for order item '{orderItemId}' not found"));
 
         if (reservation.Status is not ReservationStatus.Pending)
-            return Result<Inventory>.Invalid(new ValidationError("Reservation status must be pending"));
+            return Result.Invalid(new ValidationError("Reservation status must be pending"));
 
         return inventory.AlterReservationStatus(reservation.Id, ReservationStatus.Cancelled);
     }

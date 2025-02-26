@@ -1,7 +1,6 @@
-namespace Application.BaseModels;
-
-using Domain.Common;
 using Domain.Common.Entities;
+
+namespace Application.Models;
 
 public abstract record PagedResponse<TResponse, TEntity>
     where TResponse : class
@@ -23,6 +22,6 @@ public abstract record PagedResponse<TResponse, TEntity>
         TotalPages = pagedList.TotalPages;
         HasPreviousPage = pagedList.HasPreviousPage;
         HasNextPage = pagedList.HasNextPage;
-        Elements = pagedList.Elements.Select(e => mapper(e)).ToList();
+        Elements = pagedList.Elements.Select(mapper).ToList();
     }
 }

@@ -1,9 +1,9 @@
-namespace Application.Unit.Tests;
-
 using Ardalis.Result;
 using Domain.Products.Entities;
 using Domain.Products.ValueObjects;
 using Shouldly;
+
+namespace Application.Unit.Tests;
 
 public sealed class ProductTests
 {

@@ -1,17 +1,14 @@
 namespace Domain.Products.ValueObjects;
 
-using System.Collections.Generic;
-using Domain.Common.ValueObjects;
-
 public sealed class ProductName : ValueObject
 {
-    public string Name { get; init; }
+    public string Value { get; init; }
 
     public ProductName(string name)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
 
-        Name = Normalize(name);
+        Value = Normalize(name);
     }
 
     private static string Normalize(string name)
@@ -23,11 +20,16 @@ public sealed class ProductName : ValueObject
 
     internal bool IsFilled()
     {
-        return Name.Trim().Length > 0;
+        return Value.Trim().Length > 0;
     }
 
     protected override IEnumerable<object> GetAtomicValues()
     {
-        yield return Name;
+        yield return Value;
+    }
+
+    public override string ToString()
+    {
+        return Value;
     }
 }

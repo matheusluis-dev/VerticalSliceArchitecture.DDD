@@ -1,21 +1,21 @@
-namespace Application.Integration.Tests;
-
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+
+namespace Application.Integration.Tests;
 
 public sealed class ApplicationFixture : AppFixture<Program>
 {
     private MongoDbContainer _mongoContainer = null!;
     private MsSqlContainer _mssqlContainer = null!;
 
-    const string MONGO_DATABASE = "TestingDB";
-    const string MONGO_USERNAME = "root";
-    const string MONGO_PASSWORD = "password";
+    private const string MONGO_DATABASE = "TestingDB";
+    private const string MONGO_USERNAME = "root";
+    private const string MONGO_PASSWORD = "password";
 
-    public HttpClient ProductClient { get; private set; }
-    public HttpClient InventoryClient { get; private set; }
+    public HttpClient ProductClient { get; private set; } = null!;
+    public HttpClient InventoryClient { get; private set; } = null!;
 
     protected override async ValueTask PreSetupAsync()
     {

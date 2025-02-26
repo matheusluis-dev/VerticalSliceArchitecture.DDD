@@ -1,12 +1,9 @@
-namespace Application.Features.Inventories.Handlers.DomainEvents.OrderPaidEvent;
-
-using System.Threading;
-using System.Threading.Tasks;
-using Domain.Common.DomainEvents;
 using Domain.Inventories;
 using Domain.Inventories.Services;
 using Domain.Orders.Events;
 using Microsoft.Extensions.DependencyInjection;
+
+namespace Application.Features.Inventories.Handlers.DomainEvents.OrderPaid;
 
 public sealed class ApplyReservationInInventoryStockWhenOrderPaid : IDomainEventHandler<OrderPaidEvent>
 {
@@ -22,10 +19,11 @@ public sealed class ApplyReservationInInventoryStockWhenOrderPaid : IDomainEvent
         _stockRelease = stockRelease;
     }
 
-    public Task HandleAsync([NotNull] OrderPaidEvent eventModel, CancellationToken ct)
+    public Task HandleAsync(OrderPaidEvent eventModel, CancellationToken ct)
     {
-        using var scope = _scopeFactory.CreateScope();
+        ArgumentNullException.ThrowIfNull(eventModel);
 
+        using var scope = _scopeFactory.CreateScope();
         var inventoryRepository = scope.Resolve<IInventoryRepository>();
 
         var itemsThatRequireStockReservation = eventModel.Order.OrderItems.Where(item => item.Product.HasInventory);

@@ -1,4 +1,4 @@
-namespace Application.BaseModels;
+namespace Application.Models;
 
 public abstract record PagedRequest
 {

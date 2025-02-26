@@ -1,11 +1,9 @@
-namespace Domain.Orders.Services;
-
-using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
-using Domain.Common.ValueObjects;
 using Domain.Orders.Aggregates;
 using Domain.Orders.Enums;
 using Domain.Orders.Events;
 using Domain.Products.Entities;
+
+namespace Domain.Orders.Services;
 
 public sealed record OrderPlacementModel(IEnumerable<OrderItemPlacementModel> Items, Email CustomerEmail, DateTime Now);
 

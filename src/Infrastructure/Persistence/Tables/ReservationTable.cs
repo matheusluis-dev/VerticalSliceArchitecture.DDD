@@ -1,11 +1,13 @@
-namespace Infrastructure.Persistence.Tables;
-
 using System.Diagnostics.CodeAnalysis;
 using Domain.Common.ValueObjects;
 using Domain.Inventories.Enums;
 using Domain.Inventories.Ids;
 using Domain.Orders.Ids;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Infrastructure.Persistence.Tables;
+
+#nullable disable
 
 public sealed class ReservationTable
 {
@@ -18,6 +20,8 @@ public sealed class ReservationTable
     public OrderItemTable OrderItem { get; set; }
     public InventoryTable Inventory { get; set; }
 }
+
+#nullable  restore
 
 public sealed class ReservationTableConfiguration : IEntityTypeConfiguration<ReservationTable>
 {

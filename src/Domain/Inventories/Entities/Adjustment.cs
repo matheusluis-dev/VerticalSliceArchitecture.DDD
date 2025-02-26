@@ -1,10 +1,5 @@
 namespace Domain.Inventories.Entities;
 
-using Domain.Common.Entities;
-using Domain.Common.ValueObjects;
-using Domain.Inventories.Ids;
-using Domain.Orders.Ids;
-
 public sealed class Adjustment : IChildEntity
 {
     public required AdjustmentId Id { get; init; }

@@ -1,12 +1,8 @@
-namespace Domain.Inventories.Aggregate;
-
-using Domain.Common.DomainEvents;
-using Domain.Common.Entities;
 using Domain.Inventories.Entities;
 using Domain.Inventories.Enums;
 using Domain.Inventories.Events;
-using Domain.Inventories.Ids;
-using Domain.Products.Ids;
+
+namespace Domain.Inventories.Aggregate;
 
 public sealed class Inventory : EntityBase
 {
@@ -26,7 +22,7 @@ public sealed class Inventory : EntityBase
     public static Result<Inventory> Create(
         InventoryId id,
         ProductId? productId,
-        Quantity quantity,
+        Quantity? quantity,
         IEnumerable<Adjustment> adjustments,
         IEnumerable<Reservation> reservations,
         IList<IDomainEvent>? domainEvents = null
@@ -58,7 +54,7 @@ public sealed class Inventory : EntityBase
         return new Quantity(Quantity.Value - GetReservedStock().Value);
     }
 
-    public Quantity GetReservedStock()
+    private Quantity GetReservedStock()
     {
         var sum = Reservations.Sum(reservation => reservation.Quantity.Value);
 
@@ -72,18 +68,21 @@ public sealed class Inventory : EntityBase
 
     public Result<Inventory> IncreaseStock(Quantity quantity, string reason)
     {
+        ArgumentNullException.ThrowIfNull(quantity);
+        ArgumentNullException.ThrowIfNull(reason);
+
         if (quantity.Value <= 0)
             return Result.Invalid(new ValidationError("Quantity must be greater than 0"));
 
         var adjustment = Adjustment.Create(new AdjustmentId(Guid.NewGuid()), Id, null, quantity, reason);
 
         if (adjustment.IsInvalid())
-            return Result.Invalid(adjustment.ValidationErrors);
+            return Result.Invalid(adjustment.ValidationErrors!);
 
         var adjustmentResult = PlaceAdjustment(adjustment);
 
         if (adjustmentResult.IsInvalid())
-            return Result.Invalid(adjustmentResult.ValidationErrors);
+            return Result.Invalid(adjustmentResult.ValidationErrors!);
 
         return adjustmentResult;
     }
@@ -91,6 +90,7 @@ public sealed class Inventory : EntityBase
     public Result<Inventory> DecreaseStock(Quantity quantity, string reason)
     {
         ArgumentNullException.ThrowIfNull(quantity);
+        ArgumentNullException.ThrowIfNull(reason);
 
         var normalizedQuantity = new Quantity(quantity.Value < 0 ? quantity.Value * -1 : quantity.Value);
 
@@ -112,14 +112,11 @@ public sealed class Inventory : EntityBase
         );
 
         if (adjustment.IsInvalid())
-            return Result.Invalid(adjustment.ValidationErrors);
+            return Result.Invalid(adjustment.ValidationErrors!);
 
         var adjustmentResult = PlaceAdjustment(adjustment);
 
-        if (adjustmentResult.IsInvalid())
-            return Result.Invalid(adjustmentResult.ValidationErrors);
-
-        return adjustmentResult;
+        return adjustmentResult.IsInvalid() ? Result.Invalid(adjustmentResult.ValidationErrors!) : adjustmentResult;
     }
 
     internal Result<Inventory> PlaceAdjustment(Adjustment adjustment)
@@ -136,11 +133,11 @@ public sealed class Inventory : EntityBase
             .Build();
 
         if (buildResult.IsInvalid())
-            return Result<Inventory>.Invalid(buildResult.ValidationErrors);
+            return Result.Invalid(buildResult.ValidationErrors!);
 
-        var inventory = buildResult.Value;
+        var inventory = buildResult.Value!;
 
-        if (inventory.Quantity.Value == 0)
+        if (inventory.Quantity.Value is 0)
             inventory.RaiseDomainEvent(new InventoryStockReachedZeroEvent(this, ProductId));
 
         return inventory;
@@ -173,7 +170,7 @@ public sealed class Inventory : EntityBase
         );
 
         if (newReservation.IsInvalid())
-            return Result.Invalid(newReservation.ValidationErrors);
+            return Result.Invalid(newReservation.ValidationErrors!);
 
         return new InventoryBuilder()
             .WithInventoryToClone(this)

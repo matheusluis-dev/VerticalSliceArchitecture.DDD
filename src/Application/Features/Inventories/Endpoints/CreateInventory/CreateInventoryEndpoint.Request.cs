@@ -1,9 +1,8 @@
-namespace Application.Features.Inventories.Endpoints.CreateInventory;
-
-using Domain.Common.ValueObjects;
 using Domain.Products.Ids;
 
-public static partial class CreateInventory
+namespace Application.Features.Inventories.Endpoints.CreateInventory;
+
+public static partial class CreateInventoryEndpoint
 {
-    public sealed record Request(ProductId ProductId, Quantity Quantity);
+    internal sealed record Request(ProductId ProductId, Quantity Quantity);
 }

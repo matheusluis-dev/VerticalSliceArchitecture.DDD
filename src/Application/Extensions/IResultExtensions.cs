@@ -1,3 +1,5 @@
+using IResult = Ardalis.Result.IResult;
+
 namespace Application.Extensions;
 
 public static class IResultExtensions

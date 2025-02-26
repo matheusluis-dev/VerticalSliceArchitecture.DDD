@@ -1,9 +1,7 @@
-namespace Domain.Inventories.Services;
-
 using Domain.Inventories.Aggregate;
 using Domain.Inventories.Entities;
-using Domain.Inventories.Ids;
-using Domain.Orders.Ids;
+
+namespace Domain.Inventories.Services;
 
 public sealed record CreateForOrderItemReservationModel(
     Inventory Inventory,
@@ -17,7 +15,7 @@ public sealed class CreateAdjustmentService
     {
         var (inventory, orderItemId, reservation) = model;
 
-        // only 1 reservation per order item
+        // TODO: only 1 reservation per order item
 
         return Adjustment.Create(
             new AdjustmentId(Guid.NewGuid()),

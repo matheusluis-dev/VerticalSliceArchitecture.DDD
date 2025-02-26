@@ -1,10 +1,10 @@
 namespace Domain.Common.ValueObjects;
 
-using System.Collections.Generic;
-
 public sealed class Amount : ValueObject
 {
     public decimal Value { get; init; }
+
+    public Amount() { }
 
     public Amount(decimal value)
     {
@@ -25,7 +25,7 @@ public sealed class AmountException : Exception
     private AmountException(string message)
         : base(message) { }
 
-    public static AmountException AmountZeroOrLesser()
+    internal static AmountException AmountZeroOrLesser()
     {
         return new AmountException("Amount must be greater than zero");
     }

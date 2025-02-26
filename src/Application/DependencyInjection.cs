@@ -1,29 +1,27 @@
-namespace Application;
-
 using System.Text.Json.Serialization;
 using Domain.Inventories;
 using Domain.Inventories.Services;
 using Domain.Orders;
 using Domain.Orders.Services;
 using Domain.Products;
-using FastEndpoints;
 using FastEndpoints.Swagger;
 using Infrastructure.JobStorage;
-using Infrastructure.Persistence;
-using Infrastructure.Persistence.Inventories;
-using Infrastructure.Persistence.Orders;
-using Infrastructure.Persistence.Products;
+using Infrastructure.Persistence.Repositories.Inventories;
+using Infrastructure.Persistence.Repositories.Orders;
+using Infrastructure.Persistence.Repositories.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
+namespace Application;
+
 public static class DependencyInjection
 {
     public static IServiceCollection AddConfiguredFastEndpoints(this IServiceCollection services)
     {
-        services.AddFastEndpoints(options => options.SourceGeneratorDiscoveredTypes = DiscoveredTypes.All);
+        services.AddFastEndpoints(options => options.SourceGeneratorDiscoveredTypes = DiscoveredTypes.All!);
 
         services.SwaggerDocument();
 
@@ -45,11 +43,10 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddInfrastructure(
-        this IServiceCollection services,
-        [NotNull] IConfiguration configuration
-    )
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        ArgumentNullException.ThrowIfNull(configuration);
+
         AddDatabase();
         AddJobStorage();
 
@@ -64,9 +61,7 @@ public static class DependencyInjection
         void AddDatabase()
         {
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
-            {
                 services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("VSA"));
-            }
             else
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
@@ -92,7 +87,7 @@ public static class DependencyInjection
             {
                 var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>().Value;
                 var client = sp.GetRequiredService<IMongoClient>();
-                return client.GetDatabase(settings.DatabaseName);
+                return client.GetDatabase(settings.DatabaseName)!;
             });
         }
 

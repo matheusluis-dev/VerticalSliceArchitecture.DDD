@@ -1,10 +1,6 @@
-namespace Application.Features.Products.UpdateProduct;
-
-using System.Threading;
-using System.Threading.Tasks;
 using Domain.Products;
-using FastEndpoints;
-using Microsoft.AspNetCore.Http;
+
+namespace Application.Features.Products.UpdateProduct;
 
 public sealed class UpdateProductEndpoint : Endpoint<Request, Response>
 {
@@ -21,7 +17,7 @@ public sealed class UpdateProductEndpoint : Endpoint<Request, Response>
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync([NotNull] Request req, CancellationToken ct)
+    public override async Task HandleAsync(Request req, CancellationToken ct)
     {
         var product = await _productRepository.FindProductByIdAsync(req.Id, ct);
 
@@ -38,14 +34,14 @@ public sealed class UpdateProductEndpoint : Endpoint<Request, Response>
             );
         }
 
-        var updated = product.Value.UpdateName(req.Name);
+        var updated = product.Value!.UpdateName(req.Name);
         if (updated.IsInvalid())
         {
             await this.SendInvalidResponseAsync(updated, ct);
             return;
         }
 
-        var response = new Response(updated.Value.Id, updated.Value.Name);
+        var response = new Response(updated.Value!.Id, updated.Value.Name);
 
         await SendAsync(response, StatusCodes.Status200OK, ct);
     }

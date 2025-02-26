@@ -1,11 +1,8 @@
-namespace Application.Features.Orders.Endpoints.PlaceOrder;
-
-using System.Diagnostics.CodeAnalysis;
 using Domain.Orders;
 using Domain.Orders.Services;
 using Domain.Products;
-using FastEndpoints;
-using Microsoft.AspNetCore.Http;
+
+namespace Application.Features.Orders.Endpoints.PlaceOrder;
 
 public sealed class CreateProductEndpoint : Endpoint<Request, Response>
 {
@@ -39,8 +36,10 @@ public sealed class CreateProductEndpoint : Endpoint<Request, Response>
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync([NotNull] Request req, CancellationToken ct)
+    public override async Task HandleAsync(Request req, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(req);
+
         var addOrderItems = new List<OrderItemPlacementModel>();
         foreach (var item in req.Items)
         {
@@ -49,7 +48,7 @@ public sealed class CreateProductEndpoint : Endpoint<Request, Response>
             if (product.IsNotFound())
                 ThrowError($"Product '{item.ProductId}' not found");
 
-            addOrderItems.Add(new(product, item.Quantity, item.UnitPrice));
+            addOrderItems.Add(new OrderItemPlacementModel(product, item.Quantity, item.UnitPrice));
         }
 
         var model = new OrderPlacementModel(addOrderItems, req.CustomerEmail, _dateTime.UtcNow.DateTime);
@@ -61,7 +60,7 @@ public sealed class CreateProductEndpoint : Endpoint<Request, Response>
             return;
         }
 
-        var order = result.Value;
+        var order = result.Value!;
 
         await _orderRepository.CreateAsync(order, ct);
         await _context.SaveChangesAsync(ct);

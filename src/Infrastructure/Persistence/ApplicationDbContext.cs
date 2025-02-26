@@ -1,23 +1,25 @@
+using Domain.Common.Entities;
+using Domain.Common.ValueObjects;
+using Domain.Inventories.Ids;
+using Domain.Orders.Ids;
+using Domain.Products.Ids;
+using FastEndpoints;
+using Infrastructure.Persistence.Converters.Ids;
+using Infrastructure.Persistence.Converters.ValueObjects;
+using Infrastructure.Persistence.Tables;
+using JetBrains.Annotations;
+
 namespace Infrastructure.Persistence;
 
-using System.Diagnostics.CodeAnalysis;
-using System.Threading;
-using System.Threading.Tasks;
-using Domain.Common.Entities;
-using FastEndpoints;
-using Infrastructure.JobStorage;
-using Infrastructure.Persistence.Conversors;
-using Infrastructure.Persistence.Tables;
-using Microsoft.EntityFrameworkCore;
-
+[UsedImplicitly]
 public sealed class ApplicationDbContext : DbContext
 {
-    public DbSet<OrderTable> Order { get; set; }
-    public DbSet<OrderItemTable> OrderItem { get; set; }
-    public DbSet<ProductTable> Product { get; set; }
-    public DbSet<InventoryTable> Inventory { get; set; }
-    public DbSet<AdjustmentTable> Adjustment { get; set; }
-    public DbSet<ReservationTable> Reservation { get; set; }
+    internal DbSet<OrderTable> Order { get; set; }
+    internal DbSet<OrderItemTable> OrderItem { get; set; }
+    internal DbSet<ProductTable> Product { get; set; }
+    internal DbSet<InventoryTable> Inventory { get; set; }
+    internal DbSet<AdjustmentTable> Adjustment { get; set; }
+    internal DbSet<ReservationTable> Reservation { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -30,14 +32,25 @@ public sealed class ApplicationDbContext : DbContext
         optionsBuilder.UseUpperSnakeCaseNamingConvention();
     }
 
-    protected override void ConfigureConventions([NotNull] ModelConfigurationBuilder configurationBuilder)
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
-        base.ConfigureConventions(configurationBuilder);
+        ArgumentNullException.ThrowIfNull(configurationBuilder);
 
-        configurationBuilder.Properties<TypedId<Guid>>().HaveConversion<TypedIdValueConverter<TypedId<Guid>, Guid>>();
+        // Typed Ids
+        configurationBuilder.Properties<AdjustmentId>().HaveConversion<AdjustmentIdConverter>();
+        configurationBuilder.Properties<InventoryId>().HaveConversion<InventoryIdConverter>();
+        configurationBuilder.Properties<OrderId>().HaveConversion<OrderIdConverter>();
+        configurationBuilder.Properties<OrderItemId>().HaveConversion<OrderItemIdConverter>();
+        configurationBuilder.Properties<ProductId>().HaveConversion<ProductIdConverter>();
+        configurationBuilder.Properties<ReservationId>().HaveConversion<ReservationIdConverter>();
+
+        // Value Objects
+        configurationBuilder.Properties<Amount>().HaveConversion<AmountConverter>().HaveColumnType("decimal(14,4)");
+        configurationBuilder.Properties<Email>().HaveConversion<EmailConverter>().HaveMaxLength(255);
+        configurationBuilder.Properties<Quantity>().HaveConversion<QuantityConverter>().HaveMaxLength(10);
     }
 
-    protected override void OnModelCreating([NotNull] ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
 
@@ -49,20 +62,22 @@ public sealed class ApplicationDbContext : DbContext
         foreach (var entity in modelBuilder.Model.GetEntityTypes())
         {
             var entityName = entity.GetTableName();
-            var withoutModel = entityName!.EndsWith("Table", StringComparison.Ordinal) ? entityName[0..^5] : entityName;
+            var withoutTableSuffix = entityName!.EndsWith("Table", StringComparison.Ordinal)
+                ? entityName[0..^5]
+                : entityName;
 
-            entity.SetTableName(withoutModel);
+            entity.SetTableName(withoutTableSuffix);
         }
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        await PublishDomainEventsAsync();
+        await PublishDomainEventsAsync(cancellationToken);
 
         return await base.SaveChangesAsync(cancellationToken);
     }
 
-    private async Task PublishDomainEventsAsync()
+    private async Task PublishDomainEventsAsync(CancellationToken cancellationToken = default)
     {
         var domainEvents = ChangeTracker
             .Entries<EntityBase>()
@@ -71,6 +86,6 @@ public sealed class ApplicationDbContext : DbContext
             .ToList();
 
         foreach (var domainEvent in domainEvents)
-            await domainEvent.PublishAsync(Mode.WaitForAll);
+            await domainEvent.PublishAsync(Mode.WaitForAll, cancellationToken);
     }
 }

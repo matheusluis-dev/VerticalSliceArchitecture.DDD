@@ -1,14 +1,13 @@
 namespace Domain.Orders.ValueObjects;
 
-using System.Collections.Generic;
-using Domain.Common.ValueObjects;
-
 public sealed class OrderItemPrice : ValueObject
 {
-    public Quantity Quantity { get; init; }
-    public Amount UnitPrice { get; init; }
+    public Quantity Quantity { get; init; } = null!;
+    public Amount UnitPrice { get; init; } = null!;
 
     public Amount TotalPrice => new(Quantity.Value * UnitPrice.Value);
+
+    public OrderItemPrice() { }
 
     public OrderItemPrice(int quantity, decimal unitPrice)
     {

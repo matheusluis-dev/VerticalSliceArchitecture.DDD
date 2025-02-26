@@ -1,7 +1,5 @@
 namespace Application.Extensions;
 
-using Microsoft.AspNetCore.Http;
-
 public static class ResultStatusExtensions
 {
     public static int ToStatusCode(this ResultStatus resultStatus)

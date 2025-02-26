@@ -1,10 +1,10 @@
 namespace Domain.Common.ValueObjects;
 
-using System.Collections.Generic;
-
 public sealed class Quantity : ValueObject
 {
     public int Value { get; init; }
+
+    public Quantity() { }
 
     public Quantity(int value)
     {
@@ -25,7 +25,7 @@ public sealed class QuantityException : Exception
     private QuantityException(string message)
         : base(message) { }
 
-    public static QuantityException QuantityZeroOrLesser()
+    internal static QuantityException QuantityZeroOrLesser()
     {
         return new QuantityException("Quantity must be greater than zero");
     }

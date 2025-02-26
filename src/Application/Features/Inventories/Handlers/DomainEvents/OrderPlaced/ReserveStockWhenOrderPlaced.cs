@@ -1,12 +1,9 @@
-namespace Application.Features.Inventories.Handlers.DomainEvents.OrderPlacedEvent;
-
-using System.Threading;
-using System.Threading.Tasks;
-using Domain.Common.DomainEvents;
 using Domain.Inventories;
 using Domain.Inventories.Services;
 using Domain.Orders.Events;
 using Microsoft.Extensions.DependencyInjection;
+
+namespace Application.Features.Inventories.Handlers.DomainEvents.OrderPlaced;
 
 public sealed class ReserveStockWhenOrderPlaced : IDomainEventHandler<OrderPlacedEvent>
 {
@@ -19,10 +16,11 @@ public sealed class ReserveStockWhenOrderPlaced : IDomainEventHandler<OrderPlace
         _stockRelease = stockRelease;
     }
 
-    public Task HandleAsync([NotNull] OrderPlacedEvent eventModel, CancellationToken ct)
+    public Task HandleAsync(OrderPlacedEvent eventModel, CancellationToken ct)
     {
-        using var scope = _scopeFactory.CreateScope();
+        ArgumentNullException.ThrowIfNull(eventModel);
 
+        using var scope = _scopeFactory.CreateScope();
         var inventoryRepository = scope.Resolve<IInventoryRepository>();
 
         var itemsThatRequireStockReservation = eventModel.Order.OrderItems.Where(item => item.Product.HasInventory);

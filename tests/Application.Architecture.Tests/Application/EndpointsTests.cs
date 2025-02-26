@@ -1,6 +1,6 @@
-namespace Application.Architecture.Tests.Application;
-
 using FastEndpoints;
+
+namespace Application.Architecture.Tests.Application;
 
 /// <summary>
 /// <para>
