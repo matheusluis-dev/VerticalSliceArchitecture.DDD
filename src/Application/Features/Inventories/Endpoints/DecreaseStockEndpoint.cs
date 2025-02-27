@@ -1,10 +1,16 @@
 using Domain.Inventories;
+using Domain.Inventories.Ids;
+using Domain.Products.Ids;
 
-namespace Application.Features.Inventories.Endpoints.DecreaseStock;
+namespace Application.Features.Inventories.Endpoints;
 
-public static partial class DecreaseStockEndpoint
+public static class DecreaseStockEndpoint
 {
-    internal sealed class Endpoint : Endpoint<Request, Response>
+    public sealed record Request(InventoryId Id, Quantity Quantity, string Reason);
+
+    public sealed record Response(InventoryId Id, ProductId ProductId, Quantity Quantity);
+
+    public sealed class Endpoint : Endpoint<Request, Response>
     {
         private readonly IInventoryRepository _inventoryRepository;
 

@@ -7,8 +7,6 @@ public sealed class SendEmailsWhenOrderWasPaid : IEventHandler<OrderPaidEvent>
 {
     public Task HandleAsync(OrderPaidEvent eventModel, CancellationToken ct)
     {
-        ArgumentNullException.ThrowIfNull(eventModel);
-
         return new SendEmailsWhenOrderWasPaidCommand(eventModel.Order.Id, eventModel.Order.CustomerEmail).QueueJobAsync(
             ct: ct
         );
@@ -28,8 +26,6 @@ public sealed class SendEmailsWhenOrderWasPaidCommandHandler : ICommandHandler<S
 
     public Task ExecuteAsync(SendEmailsWhenOrderWasPaidCommand command, CancellationToken ct)
     {
-        ArgumentNullException.ThrowIfNull(command);
-
         var sendEmailToCostumer = _email.SendEmailAsync(
             command.CustomerEmail,
             new Email("system@system.com"),

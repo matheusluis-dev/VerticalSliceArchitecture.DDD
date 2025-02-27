@@ -2,8 +2,9 @@ namespace Domain.Common.ValueObjects;
 
 public sealed class Amount : ValueObject
 {
-    public decimal Value { get; init; }
+    public decimal Value { get; }
 
+    [UsedImplicitly]
     public Amount() { }
 
     public Amount(decimal value)
@@ -22,8 +23,13 @@ public sealed class Amount : ValueObject
 
 public sealed class AmountException : Exception
 {
-    private AmountException(string message)
+    public AmountException() { }
+
+    public AmountException(string message)
         : base(message) { }
+
+    public AmountException(string message, Exception innerException)
+        : base(message, innerException) { }
 
     internal static AmountException AmountZeroOrLesser()
     {

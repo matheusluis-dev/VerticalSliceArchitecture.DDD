@@ -4,6 +4,7 @@ public sealed class Quantity : ValueObject
 {
     public int Value { get; init; }
 
+    [UsedImplicitly]
     public Quantity() { }
 
     public Quantity(int value)
@@ -22,8 +23,13 @@ public sealed class Quantity : ValueObject
 
 public sealed class QuantityException : Exception
 {
-    private QuantityException(string message)
+    public QuantityException() { }
+
+    public QuantityException(string message)
         : base(message) { }
+
+    public QuantityException(string message, Exception innerException)
+        : base(message, innerException) { }
 
     internal static QuantityException QuantityZeroOrLesser()
     {

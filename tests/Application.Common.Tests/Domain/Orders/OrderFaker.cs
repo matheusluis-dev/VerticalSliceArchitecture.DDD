@@ -35,7 +35,7 @@
 //    }
 
 //    private static OrderStatus GetOrderStatusForCurrent(
-//        [NotNull] OrderFakerConfiguration configuration,
+//          OrderFakerConfiguration configuration,
 //        int orderIndex
 //    )
 //    {
@@ -46,7 +46,7 @@
 //    }
 
 //    private static IEnumerable<OrderItem> GenerateItems(
-//        [NotNull] OrderFakerConfiguration configuration,
+//          OrderFakerConfiguration configuration,
 //        int orderIndex,
 //        OrderId orderId
 //    )
@@ -68,7 +68,7 @@
 //    }
 
 //    private static int GetCurrentOrderItemQuantity(
-//        [NotNull] OrderFakerConfiguration configuration,
+//          OrderFakerConfiguration configuration,
 //        int orderIndex
 //    )
 //    {
@@ -79,7 +79,7 @@
 //    }
 
 //    private static decimal GetCurrentItemPrice(
-//        [NotNull] OrderFakerConfiguration configuration,
+//          OrderFakerConfiguration configuration,
 //        int orderIndex,
 //        int orderItemIndex
 //    )

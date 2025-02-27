@@ -1,12 +1,18 @@
 using Domain.Inventories;
+using Domain.Inventories.Ids;
 using Domain.Inventories.Services;
 using Domain.Products;
+using Domain.Products.Ids;
 
-namespace Application.Features.Inventories.Endpoints.CreateInventory;
+namespace Application.Features.Inventories.Endpoints;
 
-public static partial class CreateInventoryEndpoint
+public static class CreateInventoryEndpoint
 {
-    internal sealed class Endpoint : Endpoint<Request, Response>
+    public sealed record Request(ProductId ProductId, Quantity Quantity);
+
+    public sealed record Response(InventoryId Id, ProductId ProductId, Quantity Quantity);
+
+    public sealed class Endpoint : Endpoint<Request, Response>
     {
         private readonly ApplicationDbContext _context;
         private readonly IProductRepository _productRepository;

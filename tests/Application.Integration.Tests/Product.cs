@@ -1,8 +1,6 @@
 using System.Net;
-using Application.Features.Inventories.Endpoints.CreateInventory;
-using Application.Features.Inventories.Endpoints.IncreaseStock;
-using Application.Features.Products.CreateProduct;
-using Application.Features.Products.DeleteProduct;
+using Application.Features.Inventories.Endpoints;
+using Application.Features.Products;
 using Domain.Common.ValueObjects;
 using Domain.Products.ValueObjects;
 using FastEndpoints;

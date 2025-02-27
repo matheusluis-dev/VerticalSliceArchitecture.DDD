@@ -4,8 +4,9 @@ namespace Domain.Common.ValueObjects;
 
 public sealed partial class Email : ValueObject
 {
-    public string Value { get; init; } = null!;
+    public string Value { get; } = null!;
 
+    [UsedImplicitly]
     public Email() { }
 
     public Email(string address)
@@ -31,8 +32,13 @@ public sealed partial class Email : ValueObject
 
 public sealed class EmailException : Exception
 {
-    private EmailException(string message)
+    public EmailException() { }
+
+    public EmailException(string message)
         : base(message) { }
+
+    public EmailException(string message, Exception innerException)
+        : base(message, innerException) { }
 
     internal static EmailException InvalidFormat(string emailAddress)
     {

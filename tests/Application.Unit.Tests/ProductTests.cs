@@ -24,7 +24,7 @@ public sealed class ProductTests
     {
         // Arrange
         var name = new ProductName("ProductName");
-        var product = Product.Create(name).Value;
+        var product = Product.Create(name).Value!;
 
         // Act
         var result = product.UpdateName(name);

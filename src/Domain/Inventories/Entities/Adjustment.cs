@@ -28,9 +28,6 @@ public sealed class Adjustment : IChildEntity
         else if (reason.Length < 15)
             errors.Add(new ValidationError("Reason must have at least 15 characters"));
 
-        if (quantity is null)
-            errors.Add(new ValidationError("Quantity must be greater than zero"));
-
         if (errors.Count > 0)
             return Result.Invalid(errors);
 
@@ -39,7 +36,7 @@ public sealed class Adjustment : IChildEntity
             Id = id,
             InventoryId = inventoryId!,
             OrderItemId = orderItemId,
-            Quantity = quantity!,
+            Quantity = quantity,
             Reason = reason,
         };
     }

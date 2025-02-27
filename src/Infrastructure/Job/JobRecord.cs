@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
 using FastEndpoints;
 
-namespace Infrastructure.JobStorage;
+namespace Infrastructure.Job;
 
 public sealed class JobRecord : IJobStorageRecord
 {

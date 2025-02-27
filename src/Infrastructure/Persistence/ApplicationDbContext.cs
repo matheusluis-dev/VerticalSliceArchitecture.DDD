@@ -11,7 +11,7 @@ using JetBrains.Annotations;
 
 namespace Infrastructure.Persistence;
 
-[UsedImplicitly]
+[UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
 public sealed class ApplicationDbContext : DbContext
 {
     internal DbSet<OrderTable> Order { get; set; }
@@ -34,8 +34,6 @@ public sealed class ApplicationDbContext : DbContext
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
-        ArgumentNullException.ThrowIfNull(configurationBuilder);
-
         // Typed Ids
         configurationBuilder.Properties<AdjustmentId>().HaveConversion<AdjustmentIdConverter>();
         configurationBuilder.Properties<InventoryId>().HaveConversion<InventoryIdConverter>();

@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Domain.Inventories.Ids;
 using Domain.Products.Ids;
 using Domain.Products.ValueObjects;
@@ -11,20 +10,20 @@ public sealed class ProductTable
 {
     public required ProductId Id { get; set; }
     public InventoryId? InventoryId { get; set; }
-    public ProductName Name { get; set; }
+    public required ProductName Name { get; set; }
 
-    public ICollection<OrderItemTable> OrderItems { get; set; }
+    public ICollection<OrderItemTable>? OrderItems { get; init; } = [];
     public InventoryTable? Inventory { get; set; }
 }
 
 public sealed class ProductTableConfiguration : IEntityTypeConfiguration<ProductTable>
 {
-    public void Configure([NotNull] EntityTypeBuilder<ProductTable> builder)
+    public void Configure(EntityTypeBuilder<ProductTable> builder)
     {
         builder.HasKey(product => product.Id);
         builder.HasIndex(product => product.Id);
 
-        builder.HasIndex(m => m.Name).IsUnique(true);
+        builder.HasIndex(m => m.Name).IsUnique();
 
         builder.Property(p => p.Name).HasConversion<ProductNameConverter>();
 

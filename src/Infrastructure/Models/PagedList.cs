@@ -1,7 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Domain.Common.Entities;
 
-namespace Infrastructure;
+namespace Infrastructure.Models;
 
 public sealed class PagedList<TEntity> : IPagedList<TEntity>
     where TEntity : class, IEntity

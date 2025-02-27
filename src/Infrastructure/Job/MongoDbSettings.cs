@@ -1,4 +1,4 @@
-namespace Infrastructure.JobStorage;
+namespace Infrastructure.Job;
 
 public sealed class MongoDbSettings
 {

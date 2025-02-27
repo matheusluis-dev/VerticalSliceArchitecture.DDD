@@ -5,7 +5,7 @@ using Domain.Orders;
 using Domain.Orders.Services;
 using Domain.Products;
 using FastEndpoints.Swagger;
-using Infrastructure.JobStorage;
+using Infrastructure.Job;
 using Infrastructure.Persistence.Repositories.Inventories;
 using Infrastructure.Persistence.Repositories.Orders;
 using Infrastructure.Persistence.Repositories.Products;
@@ -17,7 +17,7 @@ using MongoDB.Driver;
 
 namespace Application;
 
-public static class DependencyInjection
+public static class ServiceInjection
 {
     public static IServiceCollection AddConfiguredFastEndpoints(this IServiceCollection services)
     {

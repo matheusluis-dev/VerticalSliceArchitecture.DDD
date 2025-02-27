@@ -7,6 +7,7 @@ public sealed class OrderItemPrice : ValueObject
 
     public Amount TotalPrice => new(Quantity.Value * UnitPrice.Value);
 
+    [UsedImplicitly]
     public OrderItemPrice() { }
 
     public OrderItemPrice(int quantity, decimal unitPrice)
