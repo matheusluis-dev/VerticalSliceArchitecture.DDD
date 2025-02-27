@@ -2,7 +2,10 @@ namespace Domain.Products.ValueObjects;
 
 public sealed class ProductName : ValueObject
 {
-    public string Value { get; init; }
+    public string Value { get; init; } = null!;
+
+    [UsedImplicitly]
+    public ProductName() { }
 
     public ProductName(string name)
     {
@@ -13,8 +16,6 @@ public sealed class ProductName : ValueObject
 
     private static string Normalize(string name)
     {
-        ArgumentNullException.ThrowIfNull(name);
-
         return name.ToUpperInvariant();
     }
 

@@ -21,8 +21,6 @@ public sealed class RemoveStockReservationWhenOrderCancelled : IDomainEventHandl
 
     public Task HandleAsync(OrderCancelledEvent eventModel, CancellationToken ct)
     {
-        ArgumentNullException.ThrowIfNull(eventModel);
-
         using var scope = _scopeFactory.CreateScope();
         var inventoryRepository = scope.Resolve<IInventoryRepository>();
 

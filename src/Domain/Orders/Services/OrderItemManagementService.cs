@@ -16,17 +16,17 @@ public sealed class OrderItemManagementService
         var (order, product, quantity, unitPrice) = model;
 
         if (order.OrderItems.Any(item => item.Product.Id == product.Id))
-            return Result<OrderItem>.Invalid(new ValidationError($"There's already an item with product {product.Id}"));
+            return Result.Invalid(new ValidationError($"There's already an item with product {product.Id}"));
 
         if (quantity.Value <= 0)
-            return Result<OrderItem>.Invalid(new ValidationError("Item quantity must be higher than 0"));
+            return Result.Invalid(new ValidationError("Item quantity must be higher than 0"));
 
         if (unitPrice.Value <= 0)
-            return Result<OrderItem>.Invalid(new ValidationError("Item unit price must be higher than 0"));
+            return Result.Invalid(new ValidationError("Item unit price must be higher than 0"));
 
         if (product.HasInventory && !product.Inventory!.HasEnoughStockToDecrease(quantity))
         {
-            return Result<OrderItem>.Invalid(
+            return Result.Invalid(
                 new ValidationError(
                     $"Product '{product.Id}' has not enough stock for placing the order "
                         + $"({product.Inventory.GetAvailableStock().Value})"

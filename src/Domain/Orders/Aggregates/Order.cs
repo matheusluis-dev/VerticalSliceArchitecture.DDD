@@ -31,9 +31,6 @@ public sealed class Order : EntityBase
     {
         var errors = new List<ValidationError>();
 
-        //if (items?.Any() != true)
-        //    errors.Add(new ValidationError("Order items must be provided"));
-
         if (customerEmail is null)
             errors.Add(new ValidationError("Customer email must be informed"));
 
@@ -55,16 +52,15 @@ public sealed class Order : EntityBase
         };
     }
 
-    [return: NotNull]
     public Result<Order> Pay(DateTime now)
     {
-        if (Status == OrderStatus.Cancelled)
+        if (Status == OrderStatus.CANCELLED)
             return Result.Invalid(new ValidationError("Can not pay cancelled order"));
 
-        if (Status == OrderStatus.Paid)
+        if (Status == OrderStatus.PAID)
             return Result.Invalid(new ValidationError("Order already paid"));
 
-        var order = new OrderBuilder().WithOrderToClone(this).WithStatus(OrderStatus.Paid).WithPaidDate(now).Build();
+        var order = new OrderBuilder().WithOrderToClone(this).WithStatus(OrderStatus.PAID).WithPaidDate(now).Build();
 
         if (order.IsInvalid())
             return Result.Invalid(order.ValidationErrors!);
@@ -74,15 +70,14 @@ public sealed class Order : EntityBase
         return order;
     }
 
-    [return: NotNull]
     public Result<Order> Cancel(DateTime now)
     {
-        if (Status is not OrderStatus.Pending)
+        if (Status is not OrderStatus.PENDING)
             return Result.Invalid(new ValidationError("Order must be pending"));
 
         var order = new OrderBuilder()
             .WithOrderToClone(this)
-            .WithStatus(OrderStatus.Cancelled)
+            .WithStatus(OrderStatus.CANCELLED)
             .WithPaidDate(now)
             .Build();
 
@@ -94,7 +89,6 @@ public sealed class Order : EntityBase
         return order;
     }
 
-    [return: NotNull]
     internal Result<Order> AddItem(OrderItemManagementService orderItemManagement, CreateOrderItemModel model)
     {
         ArgumentNullException.ThrowIfNull(orderItemManagement);
@@ -103,49 +97,12 @@ public sealed class Order : EntityBase
         var createItem = orderItemManagement.CreateItem(model);
 
         if (createItem.IsInvalid())
-            return Result.Invalid(createItem.ValidationErrors);
+            return Result.Invalid(createItem.ValidationErrors!);
 
-        var item = createItem.Value;
+        var item = createItem.Value!;
 
         var order = new OrderBuilder().WithOrderToClone(this).WithOrderItems(OrderItems).WithOrderItems(item).Build();
 
-        return order.IsInvalid() ? Result.Invalid(order.ValidationErrors) : order;
+        return order.IsInvalid() ? Result.Invalid(order.ValidationErrors!) : order;
     }
-
-    //public Result<OrderItem> UpdateItem(UpdateOrderItemModel model)
-    //{
-    //    ArgumentNullException.ThrowIfNull(model);
-
-    //    var id = model.Id;
-    //    var item = OrderItems.FirstOrDefault(item => item.Id == id);
-
-    //    if (item is null)
-    //        return Result.NotFound($"Item with ID {model.Id} not found");
-
-    //    var itemIndex = _orderItems.IndexOf(item);
-
-    //    _orderItems[itemIndex] = new OrderItem
-    //    {
-    //        OrderId = item.OrderId,
-    //        Id = model.Id,
-    //        Quantity = model.Quantity ?? item.Quantity,
-    //        UnitPrice = model.UnitPrice ?? item.UnitPrice,
-    //        Product = item.Product,
-    //        ReservationId = item.ReservationId,
-    //    };
-
-    //    return Result.Success(item);
-    //}
-
-    //public Result DeleteItem(OrderItemId itemId)
-    //{
-    //    var item = _orderItems.FirstOrDefault(item => item.Id == itemId);
-
-    //    if (item is null)
-    //        return Result.NotFound($"Item with ID {itemId} not found");
-
-    //    _orderItems.Remove(item);
-
-    //    return Result.Success();
-    //}
 }

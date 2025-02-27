@@ -1,4 +1,3 @@
-global using System.Diagnostics.CodeAnalysis;
 global using Ardalis.Result;
 global using Domain.Common;
 global using Domain.Common.DomainEvents;
@@ -8,3 +7,4 @@ global using Domain.Common.ValueObjects;
 global using Domain.Inventories.Ids;
 global using Domain.Orders.Ids;
 global using Domain.Products.Ids;
+global using JetBrains.Annotations;

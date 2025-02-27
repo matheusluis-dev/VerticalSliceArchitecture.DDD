@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Domain.Common.ValueObjects;
 using Domain.Orders.Enums;
 using Domain.Orders.Ids;
@@ -8,19 +7,19 @@ namespace Infrastructure.Persistence.Tables;
 
 public sealed class OrderTable
 {
-    public OrderId Id { get; set; }
-    public Email CustomerEmail { get; set; }
-    public OrderStatus Status { get; set; }
-    public DateTime CreatedDate { get; set; }
+    public required OrderId Id { get; set; }
+    public required Email CustomerEmail { get; set; }
+    public required OrderStatus Status { get; set; }
+    public required DateTime CreatedDate { get; set; }
     public DateTime? PaidDate { get; set; }
     public DateTime? CanceledDate { get; set; }
 
-    public ICollection<OrderItemTable> OrderItems { get; set; }
+    public required ICollection<OrderItemTable> OrderItems { get; init; } = [];
 }
 
 public sealed class OrderTableConfiguration : IEntityTypeConfiguration<OrderTable>
 {
-    public void Configure([NotNull] EntityTypeBuilder<OrderTable> builder)
+    public void Configure(EntityTypeBuilder<OrderTable> builder)
     {
         builder.HasKey(order => order.Id);
         builder.HasIndex(order => order.Id);

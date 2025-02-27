@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Domain.Inventories.Ids;
 using Domain.Orders.Ids;
 using Domain.Orders.ValueObjects;
@@ -9,20 +8,20 @@ namespace Infrastructure.Persistence.Tables;
 
 public sealed class OrderItemTable
 {
-    public OrderId OrderId { get; set; }
-    public OrderItemId Id { get; set; }
-    public ProductId ProductId { get; set; }
-    public ReservationId ReservationId { get; set; }
-    public OrderItemPrice OrderItemPrice { get; set; }
+    public required OrderId OrderId { get; set; }
+    public required OrderItemId Id { get; set; }
+    public required ProductId ProductId { get; set; }
+    public required ReservationId ReservationId { get; set; }
+    public required OrderItemPrice OrderItemPrice { get; set; }
 
-    public OrderTable Order { get; set; }
-    public ProductTable Product { get; set; }
-    public ReservationTable Reservation { get; set; }
+    public OrderTable? Order { get; set; }
+    public ProductTable? Product { get; set; }
+    public ReservationTable? Reservation { get; set; }
 }
 
 public sealed class OrderItemTableConfiguration : IEntityTypeConfiguration<OrderItemTable>
 {
-    public void Configure([NotNull] EntityTypeBuilder<OrderItemTable> builder)
+    public void Configure(EntityTypeBuilder<OrderItemTable> builder)
     {
         builder.HasKey(orderItem => orderItem.Id);
         builder.HasIndex(orderItem => orderItem.Id);
@@ -31,7 +30,7 @@ public sealed class OrderItemTableConfiguration : IEntityTypeConfiguration<Order
             c => c.OrderItemPrice,
             c =>
             {
-                c.IsRequired(true);
+                c.IsRequired();
 
                 c.Property(p => p.Quantity).HasColumnName("QUANTITY");
                 c.Property(p => p.UnitPrice).HasColumnName("UNIT_PRICE");
@@ -42,14 +41,14 @@ public sealed class OrderItemTableConfiguration : IEntityTypeConfiguration<Order
             .HasOne(orderItem => orderItem.Order)
             .WithMany(order => order.OrderItems)
             .HasForeignKey(orderItem => orderItem.OrderId)
-            .IsRequired(true)
+            .IsRequired()
             .OnDelete(DeleteBehavior.Restrict);
 
         builder
             .HasOne(orderItem => orderItem.Product)
             .WithMany(product => product.OrderItems)
             .HasForeignKey(orderItem => orderItem.ProductId)
-            .IsRequired(true)
+            .IsRequired()
             .OnDelete(DeleteBehavior.Restrict);
 
         builder

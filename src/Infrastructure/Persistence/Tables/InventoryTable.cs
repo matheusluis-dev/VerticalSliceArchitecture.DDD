@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Domain.Common.ValueObjects;
 using Domain.Inventories.Ids;
 using Domain.Products.Ids;
@@ -8,18 +7,18 @@ namespace Infrastructure.Persistence.Tables;
 
 public sealed class InventoryTable
 {
-    public InventoryId Id { get; set; }
-    public ProductId ProductId { get; set; }
-    public Quantity Quantity { get; set; }
+    public required InventoryId Id { get; set; }
+    public required ProductId ProductId { get; set; }
+    public required Quantity Quantity { get; set; }
 
-    public ProductTable Product { get; set; }
-    public ICollection<AdjustmentTable> Adjustments { get; set; }
-    public ICollection<ReservationTable> Reservations { get; set; }
+    public ProductTable? Product { get; set; }
+    public ICollection<AdjustmentTable> Adjustments { get; init; } = [];
+    public ICollection<ReservationTable> Reservations { get; init; } = [];
 }
 
 public sealed class InventoryTableConfiguration : IEntityTypeConfiguration<InventoryTable>
 {
-    public void Configure([NotNull] EntityTypeBuilder<InventoryTable> builder)
+    public void Configure(EntityTypeBuilder<InventoryTable> builder)
     {
         builder.HasKey(inventory => inventory.Id);
         builder.HasIndex(inventory => inventory.Id);
@@ -28,7 +27,7 @@ public sealed class InventoryTableConfiguration : IEntityTypeConfiguration<Inven
             .HasOne(inventory => inventory.Product)
             .WithOne(product => product.Inventory)
             .HasForeignKey<InventoryTable>(inventory => inventory.ProductId)
-            .IsRequired(true)
+            .IsRequired()
             .OnDelete(DeleteBehavior.Restrict);
 
         builder

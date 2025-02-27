@@ -41,7 +41,6 @@ try
 }
 #pragma warning disable CA1031
 catch (Exception exception)
-#pragma warning restore CA1031
 {
     logger.Error(exception, "Stopped program because of setup exception");
 }
@@ -50,7 +49,6 @@ finally
     LogManager.Shutdown();
 }
 
-[UsedImplicitly]
 #pragma warning disable S1118
+[UsedImplicitly]
 public partial class Program;
-#pragma warning restore S1118

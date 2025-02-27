@@ -19,9 +19,9 @@ public sealed class OrderBuilder
     {
         var id = _orderToClone?.Id ?? _id ?? new OrderId(Guid.NewGuid());
 
-        var orderItems = _orderItems ?? _orderToClone?.OrderItems;
+        var orderItems = _orderItems.Count > 0 ? _orderItems : _orderToClone?.OrderItems;
 
-        var status = _status ?? _orderToClone?.Status ?? OrderStatus.Pending;
+        var status = _status ?? _orderToClone?.Status ?? OrderStatus.PENDING;
         var email = _customerEmail ?? _orderToClone?.CustomerEmail;
         var createdDate = _orderToClone?.CreatedDate ?? _createdDate;
         var paidDate = _paidDate ?? _orderToClone?.PaidDate;

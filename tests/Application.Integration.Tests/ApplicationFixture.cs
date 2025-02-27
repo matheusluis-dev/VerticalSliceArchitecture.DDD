@@ -1,3 +1,4 @@
+using System.Globalization;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
@@ -20,16 +21,16 @@ public sealed class ApplicationFixture : AppFixture<Program>
     protected override async ValueTask PreSetupAsync()
     {
         _mongoContainer = new MongoDbBuilder()
-            .WithImage("mongo")
-            .WithUsername(MONGO_USERNAME)
-            .WithPassword(MONGO_PASSWORD)
-            .WithCommand("mongod")
-            .Build();
+            .WithImage("mongo")!
+            .WithUsername(MONGO_USERNAME)!
+            .WithPassword(MONGO_PASSWORD)!
+            .WithCommand("mongod")!
+            .Build()!;
 
-        _mssqlContainer = new MsSqlBuilder().Build();
+        _mssqlContainer = new MsSqlBuilder().Build()!;
 
-        await _mssqlContainer.StartAsync(Cancellation);
-        await _mongoContainer.StartAsync(Cancellation);
+        await _mssqlContainer.StartAsync(Cancellation)!;
+        await _mongoContainer.StartAsync(Cancellation)!;
     }
 
     protected override ValueTask SetupAsync()
@@ -48,7 +49,10 @@ public sealed class ApplicationFixture : AppFixture<Program>
                 new Dictionary<string, string?>(StringComparer.Ordinal)
                 {
                     { "Mongo:Host", _mongoContainer.Hostname },
-                    { "Mongo:Port", Convert.ToString(_mongoContainer.GetMappedPublicPort(27017)) },
+                    {
+                        "Mongo:Port",
+                        Convert.ToString(_mongoContainer.GetMappedPublicPort(27017), CultureInfo.InvariantCulture)
+                    },
                     { "Mongo:DbName", MONGO_DATABASE },
                     { "Mongo:UserName", MONGO_USERNAME },
                     { "Mongo:Password", MONGO_PASSWORD },

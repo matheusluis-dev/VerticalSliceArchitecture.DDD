@@ -8,7 +8,7 @@ public sealed record ReleaseStockReservationModel(Inventory Inventory, OrderItem
 {
     public CreateForOrderItemReservationModel ToCreateForOrderItemReservationModel(Reservation reservation)
     {
-        return new(Inventory, OrderItemId, reservation);
+        return new CreateForOrderItemReservationModel(OrderItemId, reservation);
     }
 }
 

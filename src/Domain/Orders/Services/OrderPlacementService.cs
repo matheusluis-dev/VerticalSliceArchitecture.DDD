@@ -30,31 +30,32 @@ public sealed class OrderPlacementService
 
         var (items, customerEmail, now) = model;
 
-        if (!items.Any())
-            return Result<Order>.Invalid(new ValidationError("Items must be provided"));
+        var itemsList = items.ToList();
+        if (itemsList.Count == 0)
+            return Result.Invalid(new ValidationError("Items must be provided"));
 
         var createOrder = new OrderBuilder()
-            .WithStatus(OrderStatus.Pending)
+            .WithStatus(OrderStatus.PENDING)
             .WithCustomerEmail(customerEmail)
             .WithCreatedDate(now)
             .Build();
 
         if (createOrder.IsInvalid())
-            return Result.Invalid(createOrder.ValidationErrors);
+            return Result.Invalid(createOrder.ValidationErrors!);
 
-        var order = createOrder.Value;
+        var order = createOrder.Value!;
 
         var errorsAddingItem = new List<ValidationError>();
-        foreach (var item in items)
+        foreach (var item in itemsList)
         {
             var addItem = order.AddItem(_orderItemManagement, item.ToCreateOrderItemModel(order));
 
             if (addItem.IsInvalid())
-                errorsAddingItem.AddRange(addItem.ValidationErrors);
+                errorsAddingItem.AddRange(addItem.ValidationErrors!);
         }
 
         if (errorsAddingItem.Count > 0)
-            return Result<Order>.Invalid(errorsAddingItem);
+            return Result.Invalid(errorsAddingItem);
 
         order.RaiseDomainEvent(new OrderPlacedEvent(order));
 

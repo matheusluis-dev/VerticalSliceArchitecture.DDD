@@ -21,7 +21,7 @@ public sealed class Product : EntityBase
         if (!name.IsFilled())
             return Result.Invalid(new ValidationError("Can not create product with empty name."));
 
-        return new Product(null)
+        return new Product
         {
             Id = id ?? new ProductId(Guid.NewGuid()),
             Inventory = inventory,
@@ -34,7 +34,7 @@ public sealed class Product : EntityBase
         if (name == Name)
             return Result.Invalid(new ValidationError("Can not update name to the same name"));
 
-        return new Product(null)
+        return new Product
         {
             Id = Id,
             Name = name,
