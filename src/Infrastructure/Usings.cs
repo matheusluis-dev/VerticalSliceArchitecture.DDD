@@ -1,3 +1,5 @@
-global using Ardalis.Result;
 global using Domain.Common;
+global using Domain.Common.Contracts;
+global using Domain.Common.Results;
+global using JetBrains.Annotations;
 global using Microsoft.EntityFrameworkCore;

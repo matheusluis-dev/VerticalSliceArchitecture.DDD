@@ -1,17 +1,19 @@
 using System.Text.Json.Serialization;
+using Domain.Common.Contracts;
 using Domain.Inventories;
 using Domain.Inventories.Services;
 using Domain.Orders;
 using Domain.Orders.Services;
 using Domain.Products;
+using FastEndpoints;
 using FastEndpoints.Swagger;
 using Infrastructure.Job;
+using Infrastructure.Persistence;
 using Infrastructure.Persistence.Repositories.Inventories;
 using Infrastructure.Persistence.Repositories.Orders;
 using Infrastructure.Persistence.Repositories.Products;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 

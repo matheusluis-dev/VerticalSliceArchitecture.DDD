@@ -11,9 +11,13 @@ public interface IProductRepository
 
     Task<Result<Product>> FindProductByNameAsync(ProductName name, CancellationToken ct = default);
 
+    Task<Result<Product>> FindAnotherProductByNameAsync(ProductId id, ProductName name, CancellationToken ct = default);
+
     Task AddAsync(Product product, CancellationToken ct = default);
 
     void Update(Product product);
 
-    void Delete(Product product);
+    Task DeleteAsync(IEnumerable<ProductId> ids, CancellationToken ct = default);
+
+    Task<int> SaveChangesAsync(CancellationToken ct = default);
 }

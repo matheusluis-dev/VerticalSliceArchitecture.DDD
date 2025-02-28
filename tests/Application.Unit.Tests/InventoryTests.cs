@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using Domain.Common.ValueObjects;
 using Domain.Inventories.Aggregate;
 using Domain.Inventories.Ids;
@@ -25,7 +24,7 @@ public sealed class InventoryTests
         var result = sut.CreateForProduct(productWithInventory, new Quantity(1));
 
         // Assert
-        result.IsInvalid().ShouldBeTrue();
+        result.Failed.ShouldBeTrue();
     }
 
     [Theory]
@@ -41,7 +40,7 @@ public sealed class InventoryTests
         var result = sut.CreateForProduct(product, new Quantity(quantity));
 
         // Assert
-        result.IsInvalid().ShouldBeTrue();
+        result.Failed.ShouldBeTrue();
     }
 
     [Fact]
@@ -54,6 +53,6 @@ public sealed class InventoryTests
         var result = builder.Build();
 
         // Assert
-        result.IsInvalid().ShouldBeTrue();
+        result.Failed.ShouldBeTrue();
     }
 }

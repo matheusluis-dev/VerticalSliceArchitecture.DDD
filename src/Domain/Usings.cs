@@ -1,8 +1,9 @@
-global using Ardalis.Result;
 global using Domain.Common;
+global using Domain.Common.Contracts;
 global using Domain.Common.DomainEvents;
 global using Domain.Common.Entities;
 global using Domain.Common.Ids;
+global using Domain.Common.Results;
 global using Domain.Common.ValueObjects;
 global using Domain.Inventories.Ids;
 global using Domain.Orders.Ids;

@@ -19,11 +19,6 @@ public sealed class ProductName : ValueObject
         return name.ToUpperInvariant();
     }
 
-    internal bool IsFilled()
-    {
-        return Value.Trim().Length > 0;
-    }
-
     protected override IEnumerable<object> GetAtomicValues()
     {
         yield return Value;

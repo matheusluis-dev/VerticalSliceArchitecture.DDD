@@ -18,17 +18,15 @@ public sealed record NotifyCommercialAreaWhenOrderCancelledCommand(OrderId Order
 public sealed class NotifyCommercialAreaWhenOrderCancelledCommandHandler
     : ICommandHandler<NotifyCommercialAreaWhenOrderCancelledCommand>
 {
-    private readonly EmailService _email;
+    private readonly IEmailService _email;
 
-    public NotifyCommercialAreaWhenOrderCancelledCommandHandler(EmailService email)
+    public NotifyCommercialAreaWhenOrderCancelledCommandHandler(IEmailService email)
     {
         _email = email;
     }
 
     public Task ExecuteAsync(NotifyCommercialAreaWhenOrderCancelledCommand command, CancellationToken ct)
     {
-        ArgumentNullException.ThrowIfNull(command);
-
         return _email.SendEmailAsync(
             new Email("system@system.com"),
             new Email("commercial@system.com"),

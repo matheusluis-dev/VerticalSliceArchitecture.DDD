@@ -484,6 +484,7 @@ dotnet_code_quality.CA1822.api_surface = private, internal
 dotnet_diagnostic.CA1515.severity = none # CA1515: Consider making public types internal
 dotnet_diagnostic.CA1716.severity = none # CA1716: Identifiers should not match keywords
 dotnet_diagnostic.CA2007.severity = none # CA2007: Do not directly await a Task
+dotnet_diagnostic.CA2016.severity = none # CA2016: Forward the CancellationToken parameter to methods that take one
 
 # CS - C# Compiler Errors
 # https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-messages/
@@ -603,7 +604,7 @@ dotnet_diagnostic.MA0036.severity = none        # MA0036 - Make class static
 dotnet_diagnostic.MA0037.severity = error       # MA0037 - Remove empty statement
 dotnet_diagnostic.MA0038.severity = none        # MA0038 - Make method static (deprecated, use CA1822 instead)
 dotnet_diagnostic.MA0039.severity = none        # MA0039 - Do not write your own certificate validation method
-dotnet_diagnostic.MA0040.severity = warning     # MA0040 - Forward the CancellationToken parameter to methods that take one
+dotnet_diagnostic.MA0040.severity = error       # MA0040 - Forward the CancellationToken parameter to methods that take one
 dotnet_diagnostic.MA0041.severity = none        # MA0041 - Make property static (deprecated, use CA1822 instead)
 dotnet_diagnostic.MA0042.severity = none        # MA0042 - Do not use blocking calls in an async method
 dotnet_diagnostic.MA0043.severity = warning     # MA0043 - Use nameof operator in ArgumentException

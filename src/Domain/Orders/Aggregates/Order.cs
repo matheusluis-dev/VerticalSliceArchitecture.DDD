@@ -1,5 +1,6 @@
 using Domain.Orders.Entities;
 using Domain.Orders.Enums;
+using Domain.Orders.Errors;
 using Domain.Orders.Events;
 using Domain.Orders.Services;
 
@@ -22,23 +23,15 @@ public sealed class Order : EntityBase
         OrderId id,
         IEnumerable<OrderItem>? items,
         OrderStatus status,
-        Email? customerEmail,
+        Email customerEmail,
         DateTime? createdDate,
         DateTime? paidDate,
         DateTime? cancelledDate,
         IEnumerable<IDomainEvent>? domainEvents
     )
     {
-        var errors = new List<ValidationError>();
-
-        if (customerEmail is null)
-            errors.Add(new ValidationError("Customer email must be informed"));
-
         if (createdDate is null)
-            errors.Add(new ValidationError("Created date must be informed"));
-
-        if (errors.Count > 0)
-            return Result.Invalid(errors);
+            return Result.Failure(OrderError.Ord001CreatedDateMustBeInformed);
 
         return new Order(domainEvents?.ToList())
         {
@@ -52,39 +45,47 @@ public sealed class Order : EntityBase
         };
     }
 
-    public Result<Order> Pay(DateTime now)
+    public Result<Order> Pay(IDateTimeService dateTime)
     {
-        if (Status == OrderStatus.CANCELLED)
-            return Result.Invalid(new ValidationError("Can not pay cancelled order"));
+        ArgumentNullException.ThrowIfNull(dateTime);
 
-        if (Status == OrderStatus.PAID)
-            return Result.Invalid(new ValidationError("Order already paid"));
+        if (Status is OrderStatus.CANCELLED)
+            return Result.Failure(OrderError.Ord002CanNotPayCancelledOrder);
 
-        var order = new OrderBuilder().WithOrderToClone(this).WithStatus(OrderStatus.PAID).WithPaidDate(now).Build();
+        if (Status is OrderStatus.PAID)
+            return Result.Failure(OrderError.Ord003OrderAlreadyPaid);
 
-        if (order.IsInvalid())
-            return Result.Invalid(order.ValidationErrors!);
+        var order = new OrderBuilder()
+            .WithOrderToClone(this)
+            .WithStatus(OrderStatus.PAID)
+            .WithPaidDate(dateTime.UtcNow.DateTime)
+            .Build();
 
-        RaiseDomainEvent(new OrderPaidEvent(order));
+        if (order.Failed)
+            return Result.Failure(order.Errors);
+
+        RaiseDomainEvent(new OrderPaidEvent(order.Value!));
 
         return order;
     }
 
-    public Result<Order> Cancel(DateTime now)
+    public Result<Order> Cancel(IDateTimeService dateTime)
     {
+        ArgumentNullException.ThrowIfNull(dateTime);
+
         if (Status is not OrderStatus.PENDING)
-            return Result.Invalid(new ValidationError("Order must be pending"));
+            return Result.Failure(OrderError.Ord004OrderMustBePending);
 
         var order = new OrderBuilder()
             .WithOrderToClone(this)
             .WithStatus(OrderStatus.CANCELLED)
-            .WithPaidDate(now)
+            .WithPaidDate(dateTime.UtcNow.DateTime)
             .Build();
 
-        if (order.IsInvalid())
-            return Result.Invalid(order.ValidationErrors!);
+        if (order.Failed)
+            return order;
 
-        RaiseDomainEvent(new OrderCancelledEvent(order));
+        order.Value!.RaiseDomainEvent(new OrderCancelledEvent(order.Value!));
 
         return order;
     }
@@ -96,13 +97,11 @@ public sealed class Order : EntityBase
 
         var createItem = orderItemManagement.CreateItem(model);
 
-        if (createItem.IsInvalid())
-            return Result.Invalid(createItem.ValidationErrors!);
+        if (createItem.Failed)
+            return Result.Failure(createItem.Errors);
 
         var item = createItem.Value!;
 
-        var order = new OrderBuilder().WithOrderToClone(this).WithOrderItems(OrderItems).WithOrderItems(item).Build();
-
-        return order.IsInvalid() ? Result.Invalid(order.ValidationErrors!) : order;
+        return new OrderBuilder().WithOrderToClone(this).WithOrderItems(OrderItems).WithOrderItems(item).Build();
     }
 }

@@ -1,3 +1,5 @@
+using Domain.Inventories.Errors;
+
 namespace Domain.Inventories.Entities;
 
 public sealed class Adjustment : IChildEntity
@@ -18,18 +20,18 @@ public sealed class Adjustment : IChildEntity
         string reason
     )
     {
-        var errors = new List<ValidationError>();
+        var errors = new List<Error>();
 
         if (inventoryId is null)
-            errors.Add(new ValidationError($"{nameof(InventoryId)} must be informed"));
+            errors.Add(AdjustmentError.Adj001InventoryIdMustBeInformed);
 
         if (string.IsNullOrWhiteSpace(reason))
-            errors.Add(new ValidationError("Reason must be informed"));
+            errors.Add(AdjustmentError.Adj002ReasonMustBeInformed);
         else if (reason.Length < 15)
-            errors.Add(new ValidationError("Reason must have at least 15 characters"));
+            errors.Add(AdjustmentError.Adj003ReasonMustHaveAtLeast15Characters);
 
         if (errors.Count > 0)
-            return Result.Invalid(errors);
+            return Result.Failure(errors);
 
         return new Adjustment
         {

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Persistence.Converters.ValueObjects;
 
+[UsedImplicitly]
 public sealed class AmountConverter : ValueConverter<Amount, decimal>
 {
     public AmountConverter()

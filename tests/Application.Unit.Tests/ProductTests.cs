@@ -1,4 +1,3 @@
-using Ardalis.Result;
 using Domain.Products.Entities;
 using Domain.Products.ValueObjects;
 using Shouldly;
@@ -16,7 +15,7 @@ public sealed class ProductTests
         var result = Product.Create(new ProductName(name));
 
         // Assert
-        result.IsInvalid().ShouldBeTrue();
+        result.Failed.ShouldBeTrue();
     }
 
     [Fact]
@@ -30,6 +29,6 @@ public sealed class ProductTests
         var result = product.UpdateName(name);
 
         // Assert
-        result.IsInvalid().ShouldBeTrue();
+        result.Failed.ShouldBeTrue();
     }
 }

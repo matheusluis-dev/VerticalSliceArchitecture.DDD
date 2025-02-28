@@ -1,4 +1,5 @@
 using Domain.Inventories.Enums;
+using Domain.Inventories.Errors;
 
 namespace Domain.Inventories.Entities;
 
@@ -16,25 +17,22 @@ public sealed class Reservation : IChildEntity
         ReservationId id,
         InventoryId? inventoryId,
         OrderItemId? orderItemId,
-        Quantity? quantity,
+        Quantity quantity,
         ReservationStatus status
     )
     {
-        var errors = new List<ValidationError>();
+        var errors = new List<Error>();
 
         if (inventoryId is null)
-            errors.Add(new ValidationError($"{nameof(InventoryId)} must be informed"));
+            errors.Add(ReservationError.Res001InventoryIdMustBeInformed);
 
         if (orderItemId is null)
-            errors.Add(new ValidationError($"{nameof(OrderItemId)} must be informed"));
-
-        if (quantity is null)
-            errors.Add(new ValidationError("Quantity must be greater than zero"));
+            errors.Add(ReservationError.Res002OrderItemIdMustBeInformed);
 
         if (errors.Count > 0)
-            return Result.Invalid(errors);
+            return Result.Failure(errors);
 
-        return new Reservation
+        var reservation = new Reservation
         {
             Id = id,
             InventoryId = inventoryId!,
@@ -42,5 +40,7 @@ public sealed class Reservation : IChildEntity
             Quantity = quantity!,
             Status = status,
         };
+
+        return reservation;
     }
 }

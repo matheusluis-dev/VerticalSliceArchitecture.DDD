@@ -1,4 +1,5 @@
 using Domain.Inventories.Aggregate;
+using Domain.Products.Errors;
 using Domain.Products.ValueObjects;
 
 namespace Domain.Products.Entities;
@@ -16,11 +17,6 @@ public sealed class Product : EntityBase
 
     public static Result<Product> Create(ProductName name, ProductId? id = null, Inventory? inventory = null)
     {
-        ArgumentNullException.ThrowIfNull(name);
-
-        if (!name.IsFilled())
-            return Result.Invalid(new ValidationError("Can not create product with empty name."));
-
         return new Product
         {
             Id = id ?? new ProductId(Guid.NewGuid()),
@@ -32,7 +28,7 @@ public sealed class Product : EntityBase
     public Result<Product> UpdateName(ProductName name)
     {
         if (name == Name)
-            return Result.Invalid(new ValidationError("Can not update name to the same name"));
+            return Result.Failure(ProductError.Prd001CanNotUpdateNameToTheSameName);
 
         return new Product
         {

@@ -1,9 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="Ardalis.GuardClauses" />
-    <PackageReference Include="Ardalis.GuardClauses.Custom" />
-    <PackageReference Include="Ardalis.Result" />
-    <PackageReference Include="Ardalis.Result.AspNetCore" />
     <PackageReference Include="EFCore.NamingConventions" />
     <PackageReference Include="FastEndpoints" />
     <PackageReference Include="FastEndpoints.Generator">

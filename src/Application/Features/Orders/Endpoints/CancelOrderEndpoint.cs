@@ -1,5 +1,6 @@
 using Domain.Orders;
 using Domain.Orders.Ids;
+using JetBrains.Annotations;
 
 namespace Application.Features.Orders.Endpoints;
 
@@ -7,18 +8,17 @@ public static class CancelOrderEndpoint
 {
     public sealed record Request(OrderId Id);
 
+    [UsedImplicitly(ImplicitUseTargetFlags.Members)]
     public sealed record Response(OrderId Id);
 
     public sealed class Endpoint : Endpoint<Request, Response>
     {
         private readonly IDateTimeService _dateTime;
-        private readonly ApplicationDbContext _context;
         private readonly IOrderRepository _orderRepository;
 
-        public Endpoint(IDateTimeService dateTime, ApplicationDbContext context, IOrderRepository orderRepository)
+        public Endpoint(IDateTimeService dateTime, IOrderRepository orderRepository)
         {
             _dateTime = dateTime;
-            _context = context;
             _orderRepository = orderRepository;
         }
 
@@ -30,23 +30,21 @@ public static class CancelOrderEndpoint
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var order = await _orderRepository.FindByIdAsync(req.Id, ct);
+            var findOrderResult = await _orderRepository.FindByIdAsync(req.Id, ct);
 
-            if (order.IsNotFound())
-                ThrowError($"Order '{req.Id}' was not found");
+            if (findOrderResult.Failed)
+                await SendNotFoundAsync(ct);
 
-            var cancel = order.Value!.Cancel(_dateTime.UtcNow.DateTime);
+            var cancelOrder = findOrderResult.Value!.Cancel(_dateTime);
 
-            if (cancel.IsInvalid())
-            {
-                await this.SendInvalidResponseAsync(cancel, ct);
-                return;
-            }
+            await this.SendErrorResponseIfResultFailedAsync(cancelOrder, ct);
 
-            _orderRepository.Update(cancel.Value!);
-            await _context.SaveChangesAsync(ct);
+            var orderCancelled = cancelOrder.Value!;
 
-            await SendAsync(new Response(cancel.Value!.Id), StatusCodes.Status200OK, ct);
+            _orderRepository.Update(orderCancelled);
+            await _orderRepository.SaveChangesAsync(ct);
+
+            await SendAsync(new Response(orderCancelled.Id), StatusCodes.Status200OK, ct);
         }
     }
 }

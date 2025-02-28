@@ -2,6 +2,7 @@ using Domain.Products;
 using Domain.Products.Entities;
 using Domain.Products.Ids;
 using Domain.Products.ValueObjects;
+using JetBrains.Annotations;
 
 namespace Application.Features.Products;
 
@@ -9,16 +10,15 @@ public static class CreateProductEndpoint
 {
     public sealed record Request(ProductName Name);
 
+    [UsedImplicitly(ImplicitUseTargetFlags.Members)]
     public sealed record Response(ProductId Id, ProductName Name);
 
     public sealed class Endpoint : Endpoint<Request, Response>
     {
-        private readonly ApplicationDbContext _context;
         private readonly IProductRepository _productRepository;
 
-        public Endpoint(ApplicationDbContext context, IProductRepository productRepository)
+        public Endpoint(IProductRepository productRepository)
         {
-            _context = context;
             _productRepository = productRepository;
         }
 
@@ -30,24 +30,20 @@ public static class CreateProductEndpoint
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var productWithSameName = await _productRepository.FindProductByNameAsync(req.Name, ct);
+            var findProductWithSameName = await _productRepository.FindProductByNameAsync(req.Name, ct);
 
-            if (productWithSameName.WasFound())
+            if (findProductWithSameName.Succeed)
                 ThrowError($"Product with name '{req.Name}' already exists", StatusCodes.Status400BadRequest);
 
-            var result = Product.Create(req.Name);
-            if (result.Status is ResultStatus.Invalid)
-            {
-                await this.SendInvalidResponseAsync(result, ct);
-                return;
-            }
+            var createProduct = Product.Create(req.Name);
+            await this.SendErrorResponseIfResultFailedAsync(createProduct, ct);
 
-            var product = result.Value!;
+            var productCreated = createProduct.Value!;
 
-            await _productRepository.AddAsync(product, ct);
-            await _context.SaveChangesAsync(ct);
+            await _productRepository.AddAsync(productCreated, ct);
+            await _productRepository.SaveChangesAsync(ct);
 
-            var response = new Response(product.Id, product.Name);
+            var response = new Response(productCreated.Id, productCreated.Name);
 
             await SendAsync(response, StatusCodes.Status201Created, ct);
         }

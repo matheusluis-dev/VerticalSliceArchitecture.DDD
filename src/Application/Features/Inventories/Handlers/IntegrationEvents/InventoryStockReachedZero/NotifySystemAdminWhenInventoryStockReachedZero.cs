@@ -8,8 +8,6 @@ public sealed class NotifySystemAdminWhenInventoryStockReachedZero : IDomainEven
 {
     public Task HandleAsync(InventoryStockReachedZeroEvent eventModel, CancellationToken ct)
     {
-        ArgumentNullException.ThrowIfNull(eventModel);
-
         return new NotifySystemAdminWhenInventoryStockReachedZeroCommand(
             eventModel.Inventory.Id,
             eventModel.ProductId
@@ -23,17 +21,15 @@ public sealed record NotifySystemAdminWhenInventoryStockReachedZeroCommand(Inven
 public sealed class NotifySystemAdminWhenInventoryStockReachedZeroCommandHandler
     : ICommandHandler<NotifySystemAdminWhenInventoryStockReachedZeroCommand>
 {
-    private readonly EmailService _email;
+    private readonly IEmailService _email;
 
-    public NotifySystemAdminWhenInventoryStockReachedZeroCommandHandler(EmailService email)
+    public NotifySystemAdminWhenInventoryStockReachedZeroCommandHandler(IEmailService email)
     {
         _email = email;
     }
 
     public Task ExecuteAsync(NotifySystemAdminWhenInventoryStockReachedZeroCommand command, CancellationToken ct)
     {
-        ArgumentNullException.ThrowIfNull(command);
-
         return _email.SendEmailAsync(
             new Email("system@system.com"),
             new Email("admin@system.com"),

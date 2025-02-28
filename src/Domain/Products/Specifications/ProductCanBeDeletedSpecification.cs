@@ -12,6 +12,6 @@ public sealed class ProductCanBeDeletedSpecification : ISpecification<Product>
         if (entity.Inventory is null)
             return true;
 
-        return entity.Inventory.Adjustments.Count == 0 && entity.Inventory.Reservations.Count == 0;
+        return entity.Inventory.Adjustments.Count is 0 && entity.Inventory.Reservations.Count is 0;
     }
 }

@@ -1,6 +1,4 @@
 using FastEndpoints;
-using Infrastructure.Services;
-using JetBrains.Annotations;
 using MongoDB.Driver;
 
 namespace Infrastructure.Job;

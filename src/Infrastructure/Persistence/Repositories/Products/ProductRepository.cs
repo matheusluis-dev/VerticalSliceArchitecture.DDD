@@ -9,13 +9,13 @@ namespace Infrastructure.Persistence.Repositories.Products;
 
 public sealed class ProductRepository : IProductRepository
 {
+    private readonly ApplicationDbContext _context;
     private readonly DbSet<ProductTable> _set;
 
     public ProductRepository(ApplicationDbContext context)
     {
-        ArgumentNullException.ThrowIfNull(context);
-
-        _set = context.Set<ProductTable>();
+        _context = context;
+        _set = _context.Set<ProductTable>();
     }
 
     private IQueryable<ProductTable> GetDefaultQuery()
@@ -33,7 +33,7 @@ public sealed class ProductRepository : IProductRepository
         var product = await GetDefaultQuery().FirstOrDefaultAsync(p => p.Id == id, ct);
 
         if (product is null)
-            return Result.NotFound();
+            return Result.Failure();
 
         return ProductMapper.ToEntity(product);
     }
@@ -43,7 +43,22 @@ public sealed class ProductRepository : IProductRepository
         var product = await GetDefaultQuery().FirstOrDefaultAsync(product => product.Name == name, ct);
 
         if (product is null)
-            return Result.NotFound()!;
+            return Result.Failure();
+
+        return ProductMapper.ToEntity(product);
+    }
+
+    public async Task<Result<Product>> FindAnotherProductByNameAsync(
+        ProductId id,
+        ProductName name,
+        CancellationToken ct = default
+    )
+    {
+        var product = await GetDefaultQuery()
+            .FirstOrDefaultAsync(product => product.Id != id && product.Name == name, ct);
+
+        if (product is null)
+            return Result.Failure();
 
         return ProductMapper.ToEntity(product);
     }
@@ -58,8 +73,13 @@ public sealed class ProductRepository : IProductRepository
         _set.Update(ProductMapper.ToTable(product));
     }
 
-    public void Delete(Product product)
+    public Task DeleteAsync(IEnumerable<ProductId> ids, CancellationToken ct = default)
     {
-        _set.Remove(ProductMapper.ToTable(product));
+        return _set.Where(product => ids.Contains(product.Id)).ExecuteDeleteAsync(ct);
+    }
+
+    public Task<int> SaveChangesAsync(CancellationToken ct = default)
+    {
+        return _context.SaveChangesAsync(ct);
     }
 }

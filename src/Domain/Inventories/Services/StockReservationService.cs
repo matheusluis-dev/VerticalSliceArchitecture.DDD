@@ -1,6 +1,7 @@
 using Domain.Inventories.Aggregate;
 using Domain.Inventories.Entities;
 using Domain.Inventories.Enums;
+using Domain.Inventories.Errors;
 
 namespace Domain.Inventories.Services;
 
@@ -12,16 +13,10 @@ public sealed partial class StockReservationService
     {
         var (inventory, orderItemId, quantity) = model;
 
-        if (quantity.Value <= 0)
-            return Result.Invalid(new ValidationError("Quantity must be greater than 0"));
-
         if (!inventory.HasEnoughStockToDecrease(quantity))
         {
-            return Result.Invalid(
-                new ValidationError(
-                    $"Reservation quantity ({quantity.Value}) is greater than the available stock "
-                        + $"({inventory.GetAvailableStock().Value})"
-                )
+            return Result.Failure(
+                ReservationError.Res003ReservationQuantityIsGreaterThanTheAvailableStock(inventory, quantity)
             );
         }
 
@@ -30,13 +25,10 @@ public sealed partial class StockReservationService
             inventory.Id,
             orderItemId,
             quantity,
-            ReservationStatus.Pending
+            ReservationStatus.PENDING
         );
 
-        if (reservation.IsInvalid())
-            return Result.Invalid(reservation.ValidationErrors!);
-
-        return inventory.PlaceReservation(reservation);
+        return reservation.Failed ? Result.Failure(reservation.Errors) : inventory.PlaceReservation(reservation.Value!);
     }
 }
 
@@ -51,11 +43,11 @@ public sealed partial class StockReservationService
         var reservation = inventory.Reservations.FirstOrDefault(r => r.OrderItemId == orderItemId);
 
         if (reservation is null)
-            return Result.Invalid(new ValidationError($"Reservation for order item '{orderItemId}' not found"));
+            return Result.Failure(ReservationError.Res004OrderItemWithIdNotFound(orderItemId));
 
-        if (reservation.Status is not ReservationStatus.Pending)
-            return Result.Invalid(new ValidationError("Reservation status must be pending"));
+        if (reservation.Status is not ReservationStatus.PENDING)
+            return Result.Failure(ReservationError.Res005ReservationStatusMustBePending);
 
-        return inventory.AlterReservationStatus(reservation.Id, ReservationStatus.Cancelled);
+        return inventory.AlterReservationStatus(reservation.Id, ReservationStatus.CANCELLED);
     }
 }

@@ -3,6 +3,7 @@ using Domain.Orders.Ids;
 using Domain.Orders.Services;
 using Domain.Products;
 using Domain.Products.Ids;
+using JetBrains.Annotations;
 
 namespace Application.Features.Orders.Endpoints;
 
@@ -10,6 +11,7 @@ public static class CreateProductEndpoint
 {
     public sealed record Request(Email CustomerEmail, IEnumerable<RequestItems> Items);
 
+    [UsedImplicitly]
     public sealed record RequestItems(ProductId ProductId, Quantity Quantity, Amount UnitPrice);
 
     public sealed record Response(OrderId Id);
@@ -17,24 +19,18 @@ public static class CreateProductEndpoint
     public sealed class Endpoint : Endpoint<Request, Response>
     {
         private readonly IDateTimeService _dateTime;
-
-        private readonly ApplicationDbContext _context;
-
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
-
         private readonly OrderPlacementService _orderPlacement;
 
         public Endpoint(
             IDateTimeService dateTime,
-            ApplicationDbContext context,
             IOrderRepository orderRepository,
             IProductRepository productRepository,
             OrderPlacementService orderPlacement
         )
         {
             _dateTime = dateTime;
-            _context = context;
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _orderPlacement = orderPlacement;
@@ -51,33 +47,31 @@ public static class CreateProductEndpoint
             ArgumentNullException.ThrowIfNull(req);
 
             var addOrderItems = new List<OrderItemPlacementModel>();
+            var productsNotFoundErrors = new List<Error>();
             foreach (var item in req.Items)
             {
-                var product = await _productRepository.FindProductByIdAsync(item.ProductId, ct);
+                var findProductResult = await _productRepository.FindProductByIdAsync(item.ProductId, ct);
 
-                if (product.IsNotFound())
-                    ThrowError($"Product '{item.ProductId}' not found");
+                if (findProductResult.Failed)
+                    productsNotFoundErrors.Add(new Error("_", $"Product with id {item.ProductId} not found"));
 
-                addOrderItems.Add(new OrderItemPlacementModel(product, item.Quantity, item.UnitPrice));
+                addOrderItems.Add(new OrderItemPlacementModel(findProductResult, item.Quantity, item.UnitPrice));
             }
+
+            if (productsNotFoundErrors.Count > 0)
+                await this.SendErrorResponseIfResultFailedAsync(Result.Failure(productsNotFoundErrors), ct);
 
             var model = new OrderPlacementModel(addOrderItems, req.CustomerEmail, _dateTime.UtcNow.DateTime);
-            var result = _orderPlacement.Place(model);
+            var placeOrder = _orderPlacement.Place(model);
 
-            if (result.IsInvalid())
-            {
-                await this.SendInvalidResponseAsync(result, ct);
-                return;
-            }
+            await this.SendErrorResponseIfResultFailedAsync(placeOrder, ct);
 
-            var order = result.Value!;
+            var order = placeOrder.Value!;
 
             await _orderRepository.CreateAsync(order, ct);
-            await _context.SaveChangesAsync(ct);
+            await _orderRepository.SaveChangesAsync(ct);
 
-            var response = new Response(order.Id);
-
-            await SendAsync(response, StatusCodes.Status201Created, ct);
+            await SendAsync(new Response(order.Id), StatusCodes.Status201Created, ct);
         }
     }
 }

@@ -1,4 +1,5 @@
 using Domain.Inventories.Aggregate;
+using Domain.Inventories.Errors;
 using Domain.Products.Entities;
 
 namespace Domain.Inventories.Services;
@@ -10,13 +11,8 @@ public sealed class CreateInventoryService
         ArgumentNullException.ThrowIfNull(product);
         ArgumentNullException.ThrowIfNull(quantity);
 
-        if (product.HasInventory)
-        {
-            return Result<Inventory>.Invalid(
-                new ValidationError($"Product already has an inventory ({product.Inventory!.Id})")
-            )!;
-        }
-
-        return Inventory.Create(new InventoryId(Guid.NewGuid()), product.Id, quantity, [], []);
+        return product.HasInventory
+            ? Result.Failure(InventoryError.Inv001ProductAlreadyHasAnInventory(product.Inventory!.Id))
+            : Inventory.Create(new InventoryId(Guid.NewGuid()), product.Id, quantity, [], []);
     }
 }

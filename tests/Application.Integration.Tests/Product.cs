@@ -56,7 +56,7 @@ public sealed class Product(ApplicationFixture app) : TestBase<ApplicationFixtur
 
         // Act
         var delete = await app.ProductClient.DELETEAsync<DeleteProductEndpoint.Endpoint, DeleteProductEndpoint.Request>(
-            new(product.Id)
+            new DeleteProductEndpoint.Request(product.Id)
         );
 
         // Assert

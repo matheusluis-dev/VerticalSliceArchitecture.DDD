@@ -16,7 +16,7 @@ internal static class AdjustmentMapper
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        return new()
+        return new AdjustmentTable
         {
             Id = entity.Id,
             InventoryId = entity.InventoryId,

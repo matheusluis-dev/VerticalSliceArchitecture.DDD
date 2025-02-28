@@ -17,11 +17,11 @@ public sealed record SendEmailsWhenOrderWasPaidCommand(OrderId OrderId, Email Cu
 
 public sealed class SendEmailsWhenOrderWasPaidCommandHandler : ICommandHandler<SendEmailsWhenOrderWasPaidCommand>
 {
-    private readonly EmailService _email;
+    private readonly IEmailService _email;
 
-    public SendEmailsWhenOrderWasPaidCommandHandler(EmailService emailService)
+    public SendEmailsWhenOrderWasPaidCommandHandler(IEmailService email)
     {
-        _email = emailService;
+        _email = email;
     }
 
     public Task ExecuteAsync(SendEmailsWhenOrderWasPaidCommand command, CancellationToken ct)

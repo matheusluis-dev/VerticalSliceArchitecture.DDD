@@ -1,5 +1,6 @@
 using Domain.Inventories.Entities;
 using Domain.Inventories.Enums;
+using Domain.Inventories.Errors;
 using Domain.Inventories.Events;
 
 namespace Domain.Inventories.Aggregate;
@@ -28,16 +29,8 @@ public sealed class Inventory : EntityBase
         IList<IDomainEvent>? domainEvents = null
     )
     {
-        var errors = new List<ValidationError>();
-
         if (productId is null)
-            errors.Add(new ValidationError($"{nameof(ProductId)} must be set"));
-
-        if (quantity is null)
-            errors.Add(new ValidationError("Initial quantity must be greater than 0."));
-
-        if (errors.Count > 0)
-            return Result.Invalid(errors);
+            return Result.Failure(InventoryError.Inv002ProductIdMustBeInformed);
 
         return new Inventory(domainEvents)
         {
@@ -71,20 +64,9 @@ public sealed class Inventory : EntityBase
         ArgumentNullException.ThrowIfNull(quantity);
         ArgumentNullException.ThrowIfNull(reason);
 
-        if (quantity.Value <= 0)
-            return Result.Invalid(new ValidationError("Quantity must be greater than 0"));
-
         var adjustment = Adjustment.Create(new AdjustmentId(Guid.NewGuid()), Id, null, quantity, reason);
 
-        if (adjustment.IsInvalid())
-            return Result.Invalid(adjustment.ValidationErrors!);
-
-        var adjustmentResult = PlaceAdjustment(adjustment);
-
-        if (adjustmentResult.IsInvalid())
-            return Result.Invalid(adjustmentResult.ValidationErrors!);
-
-        return adjustmentResult;
+        return adjustment.Failed ? Result.Failure(adjustment.Errors) : PlaceAdjustment(adjustment.Value!);
     }
 
     public Result<Inventory> DecreaseStock(Quantity quantity, string reason)
@@ -95,13 +77,7 @@ public sealed class Inventory : EntityBase
         var normalizedQuantity = new Quantity(quantity.Value < 0 ? quantity.Value * -1 : quantity.Value);
 
         if (!HasEnoughStockToDecrease(normalizedQuantity))
-        {
-            return Result.Invalid(
-                new ValidationError(
-                    $"Quantity to decrease is greater than available stock ({GetAvailableStock().Value})"
-                )
-            );
-        }
+            return Result.Failure(InventoryError.Inv003QuantityToDecreaseIsGreaterThanAvailableStock(this));
 
         var adjustment = Adjustment.Create(
             new AdjustmentId(Guid.NewGuid()),
@@ -111,12 +87,7 @@ public sealed class Inventory : EntityBase
             reason
         );
 
-        if (adjustment.IsInvalid())
-            return Result.Invalid(adjustment.ValidationErrors!);
-
-        var adjustmentResult = PlaceAdjustment(adjustment);
-
-        return adjustmentResult.IsInvalid() ? Result.Invalid(adjustmentResult.ValidationErrors!) : adjustmentResult;
+        return adjustment.Failed ? Result.Failure(adjustment.Errors) : PlaceAdjustment(adjustment.Value!);
     }
 
     internal Result<Inventory> PlaceAdjustment(Adjustment adjustment)
@@ -125,18 +96,17 @@ public sealed class Inventory : EntityBase
 
         var quantity = new Quantity(Quantity.Value + adjustment.Quantity.Value);
 
-        var buildResult = new InventoryBuilder()
+        var inventoryResult = new InventoryBuilder()
             .WithInventoryToClone(this)
             .WithAdjustment(Adjustments)
             .WithAdjustment(adjustment)
             .WithQuantity(quantity)
             .Build();
 
-        if (buildResult.IsInvalid())
-            return Result.Invalid(buildResult.ValidationErrors!);
+        if (inventoryResult.Failed)
+            return Result.Failure(inventoryResult.Errors);
 
-        var inventory = buildResult.Value!;
-
+        var inventory = inventoryResult.Value!;
         if (inventory.Quantity.Value is 0)
             inventory.RaiseDomainEvent(new InventoryStockReachedZeroEvent(this, ProductId));
 
@@ -159,7 +129,7 @@ public sealed class Inventory : EntityBase
         var reservation = Reservations.FirstOrDefault(r => r.Id == id);
 
         if (reservation is null)
-            return Result.Invalid(new ValidationError($"Reservation '{id}' not found"));
+            return Result.Failure(InventoryError.Inv004ReservationWithIdNotFound(id));
 
         var newReservation = Reservation.Create(
             reservation.Id,
@@ -169,12 +139,11 @@ public sealed class Inventory : EntityBase
             status
         );
 
-        if (newReservation.IsInvalid())
-            return Result.Invalid(newReservation.ValidationErrors!);
-
-        return new InventoryBuilder()
-            .WithInventoryToClone(this)
-            .WithReservations([.. Reservations.Except([reservation]), newReservation])
-            .Build();
+        return newReservation.Failed
+            ? Result.Failure(newReservation.Errors)
+            : new InventoryBuilder()
+                .WithInventoryToClone(this)
+                .WithReservations([.. Reservations.Except([reservation]), newReservation.Value!])
+                .Build();
     }
 }

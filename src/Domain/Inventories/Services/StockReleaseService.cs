@@ -1,6 +1,7 @@
 using Domain.Inventories.Aggregate;
 using Domain.Inventories.Entities;
 using Domain.Inventories.Enums;
+using Domain.Inventories.Errors;
 
 namespace Domain.Inventories.Services;
 
@@ -30,28 +31,28 @@ public sealed class StockReleaseService
         var reservation = inventory.Reservations.FirstOrDefault(r => r.OrderItemId == orderItemId);
 
         if (reservation is null)
-            return Result.Invalid(new ValidationError($"Reservation not found for order item '{orderItemId}'"));
+            return Result.Failure(InventoryError.Inv005ReservationWithOrderItemIdNotFound(orderItemId));
 
-        if (reservation.Status is ReservationStatus.Cancelled)
-            return Result.Invalid(new ValidationError("Can not apply if reservation is cancelled"));
+        if (reservation.Status is ReservationStatus.CANCELLED)
+            return Result.Failure(InventoryError.Inv006CanNotApplyIfReservationIsCancelled);
 
-        if (reservation.Status is ReservationStatus.Applied)
-            return Result.Invalid(new ValidationError("Reservation already applied"));
+        if (reservation.Status is ReservationStatus.APPLIED)
+            return Result.Failure(InventoryError.Inv007ReservationAlreadyApplied);
 
         var adjustment = _createAdjustment.CreateForOrderItemReservation(
             model.ToCreateForOrderItemReservationModel(reservation)
         );
 
-        if (adjustment.IsInvalid())
-            return Result.Invalid(adjustment.ValidationErrors!);
+        if (adjustment.Failed)
+            return Result.Failure(adjustment.Errors);
 
-        var adjustmentResult = inventory.PlaceAdjustment(adjustment);
+        var adjustmentResult = inventory.PlaceAdjustment(adjustment.Value!);
 
-        if (adjustmentResult.IsInvalid())
-            return Result.Invalid(adjustmentResult.ValidationErrors!);
+        if (adjustmentResult.Failed)
+            return Result.Failure(adjustmentResult.Errors);
 
         var inventoryAfterAdjustment = adjustmentResult.Value!;
 
-        return inventoryAfterAdjustment.AlterReservationStatus(reservation.Id, ReservationStatus.Applied);
+        return inventoryAfterAdjustment.AlterReservationStatus(reservation.Id, ReservationStatus.APPLIED);
     }
 }

@@ -1,24 +1,21 @@
+using FluentValidation.Results;
 using LinqKit;
-using IResult = Ardalis.Result.IResult;
 
 namespace Application.Extensions;
 
-public static class IEndpointExtensions
+internal static class IEndpointExtensions
 {
-    public static async Task SendInvalidResponseAsync<TResult>(
+    internal static Task SendErrorResponseIfResultFailedAsync(
         this IEndpoint ep,
-        TResult result,
+        Result result,
         CancellationToken ct = default
     )
-        where TResult : IResult
     {
-        ArgumentNullException.ThrowIfNull(ep);
+        if (result.Succeed)
+            return Task.CompletedTask;
 
-        if (result.Status is not ResultStatus.Invalid)
-            throw new ArgumentException("TODO");
+        result.Errors.ForEach(e => ep.ValidationFailures.Add(new ValidationFailure(e.Code, e.Description)));
 
-        result.ValidationErrors!.ForEach(e => ep.ValidationFailures.Add(new(e.Identifier!, e.ErrorMessage!)));
-
-        await ep.HttpContext.Response.SendErrorsAsync(ep.ValidationFailures, cancellation: ct);
+        return ep.HttpContext.Response.SendErrorsAsync(ep.ValidationFailures, cancellation: ct);
     }
 }

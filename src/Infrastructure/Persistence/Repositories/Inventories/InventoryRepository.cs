@@ -1,20 +1,19 @@
 using Domain.Inventories;
 using Domain.Inventories.Aggregate;
 using Domain.Inventories.Ids;
-using Infrastructure.Models;
 using Infrastructure.Persistence.Tables;
 
 namespace Infrastructure.Persistence.Repositories.Inventories;
 
 public sealed class InventoryRepository : IInventoryRepository
 {
+    private readonly ApplicationDbContext _context;
     private readonly DbSet<InventoryTable> _set;
 
     public InventoryRepository(ApplicationDbContext context)
     {
-        ArgumentNullException.ThrowIfNull(context);
-
-        _set = context.Set<InventoryTable>();
+        _context = context;
+        _set = _context.Set<InventoryTable>();
     }
 
     private IQueryable<InventoryTable> GetDefaultQuery()
@@ -37,22 +36,13 @@ public sealed class InventoryRepository : IInventoryRepository
         var inventory = await GetDefaultQuery().FirstOrDefaultAsync(i => i.Id == id, ct);
 
         if (inventory is null)
-            return Result.NotFound();
+            return Result.Failure();
 
         return InventoryMapper.ToEntity(inventory);
     }
 
-    public async Task<IPagedList<Inventory>> FindAllPagedAsync(
-        int pageIndex,
-        int pageSize,
-        CancellationToken ct = default
-    )
+    public Task<int> SaveChangesAsync(CancellationToken ct = default)
     {
-        return await PagedList<Inventory>.CreateAsync(
-            InventoryMapper.ToEntityQueryable(GetDefaultQuery().AsNoTracking()),
-            pageIndex,
-            pageSize,
-            ct
-        );
+        return _context.SaveChangesAsync(ct);
     }
 }

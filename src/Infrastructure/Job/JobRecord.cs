@@ -6,8 +6,6 @@ namespace Infrastructure.Job;
 
 public sealed class JobRecord : IJobStorageRecord
 {
-    public Guid Id { get; set; }
-
     public string QueueID { get; set; } = null!;
     public Guid TrackingID { get; set; }
     public DateTime ExecuteAfter { get; set; }
@@ -18,7 +16,7 @@ public sealed class JobRecord : IJobStorageRecord
     [NotMapped]
     public object Command { get; set; } = null!;
 
-    public string CommandJson { get; set; } = null!;
+    private string CommandJson { get; set; } = null!;
 
     TCommand IJobStorageRecord.GetCommand<TCommand>()
     {
@@ -29,9 +27,4 @@ public sealed class JobRecord : IJobStorageRecord
     {
         CommandJson = JsonSerializer.Serialize(command);
     }
-
-    [NotMapped]
-    public object? Result { get; set; }
-
-    public string? ResultJson { get; set; }
 }

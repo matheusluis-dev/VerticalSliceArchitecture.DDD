@@ -1,5 +1,6 @@
 using Domain.Orders.Aggregates;
 using Domain.Orders.Enums;
+using Domain.Orders.Errors;
 using Domain.Orders.Events;
 using Domain.Products.Entities;
 
@@ -26,13 +27,11 @@ public sealed class OrderPlacementService
 
     public Result<Order> Place(OrderPlacementModel model)
     {
-        ArgumentNullException.ThrowIfNull(model);
-
         var (items, customerEmail, now) = model;
 
         var itemsList = items.ToList();
-        if (itemsList.Count == 0)
-            return Result.Invalid(new ValidationError("Items must be provided"));
+        if (itemsList.Count is 0)
+            return Result.Failure(OrderError.Ord005OrderItemsMustBeProvided);
 
         var createOrder = new OrderBuilder()
             .WithStatus(OrderStatus.PENDING)
@@ -40,22 +39,22 @@ public sealed class OrderPlacementService
             .WithCreatedDate(now)
             .Build();
 
-        if (createOrder.IsInvalid())
-            return Result.Invalid(createOrder.ValidationErrors!);
+        if (createOrder.Failed)
+            return createOrder;
 
         var order = createOrder.Value!;
 
-        var errorsAddingItem = new List<ValidationError>();
+        var errorsAddingItem = new List<Error>();
         foreach (var item in itemsList)
         {
             var addItem = order.AddItem(_orderItemManagement, item.ToCreateOrderItemModel(order));
 
-            if (addItem.IsInvalid())
-                errorsAddingItem.AddRange(addItem.ValidationErrors!);
+            if (addItem.Failed)
+                errorsAddingItem.AddRange(addItem.Errors);
         }
 
         if (errorsAddingItem.Count > 0)
-            return Result.Invalid(errorsAddingItem);
+            return Result.Failure(errorsAddingItem);
 
         order.RaiseDomainEvent(new OrderPlacedEvent(order));
 

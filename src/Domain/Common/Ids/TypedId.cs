@@ -1,7 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Domain.Common.Ids;
 
-#pragma warning disable S4035
-
+[SuppressMessage(
+    "Design",
+    "S4035:Classes implementing 'IEquatable<T>' should be sealed",
+    Justification = "TypedId derived classes have common Equality comparer."
+)]
 public abstract class TypedId<TPrimitive> : IEquatable<TypedId<TPrimitive>>
     where TPrimitive : IComparable<TPrimitive>
 {
@@ -53,5 +58,3 @@ public abstract class TypedId<TPrimitive> : IEquatable<TypedId<TPrimitive>>
         return Value.ToString()!;
     }
 }
-
-#pragma warning restore S4035

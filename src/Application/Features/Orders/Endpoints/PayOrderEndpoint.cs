@@ -1,5 +1,6 @@
 using Domain.Orders;
 using Domain.Orders.Ids;
+using JetBrains.Annotations;
 
 namespace Application.Features.Orders.Endpoints;
 
@@ -7,18 +8,17 @@ public static class PayOrderEndpoint
 {
     public sealed record Request(OrderId Id);
 
+    [UsedImplicitly(ImplicitUseTargetFlags.Members)]
     public sealed record Response(OrderId Id);
 
     public sealed class Endpoint : Endpoint<Request, Response>
     {
         private readonly IDateTimeService _dateTime;
-        private readonly ApplicationDbContext _context;
         private readonly IOrderRepository _orderRepository;
 
-        public Endpoint(IDateTimeService dateTime, ApplicationDbContext context, IOrderRepository orderRepository)
+        public Endpoint(IDateTimeService dateTime, IOrderRepository orderRepository)
         {
             _dateTime = dateTime;
-            _context = context;
             _orderRepository = orderRepository;
         }
 
@@ -30,25 +30,22 @@ public static class PayOrderEndpoint
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            ArgumentNullException.ThrowIfNull(req);
+            var findOrderResult = await _orderRepository.FindByIdAsync(req.Id, ct);
 
-            var order = await _orderRepository.FindByIdAsync(req.Id, ct);
+            if (findOrderResult.Failed)
+                await SendNotFoundAsync(ct);
 
-            if (order.IsNotFound())
-                ThrowError($"Order '{req.Id}' was not found");
+            var order = findOrderResult.Value!;
 
-            var pay = order.Value!.Pay(_dateTime.UtcNow.DateTime);
+            var payOrder = order.Pay(_dateTime);
+            await this.SendErrorResponseIfResultFailedAsync(payOrder, ct);
 
-            if (pay.IsInvalid())
-            {
-                await this.SendInvalidResponseAsync(pay, ct);
-                return;
-            }
+            var paidOrder = payOrder.Value!;
 
-            _orderRepository.Update(pay.Value!);
-            await _context.SaveChangesAsync(ct);
+            _orderRepository.Update(paidOrder);
+            await _orderRepository.SaveChangesAsync(ct);
 
-            await SendAsync(new Response(pay.Value!.Id), StatusCodes.Status200OK, ct);
+            await SendAsync(new Response(paidOrder.Id), StatusCodes.Status200OK, ct);
         }
     }
 }

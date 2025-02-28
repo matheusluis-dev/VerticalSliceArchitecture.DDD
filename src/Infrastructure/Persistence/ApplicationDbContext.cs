@@ -7,7 +7,6 @@ using FastEndpoints;
 using Infrastructure.Persistence.Converters.Ids;
 using Infrastructure.Persistence.Converters.ValueObjects;
 using Infrastructure.Persistence.Tables;
-using JetBrains.Annotations;
 
 namespace Infrastructure.Persistence;
 

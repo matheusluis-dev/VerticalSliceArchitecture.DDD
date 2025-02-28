@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Persistence.Converters.Ids;
 
+[UsedImplicitly]
 public sealed class OrderIdConverter : ValueConverter<OrderId, Guid>
 {
     public OrderIdConverter()

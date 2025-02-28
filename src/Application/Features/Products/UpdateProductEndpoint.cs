@@ -1,6 +1,7 @@
 using Domain.Products;
 using Domain.Products.Ids;
 using Domain.Products.ValueObjects;
+using JetBrains.Annotations;
 
 namespace Application.Features.Products;
 
@@ -8,6 +9,7 @@ public static class UpdateProductEndpoint
 {
     public sealed record Request(ProductId Id, ProductName Name);
 
+    [UsedImplicitly(ImplicitUseTargetFlags.Members)]
     public sealed record Response(ProductId Id, ProductName Name);
 
     public sealed class Endpoint : Endpoint<Request, Response>
@@ -27,14 +29,20 @@ public static class UpdateProductEndpoint
 
         public override async Task HandleAsync(Request req, CancellationToken ct)
         {
-            var product = await _productRepository.FindProductByIdAsync(req.Id, ct);
+            var findProductResult = await _productRepository.FindProductByIdAsync(req.Id, ct);
 
-            if (product.IsNotFound())
-                ThrowError("Product was not found", StatusCodes.Status404NotFound);
+            if (findProductResult.Failed)
+                await SendNotFoundAsync(ct);
 
-            var anotherProductWithSameName = await _productRepository.FindProductByNameAsync(req.Name, ct);
+            var product = findProductResult.Value!;
 
-            if (anotherProductWithSameName.WasFound())
+            var findAnotherProductWithSameName = await _productRepository.FindAnotherProductByNameAsync(
+                product.Id,
+                req.Name,
+                ct
+            );
+
+            if (findAnotherProductWithSameName.Succeed)
             {
                 ThrowError(
                     $"There is already a product with the specified name ({req.Name})",
@@ -42,16 +50,15 @@ public static class UpdateProductEndpoint
                 );
             }
 
-            var updated = product.Value!.UpdateName(req.Name);
-            if (updated.IsInvalid())
-            {
-                await this.SendInvalidResponseAsync(updated, ct);
-                return;
-            }
+            var updateProduct = findProductResult.Value!.UpdateName(req.Name);
+            await this.SendErrorResponseIfResultFailedAsync(updateProduct, ct);
 
-            var response = new Response(updated.Value!.Id, updated.Value.Name);
+            _productRepository.Update(updateProduct);
+            await _productRepository.SaveChangesAsync(ct);
 
-            await SendAsync(response, StatusCodes.Status200OK, ct);
+            var productUpdated = updateProduct.Value!;
+
+            await SendAsync(new Response(productUpdated.Id, productUpdated.Name), StatusCodes.Status200OK, ct);
         }
     }
 }

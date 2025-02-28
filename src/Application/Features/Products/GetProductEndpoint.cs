@@ -29,15 +29,12 @@ public static class GetProductEndpoint
         {
             ArgumentNullException.ThrowIfNull(req);
 
-            var result = await _repository.FindProductByIdAsync(req.Id, ct);
+            var findProductResult = await _repository.FindProductByIdAsync(req.Id, ct);
 
-            if (result.IsNotFound())
-            {
+            if (findProductResult.Failed)
                 await SendNotFoundAsync(ct);
-                return;
-            }
 
-            var product = result.Value!;
+            var product = findProductResult.Value!;
             var response = new Response(product.Id, product.Name);
 
             await SendAsync(response, StatusCodes.Status200OK, ct);
