@@ -1,5 +1,5 @@
 using Domain.Orders.ValueObjects;
-using Domain.Products.Entities;
+using Domain.Products.Aggregate;
 
 namespace Domain.Orders.Entities;
 

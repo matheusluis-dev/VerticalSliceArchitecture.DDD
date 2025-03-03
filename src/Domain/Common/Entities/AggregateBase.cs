@@ -2,13 +2,13 @@ using System.Collections.Immutable;
 
 namespace Domain.Common.Entities;
 
-public abstract class EntityBase : IEntity
+public abstract class AggregateBase : IEntity
 {
     private IImmutableList<IDomainEvent> _domainEvents;
 
-    protected EntityBase(IList<IDomainEvent>? domainEvents)
+    protected AggregateBase(IImmutableList<IDomainEvent>? domainEvents)
     {
-        _domainEvents = domainEvents?.ToImmutableList() ?? [];
+        _domainEvents = domainEvents ?? [];
     }
 
     public IImmutableList<IDomainEvent> GetDomainEvents()

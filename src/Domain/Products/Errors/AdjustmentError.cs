@@ -1,4 +1,4 @@
-﻿namespace Domain.Inventories.Errors;
+﻿namespace Domain.Products.Errors;
 
 public static class AdjustmentError
 {

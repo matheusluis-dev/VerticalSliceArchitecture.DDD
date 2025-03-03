@@ -63,11 +63,4 @@ public sealed class GuidV7 : IComparable<GuidV7>, IEquatable<GuidV7>
 
     public static bool operator >=(GuidV7? left, GuidV7? right) =>
         left is null ? right is null : left.CompareTo(right) >= 0;
-
-    public static implicit operator Guid(GuidV7 someValue)
-    {
-        ArgumentNullException.ThrowIfNull(someValue);
-
-        return someValue.ToGuid();
-    }
 }

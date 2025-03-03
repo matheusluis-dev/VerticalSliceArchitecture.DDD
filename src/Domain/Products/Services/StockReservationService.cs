@@ -1,9 +1,8 @@
-using Domain.Inventories.Aggregate;
-using Domain.Inventories.Entities;
-using Domain.Inventories.Enums;
-using Domain.Inventories.Errors;
+using Domain.Products.Entities;
+using Domain.Products.Enums;
+using Domain.Products.Errors;
 
-namespace Domain.Inventories.Services;
+namespace Domain.Products.Services;
 
 public sealed record ReserveStockModel(Inventory Inventory, OrderItemId OrderItemId, Quantity Quantity);
 

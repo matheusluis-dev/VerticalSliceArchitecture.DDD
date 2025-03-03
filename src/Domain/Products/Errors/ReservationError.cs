@@ -1,6 +1,6 @@
-﻿using Domain.Inventories.Aggregate;
+﻿using Domain.Products.Entities;
 
-namespace Domain.Inventories.Errors;
+namespace Domain.Products.Errors;
 
 internal static class ReservationError
 {

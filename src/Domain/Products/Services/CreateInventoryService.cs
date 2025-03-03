@@ -1,8 +1,8 @@
-using Domain.Inventories.Aggregate;
-using Domain.Inventories.Errors;
+using Domain.Products.Aggregate;
 using Domain.Products.Entities;
+using Domain.Products.Errors;
 
-namespace Domain.Inventories.Services;
+namespace Domain.Products.Services;
 
 public sealed class CreateInventoryService
 {

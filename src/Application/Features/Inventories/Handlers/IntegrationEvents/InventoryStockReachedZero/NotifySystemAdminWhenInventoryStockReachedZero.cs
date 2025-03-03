@@ -1,5 +1,4 @@
-using Domain.Inventories.Events;
-using Domain.Inventories.Ids;
+using Domain.Products.Events;
 using Domain.Products.Ids;
 
 namespace Application.Features.Inventories.Handlers.IntegrationEvents.InventoryStockReachedZero;

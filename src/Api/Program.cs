@@ -1,4 +1,4 @@
-using Application;
+using Api;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Infrastructure.Persistence;
@@ -50,5 +50,8 @@ finally
 }
 
 #pragma warning disable S1118
-[UsedImplicitly]
-public partial class Program;
+namespace Api
+{
+    [UsedImplicitly]
+    public partial class Program;
+}

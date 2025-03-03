@@ -1,4 +1,4 @@
-using Domain.Inventories.Ids;
+using Domain.Products.Ids;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Persistence.Converters.Ids;

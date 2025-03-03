@@ -2,7 +2,7 @@ using Domain.Orders.Aggregates;
 using Domain.Orders.Enums;
 using Domain.Orders.Errors;
 using Domain.Orders.Events;
-using Domain.Products.Entities;
+using Domain.Products.Aggregate;
 
 namespace Domain.Orders.Services;
 

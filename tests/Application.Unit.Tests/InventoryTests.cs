@@ -1,8 +1,8 @@
 using Domain.Common.ValueObjects;
-using Domain.Inventories.Aggregate;
-using Domain.Inventories.Ids;
-using Domain.Inventories.Services;
+using Domain.Products.Aggregate;
 using Domain.Products.Entities;
+using Domain.Products.Ids;
+using Domain.Products.Services;
 using Domain.Products.ValueObjects;
 using Shouldly;
 

@@ -5,7 +5,6 @@ global using Domain.Common.Entities;
 global using Domain.Common.Ids;
 global using Domain.Common.Results;
 global using Domain.Common.ValueObjects;
-global using Domain.Inventories.Ids;
 global using Domain.Orders.Ids;
 global using Domain.Products.Ids;
 global using JetBrains.Annotations;

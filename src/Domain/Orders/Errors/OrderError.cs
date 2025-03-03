@@ -1,4 +1,5 @@
-﻿using Domain.Products.Entities;
+﻿using Domain.Products.Aggregate;
+using Domain.Products.Entities;
 
 namespace Domain.Orders.Errors;
 

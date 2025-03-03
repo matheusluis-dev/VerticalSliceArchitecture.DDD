@@ -1,4 +1,3 @@
-using Domain.Inventories.Ids;
 using Domain.Orders.Ids;
 using Domain.Orders.ValueObjects;
 using Domain.Products.Ids;

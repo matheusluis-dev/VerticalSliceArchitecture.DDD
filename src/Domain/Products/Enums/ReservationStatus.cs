@@ -1,4 +1,4 @@
-namespace Domain.Inventories.Enums;
+namespace Domain.Products.Enums;
 
 public enum ReservationStatus
 {

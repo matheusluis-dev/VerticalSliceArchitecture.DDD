@@ -7,7 +7,7 @@ using Domain.Orders.Services;
 
 namespace Domain.Orders.Aggregates;
 
-public sealed class Order : EntityBase
+public sealed class Order : AggregateBase
 {
     public required OrderId Id { get; init; }
     public required IImmutableList<OrderItem> OrderItems { get; init; }
@@ -17,7 +17,7 @@ public sealed class Order : EntityBase
     public required DateTime? PaidDate { get; init; }
     public required DateTime? CancelledDate { get; init; }
 
-    private Order(IList<IDomainEvent>? domainEvents = null)
+    private Order(IImmutableList<IDomainEvent>? domainEvents = null)
         : base(domainEvents ?? []) { }
 
     internal static Result<Order> Create(
@@ -28,13 +28,13 @@ public sealed class Order : EntityBase
         DateTime? createdDate,
         DateTime? paidDate,
         DateTime? cancelledDate,
-        IEnumerable<IDomainEvent>? domainEvents
+        IImmutableList<IDomainEvent>? domainEvents
     )
     {
         if (createdDate is null)
             return Result.Failure(OrderError.Ord001CreatedDateMustBeInformed);
 
-        return new Order(domainEvents?.ToList())
+        return new Order(domainEvents)
         {
             Id = id,
             OrderItems = items,

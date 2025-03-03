@@ -1,6 +1,6 @@
-using Domain.Inventories.Entities;
+using Domain.Products.Entities;
 
-namespace Domain.Inventories.Services;
+namespace Domain.Products.Services;
 
 public sealed record CreateForOrderItemReservationModel(OrderItemId OrderItemId, Reservation Reservation);
 

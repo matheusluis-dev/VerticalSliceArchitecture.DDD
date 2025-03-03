@@ -1,6 +1,6 @@
 using Domain.Inventories;
-using Domain.Inventories.Services;
 using Domain.Orders.Events;
+using Domain.Products.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Features.Inventories.Handlers.DomainEvents.OrderPaid;

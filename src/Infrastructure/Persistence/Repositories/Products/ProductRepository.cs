@@ -1,5 +1,5 @@
 using Domain.Products;
-using Domain.Products.Entities;
+using Domain.Products.Aggregate;
 using Domain.Products.Ids;
 using Domain.Products.ValueObjects;
 using Infrastructure.Models;

@@ -1,8 +1,6 @@
-using Domain.Inventories;
-using Domain.Inventories.Ids;
-using Domain.Inventories.Services;
 using Domain.Products;
 using Domain.Products.Ids;
+using Domain.Products.Services;
 using JetBrains.Annotations;
 
 namespace Application.Features.Inventories.Endpoints;

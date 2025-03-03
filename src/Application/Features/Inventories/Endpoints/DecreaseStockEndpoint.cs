@@ -1,5 +1,4 @@
 using Domain.Inventories;
-using Domain.Inventories.Ids;
 using Domain.Products.Ids;
 using JetBrains.Annotations;
 

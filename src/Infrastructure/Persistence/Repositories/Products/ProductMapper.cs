@@ -1,5 +1,4 @@
-using Domain.Products.Entities;
-using Infrastructure.Persistence.Repositories.Inventories;
+using Domain.Products.Aggregate;
 using Infrastructure.Persistence.Tables;
 
 namespace Infrastructure.Persistence.Repositories.Products;

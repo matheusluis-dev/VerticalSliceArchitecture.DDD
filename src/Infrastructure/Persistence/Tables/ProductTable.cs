@@ -1,4 +1,3 @@
-using Domain.Inventories.Ids;
 using Domain.Products.Ids;
 using Domain.Products.ValueObjects;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

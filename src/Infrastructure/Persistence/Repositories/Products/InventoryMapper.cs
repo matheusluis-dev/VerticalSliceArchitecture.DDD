@@ -1,7 +1,7 @@
-using Domain.Inventories.Aggregate;
+using Domain.Products.Entities;
 using Infrastructure.Persistence.Tables;
 
-namespace Infrastructure.Persistence.Repositories.Inventories;
+namespace Infrastructure.Persistence.Repositories.Products;
 
 internal static class InventoryMapper
 {

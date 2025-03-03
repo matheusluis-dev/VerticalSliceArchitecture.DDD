@@ -1,7 +1,7 @@
-using Domain.Inventories.Enums;
-using Domain.Inventories.Errors;
+using Domain.Products.Enums;
+using Domain.Products.Errors;
 
-namespace Domain.Inventories.Entities;
+namespace Domain.Products.Entities;
 
 public sealed class Reservation : IChildEntity
 {

@@ -1,15 +1,14 @@
 using System.Text.Json.Serialization;
+using Application;
 using Domain.Common.Contracts;
-using Domain.Inventories;
-using Domain.Inventories.Services;
 using Domain.Orders;
 using Domain.Orders.Services;
 using Domain.Products;
+using Domain.Products.Services;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Infrastructure.Job;
 using Infrastructure.Persistence;
-using Infrastructure.Persistence.Repositories.Inventories;
 using Infrastructure.Persistence.Repositories.Orders;
 using Infrastructure.Persistence.Repositories.Products;
 using Infrastructure.Services;
@@ -17,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-namespace Application;
+namespace Api;
 
 public static class ServiceInjection
 {
@@ -119,6 +118,7 @@ public static class ServiceInjection
 
         void AddProduct()
         {
+            services.AddSingleton<CanDeleteProductService>();
             services.AddScoped<IProductRepository, ProductRepository>();
         }
     }

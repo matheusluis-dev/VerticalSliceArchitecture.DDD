@@ -1,6 +1,5 @@
 using Domain.Common.Entities;
 using Domain.Common.ValueObjects;
-using Domain.Inventories.Ids;
 using Domain.Orders.Ids;
 using Domain.Products.Ids;
 using FastEndpoints;
@@ -77,7 +76,7 @@ public sealed class ApplicationDbContext : DbContext
     private async Task PublishDomainEventsAsync(CancellationToken cancellationToken = default)
     {
         var domainEvents = ChangeTracker
-            .Entries<EntityBase>()
+            .Entries<AggregateBase>()
             .Select(entry => entry.Entity)
             .SelectMany(entity => entity.GetDomainEvents())
             .ToList();

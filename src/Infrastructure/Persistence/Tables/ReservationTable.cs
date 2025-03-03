@@ -1,7 +1,7 @@
 using Domain.Common.ValueObjects;
-using Domain.Inventories.Enums;
-using Domain.Inventories.Ids;
 using Domain.Orders.Ids;
+using Domain.Products.Enums;
+using Domain.Products.Ids;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Tables;

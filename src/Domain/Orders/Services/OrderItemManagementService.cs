@@ -2,7 +2,7 @@ using Domain.Orders.Aggregates;
 using Domain.Orders.Entities;
 using Domain.Orders.Errors;
 using Domain.Orders.ValueObjects;
-using Domain.Products.Entities;
+using Domain.Products.Aggregate;
 
 namespace Domain.Orders.Services;
 

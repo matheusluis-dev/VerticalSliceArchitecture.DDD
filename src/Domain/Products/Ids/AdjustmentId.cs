@@ -1,4 +1,4 @@
-namespace Domain.Inventories.Ids;
+namespace Domain.Products.Ids;
 
 public sealed class AdjustmentId : TypedId<GuidV7>
 {

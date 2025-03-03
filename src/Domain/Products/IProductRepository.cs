@@ -1,4 +1,4 @@
-using Domain.Products.Entities;
+using Domain.Products.Aggregate;
 using Domain.Products.ValueObjects;
 
 namespace Domain.Products;

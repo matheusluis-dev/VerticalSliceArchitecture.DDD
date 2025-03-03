@@ -1,4 +1,5 @@
 using System.Globalization;
+using Api;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
