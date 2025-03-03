@@ -13,6 +13,11 @@ public sealed class CreateInventoryService
 
         return product.HasInventory
             ? Result.Failure(InventoryError.Inv001ProductAlreadyHasAnInventory(product.Inventory!.Id))
-            : Inventory.Create(new InventoryId(Guid.NewGuid()), product.Id, quantity, [], []);
+            : InventoryBuilder
+                .Start()
+                .WithId(new InventoryId(GuidV7.NewGuid()))
+                .WithProductId(product.Id)
+                .WithQuantity(quantity)
+                .Build();
     }
 }

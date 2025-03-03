@@ -1,7 +1,7 @@
 namespace Domain.Orders.Ids;
 
-public sealed class OrderId : TypedId<Guid>
+public sealed class OrderId : TypedId<GuidV7>
 {
-    public OrderId(Guid value)
+    public OrderId(GuidV7 value)
         : base(value) { }
 }

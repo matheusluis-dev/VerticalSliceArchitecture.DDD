@@ -1,84 +1,164 @@
+using System.Collections.Immutable;
 using Domain.Orders.Entities;
 using Domain.Orders.Enums;
 
 namespace Domain.Orders.Aggregates;
 
-public sealed class OrderBuilder
+public sealed class OrderBuilder : IOrderBuilder
 {
     private Order? _orderToClone;
 
     private OrderId? _id;
-    private readonly List<OrderItem> _orderItems = [];
+    private IImmutableList<OrderItem> _orderItemsToAdd = [];
     private OrderStatus? _status;
     private Email? _customerEmail;
     private DateTime? _createdDate;
     private DateTime? _paidDate;
     private DateTime? _cancelledDate;
 
-    public Result<Order> Build()
+    private OrderBuilder() { }
+
+    public static IOrderBuilderStart Create()
     {
-        var id = _orderToClone?.Id ?? _id ?? new OrderId(Guid.NewGuid());
-
-        var orderItems = _orderItems.Count > 0 ? _orderItems : _orderToClone?.OrderItems;
-
-        var status = _status ?? _orderToClone?.Status ?? OrderStatus.PENDING;
-        var email = _customerEmail ?? _orderToClone?.CustomerEmail;
-        var createdDate = _orderToClone?.CreatedDate ?? _createdDate;
-        var paidDate = _paidDate ?? _orderToClone?.PaidDate;
-        var cancelledDate = _cancelledDate ?? _orderToClone?.CancelledDate;
-        var domainEvents = _orderToClone?.GetDomainEvents() ?? [];
-
-        return Order.Create(id, orderItems, status, email, createdDate, paidDate, cancelledDate, domainEvents);
+        return new OrderBuilder();
     }
 
-    public OrderBuilder WithOrderToClone(Order order)
+    public Result<Order> Build()
     {
-        _orderToClone = order;
+        return _orderToClone is null ? New() : Clone();
+
+        Result<Order> New()
+        {
+            if (_status is null)
+                throw new ArgumentNullException(nameof(_status));
+
+            ArgumentNullException.ThrowIfNull(_customerEmail);
+
+            return Order.Create(
+                _id ?? new OrderId(GuidV7.NewGuid()),
+                _orderItemsToAdd,
+                _status.Value,
+                _customerEmail,
+                _createdDate,
+                _paidDate,
+                _cancelledDate,
+                null
+            );
+        }
+
+        Result<Order> Clone()
+        {
+            return Order.Create(
+                _orderToClone.Id,
+                _orderToClone.OrderItems.AddRange(_orderItemsToAdd),
+                _status ?? _orderToClone.Status,
+                _customerEmail ?? _orderToClone.CustomerEmail,
+                _orderToClone.CreatedDate,
+                _orderToClone.PaidDate ?? _paidDate,
+                _orderToClone.CancelledDate ?? _cancelledDate,
+                _orderToClone.GetDomainEvents()
+            );
+        }
+    }
+
+    public IOrderBuilderWithPropertiesCloning WithOrderToClone(Order orderToClone)
+    {
+        ArgumentNullException.ThrowIfNull(orderToClone);
+
+        _orderToClone = orderToClone;
         return this;
     }
 
-    public OrderBuilder WithId(OrderId id)
+    public IOrderBuilderWithSequence WithNewId()
+    {
+        _id = new OrderId(GuidV7.NewGuid());
+        return this;
+    }
+
+    public IOrderBuilderWithSequence WithId(OrderId id)
     {
         _id = id;
         return this;
     }
 
-    public OrderBuilder WithOrderItems(params IEnumerable<OrderItem> items)
+    public IOrderBuilderWithSequence WithOrderItem(OrderItem orderItem)
     {
-        ArgumentNullException.ThrowIfNull(items);
+        ArgumentNullException.ThrowIfNull(orderItem);
 
-        _orderItems.AddRange(items);
-
+        _orderItemsToAdd = _orderItemsToAdd.Add(orderItem);
         return this;
     }
 
-    public OrderBuilder WithStatus(OrderStatus status)
+    public IOrderBuilderWithSequence WithOrderItems(IEnumerable<OrderItem> orderItems)
+    {
+        ArgumentNullException.ThrowIfNull(orderItems);
+
+        _orderItemsToAdd = _orderItemsToAdd.AddRange(orderItems);
+        return this;
+    }
+
+    public IOrderBuilderWithSequence WithStatus(OrderStatus status)
     {
         _status = status;
         return this;
     }
 
-    public OrderBuilder WithCustomerEmail(Email customerEmail)
+    public IOrderBuilderWithSequence WithCustomerEmail(Email customerEmail)
     {
         _customerEmail = customerEmail;
         return this;
     }
 
-    public OrderBuilder WithCreatedDate(DateTime createdDate)
+    public IOrderBuilderWithSequence WithCreatedDate(DateTime createdDate)
     {
         _createdDate = createdDate;
         return this;
     }
 
-    public OrderBuilder WithPaidDate(DateTime? paidDate)
+    public IOrderBuilderWithSequence WithPaidDate(DateTime? paidDate)
     {
         _paidDate = paidDate;
         return this;
     }
 
-    public OrderBuilder WithCanceledDate(DateTime? canceledDate)
+    public IOrderBuilderWithSequence WithCanceledDate(DateTime? canceledDate)
     {
         _cancelledDate = canceledDate;
         return this;
     }
+}
+
+public interface IOrderBuilder : IOrderBuilderStart, IOrderBuilderWithSequence, IOrderBuilderWithPropertiesCloning;
+
+public interface IOrderBuilderStart : IOrderBuilderClone, IOrderBuilderWithId;
+
+public interface IOrderBuilderClone
+{
+    IOrderBuilderWithPropertiesCloning WithOrderToClone(Order orderToClone);
+}
+
+public interface IOrderBuilderWithId
+{
+    IOrderBuilderWithSequence WithNewId();
+    IOrderBuilderWithSequence WithId(OrderId id);
+}
+
+public interface IOrderBuilderWithProperties
+{
+    IOrderBuilderWithSequence WithOrderItem(OrderItem orderItem);
+    IOrderBuilderWithSequence WithOrderItems(IEnumerable<OrderItem> orderItems);
+    IOrderBuilderWithSequence WithStatus(OrderStatus status);
+    IOrderBuilderWithSequence WithCustomerEmail(Email customerEmail);
+    IOrderBuilderWithSequence WithCreatedDate(DateTime createdDate);
+    IOrderBuilderWithSequence WithPaidDate(DateTime? paidDate);
+    IOrderBuilderWithSequence WithCanceledDate(DateTime? canceledDate);
+}
+
+public interface IOrderBuilderWithPropertiesCloning : IOrderBuilderWithProperties { }
+
+public interface IOrderBuilderWithSequence : IOrderBuilderWithProperties, IOrderBuilderBuild;
+
+public interface IOrderBuilderBuild
+{
+    Result<Order> Build();
 }

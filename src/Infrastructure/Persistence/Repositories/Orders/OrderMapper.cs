@@ -16,7 +16,8 @@ internal static class OrderMapper
 
         var items = table.OrderItems.Select(OrderItemMapper.ToEntity).ToList();
 
-        return new OrderBuilder()
+        return OrderBuilder
+            .Create()
             .WithId(table.Id)
             .WithStatus(table.Status)
             .WithCreatedDate(table.CreatedDate)

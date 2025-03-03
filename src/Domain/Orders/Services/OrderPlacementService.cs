@@ -6,7 +6,7 @@ using Domain.Products.Entities;
 
 namespace Domain.Orders.Services;
 
-public sealed record OrderPlacementModel(IEnumerable<OrderItemPlacementModel> Items, Email CustomerEmail, DateTime Now);
+public sealed record OrderPlacementModel(IEnumerable<OrderItemPlacementModel> Items, Email CustomerEmail);
 
 public sealed record OrderItemPlacementModel(Product Product, Quantity Quantity, Amount UnitPrice)
 {
@@ -19,24 +19,28 @@ public sealed record OrderItemPlacementModel(Product Product, Quantity Quantity,
 public sealed class OrderPlacementService
 {
     private readonly OrderItemManagementService _orderItemManagement;
+    private readonly IDateTimeService _dateTimeService;
 
-    public OrderPlacementService(OrderItemManagementService orderItemManagement)
+    public OrderPlacementService(OrderItemManagementService orderItemManagement, IDateTimeService dateTimeService)
     {
         _orderItemManagement = orderItemManagement;
+        _dateTimeService = dateTimeService;
     }
 
     public Result<Order> Place(OrderPlacementModel model)
     {
-        var (items, customerEmail, now) = model;
+        var (items, customerEmail) = model;
 
         var itemsList = items.ToList();
         if (itemsList.Count is 0)
             return Result.Failure(OrderError.Ord005OrderItemsMustBeProvided);
 
-        var createOrder = new OrderBuilder()
+        var createOrder = OrderBuilder
+            .Create()
+            .WithNewId()
             .WithStatus(OrderStatus.PENDING)
             .WithCustomerEmail(customerEmail)
-            .WithCreatedDate(now)
+            .WithCreatedDate(_dateTimeService.UtcNow.DateTime)
             .Build();
 
         if (createOrder.Failed)

@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Domain.Inventories.Entities;
 using Domain.Inventories.Enums;
 using Domain.Inventories.Errors;
@@ -8,37 +9,33 @@ namespace Domain.Inventories.Aggregate;
 public sealed class Inventory : EntityBase
 {
     public required InventoryId Id { get; init; }
-
     public required ProductId ProductId { get; init; }
-
     public required Quantity Quantity { get; init; }
-
-    public required IReadOnlyCollection<Adjustment> Adjustments { get; init; }
-
-    public required IReadOnlyCollection<Reservation> Reservations { get; init; }
+    public required IImmutableList<Adjustment> Adjustments { get; init; }
+    public required IImmutableList<Reservation> Reservations { get; init; }
 
     private Inventory(IList<IDomainEvent>? domainEvents = null)
         : base(domainEvents ?? []) { }
 
-    public static Result<Inventory> Create(
+    internal static Result<Inventory> Create(
         InventoryId id,
         ProductId? productId,
-        Quantity? quantity,
-        IEnumerable<Adjustment> adjustments,
-        IEnumerable<Reservation> reservations,
-        IList<IDomainEvent>? domainEvents = null
+        Quantity quantity,
+        IImmutableList<Adjustment> adjustments,
+        IImmutableList<Reservation> reservations,
+        IImmutableList<IDomainEvent>? domainEvents
     )
     {
         if (productId is null)
             return Result.Failure(InventoryError.Inv002ProductIdMustBeInformed);
 
-        return new Inventory(domainEvents)
+        return new Inventory(domainEvents?.ToList())
         {
             Id = id,
-            ProductId = productId!,
-            Quantity = quantity!,
-            Adjustments = adjustments.ToList().AsReadOnly(),
-            Reservations = reservations.ToList().AsReadOnly(),
+            ProductId = productId,
+            Quantity = quantity,
+            Adjustments = adjustments,
+            Reservations = reservations,
         };
     }
 
@@ -64,7 +61,7 @@ public sealed class Inventory : EntityBase
         ArgumentNullException.ThrowIfNull(quantity);
         ArgumentNullException.ThrowIfNull(reason);
 
-        var adjustment = Adjustment.Create(new AdjustmentId(Guid.NewGuid()), Id, null, quantity, reason);
+        var adjustment = Adjustment.Create(new AdjustmentId(GuidV7.NewGuid()), Id, null, quantity, reason);
 
         return adjustment.Failed ? Result.Failure(adjustment.Errors) : PlaceAdjustment(adjustment.Value!);
     }
@@ -80,7 +77,7 @@ public sealed class Inventory : EntityBase
             return Result.Failure(InventoryError.Inv003QuantityToDecreaseIsGreaterThanAvailableStock(this));
 
         var adjustment = Adjustment.Create(
-            new AdjustmentId(Guid.NewGuid()),
+            new AdjustmentId(GuidV7.NewGuid()),
             Id,
             null,
             new Quantity(normalizedQuantity.Value * -1),
@@ -90,16 +87,16 @@ public sealed class Inventory : EntityBase
         return adjustment.Failed ? Result.Failure(adjustment.Errors) : PlaceAdjustment(adjustment.Value!);
     }
 
-    internal Result<Inventory> PlaceAdjustment(Adjustment adjustment)
+    internal Result<Inventory> PlaceAdjustment(Adjustment newAdjustment)
     {
-        ArgumentNullException.ThrowIfNull(adjustment);
+        ArgumentNullException.ThrowIfNull(newAdjustment);
 
-        var quantity = new Quantity(Quantity.Value + adjustment.Quantity.Value);
+        var quantity = new Quantity(Quantity.Value + newAdjustment.Quantity.Value);
 
-        var inventoryResult = new InventoryBuilder()
+        var inventoryResult = InventoryBuilder
+            .Start()
             .WithInventoryToClone(this)
-            .WithAdjustment(Adjustments)
-            .WithAdjustment(adjustment)
+            .WithAdjustment(newAdjustment)
             .WithQuantity(quantity)
             .Build();
 
@@ -108,42 +105,40 @@ public sealed class Inventory : EntityBase
 
         var inventory = inventoryResult.Value!;
         if (inventory.Quantity.Value is 0)
-            inventory.RaiseDomainEvent(new InventoryStockReachedZeroEvent(this, ProductId));
+            inventory.RaiseDomainEvent(new InventoryStockReachedZeroEvent(inventory, ProductId));
 
         return inventory;
     }
 
-    internal Result<Inventory> PlaceReservation(Reservation reservation)
+    internal Result<Inventory> PlaceReservation(Reservation newReservation)
     {
-        ArgumentNullException.ThrowIfNull(reservation);
+        ArgumentNullException.ThrowIfNull(newReservation);
 
-        return new InventoryBuilder()
-            .WithInventoryToClone(this)
-            .WithReservations(Reservations)
-            .WithReservations(reservation)
-            .Build();
+        return InventoryBuilder.Start().WithInventoryToClone(this).WithReservation(newReservation).Build();
     }
 
     internal Result<Inventory> AlterReservationStatus(ReservationId id, ReservationStatus status)
     {
-        var reservation = Reservations.FirstOrDefault(r => r.Id == id);
+        var oldReservation = Reservations.FirstOrDefault(r => r.Id == id);
 
-        if (reservation is null)
+        if (oldReservation is null)
             return Result.Failure(InventoryError.Inv004ReservationWithIdNotFound(id));
 
         var newReservation = Reservation.Create(
-            reservation.Id,
-            reservation.InventoryId,
-            reservation.OrderItemId,
-            reservation.Quantity,
+            oldReservation.Id,
+            oldReservation.InventoryId,
+            oldReservation.OrderItemId,
+            oldReservation.Quantity,
             status
         );
 
         return newReservation.Failed
             ? Result.Failure(newReservation.Errors)
-            : new InventoryBuilder()
+            : InventoryBuilder
+                .Start()
                 .WithInventoryToClone(this)
-                .WithReservations([.. Reservations.Except([reservation]), newReservation.Value!])
+                .RemoveReservation(oldReservation)
+                .WithReservation(newReservation)
                 .Build();
     }
 }

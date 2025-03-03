@@ -18,19 +18,16 @@ public static class CreateProductEndpoint
 
     public sealed class Endpoint : Endpoint<Request, Response>
     {
-        private readonly IDateTimeService _dateTime;
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
         private readonly OrderPlacementService _orderPlacement;
 
         public Endpoint(
-            IDateTimeService dateTime,
             IOrderRepository orderRepository,
             IProductRepository productRepository,
             OrderPlacementService orderPlacement
         )
         {
-            _dateTime = dateTime;
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _orderPlacement = orderPlacement;
@@ -61,7 +58,7 @@ public static class CreateProductEndpoint
             if (productsNotFoundErrors.Count > 0)
                 await this.SendErrorResponseIfResultFailedAsync(Result.Failure(productsNotFoundErrors), ct);
 
-            var model = new OrderPlacementModel(addOrderItems, req.CustomerEmail, _dateTime.UtcNow.DateTime);
+            var model = new OrderPlacementModel(addOrderItems, req.CustomerEmail);
             var placeOrder = _orderPlacement.Place(model);
 
             await this.SendErrorResponseIfResultFailedAsync(placeOrder, ct);

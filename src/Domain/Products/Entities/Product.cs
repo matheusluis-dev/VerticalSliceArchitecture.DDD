@@ -19,7 +19,7 @@ public sealed class Product : EntityBase
     {
         return new Product
         {
-            Id = id ?? new ProductId(Guid.NewGuid()),
+            Id = id ?? new ProductId(GuidV7.NewGuid()),
             Inventory = inventory,
             Name = name,
         };

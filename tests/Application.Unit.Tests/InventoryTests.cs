@@ -15,7 +15,12 @@ public sealed class InventoryTests
     {
         // Arrange
         var product = Product.Create(new ProductName("name")).Value!;
-        var inventory = Inventory.Create(new InventoryId(Guid.NewGuid()), product.Id, new Quantity(1), [], []).Value;
+        var inventory = InventoryBuilder
+            .Start()
+            .WithId(new InventoryId(GuidV7.NewGuid()))
+            .WithProductId(product.Id)
+            .WithQuantity(new Quantity(1))
+            .Build();
         var productWithInventory = Product.Create(product.Name, product.Id, inventory);
 
         var sut = new CreateInventoryService();
@@ -47,7 +52,7 @@ public sealed class InventoryTests
     public void Can_not_create_inventory_without_product()
     {
         // Arrange
-        var builder = new InventoryBuilder().WithQuantity(new Quantity(1));
+        var builder = InventoryBuilder.Start().WithNewId().WithQuantity(new Quantity(1));
 
         // Act
         var result = builder.Build();

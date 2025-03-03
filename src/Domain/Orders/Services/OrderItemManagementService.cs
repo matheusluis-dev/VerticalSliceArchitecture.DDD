@@ -23,7 +23,7 @@ public sealed class OrderItemManagementService
             return Result.Failure(OrderError.Ord007ProductHasNotEnoughStockForPlacingTheOrder(product));
 
         return new OrderItem(
-            new OrderItemId(Guid.NewGuid()),
+            new OrderItemId(GuidV7.NewGuid()),
             order.Id,
             product,
             null,

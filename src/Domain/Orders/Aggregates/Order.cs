@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Domain.Orders.Entities;
 using Domain.Orders.Enums;
 using Domain.Orders.Errors;
@@ -9,7 +10,7 @@ namespace Domain.Orders.Aggregates;
 public sealed class Order : EntityBase
 {
     public required OrderId Id { get; init; }
-    public required IReadOnlyList<OrderItem> OrderItems { get; init; }
+    public required IImmutableList<OrderItem> OrderItems { get; init; }
     public required OrderStatus Status { get; init; }
     public required Email CustomerEmail { get; init; }
     public required DateTime CreatedDate { get; init; }
@@ -21,7 +22,7 @@ public sealed class Order : EntityBase
 
     internal static Result<Order> Create(
         OrderId id,
-        IEnumerable<OrderItem>? items,
+        IImmutableList<OrderItem> items,
         OrderStatus status,
         Email customerEmail,
         DateTime? createdDate,
@@ -36,10 +37,10 @@ public sealed class Order : EntityBase
         return new Order(domainEvents?.ToList())
         {
             Id = id,
-            OrderItems = (items?.ToList() ?? []).AsReadOnly(),
+            OrderItems = items,
             Status = status,
-            CustomerEmail = customerEmail!,
-            CreatedDate = createdDate!.Value,
+            CustomerEmail = customerEmail,
+            CreatedDate = createdDate.Value,
             PaidDate = paidDate,
             CancelledDate = cancelledDate,
         };
@@ -55,7 +56,8 @@ public sealed class Order : EntityBase
         if (Status is OrderStatus.PAID)
             return Result.Failure(OrderError.Ord003OrderAlreadyPaid);
 
-        var order = new OrderBuilder()
+        var order = OrderBuilder
+            .Create()
             .WithOrderToClone(this)
             .WithStatus(OrderStatus.PAID)
             .WithPaidDate(dateTime.UtcNow.DateTime)
@@ -76,7 +78,8 @@ public sealed class Order : EntityBase
         if (Status is not OrderStatus.PENDING)
             return Result.Failure(OrderError.Ord004OrderMustBePending);
 
-        var order = new OrderBuilder()
+        var order = OrderBuilder
+            .Create()
             .WithOrderToClone(this)
             .WithStatus(OrderStatus.CANCELLED)
             .WithPaidDate(dateTime.UtcNow.DateTime)
@@ -102,6 +105,6 @@ public sealed class Order : EntityBase
 
         var item = createItem.Value!;
 
-        return new OrderBuilder().WithOrderToClone(this).WithOrderItems(OrderItems).WithOrderItems(item).Build();
+        return OrderBuilder.Create().WithOrderToClone(this).WithOrderItem(item).Build();
     }
 }

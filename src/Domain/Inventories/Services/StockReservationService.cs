@@ -21,7 +21,7 @@ public sealed partial class StockReservationService
         }
 
         var reservation = Reservation.Create(
-            new ReservationId(Guid.NewGuid()),
+            new ReservationId(GuidV7.NewGuid()),
             inventory.Id,
             orderItemId,
             quantity,

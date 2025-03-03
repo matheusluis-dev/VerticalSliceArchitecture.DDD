@@ -14,13 +14,14 @@ internal static class InventoryMapper
     {
         ArgumentNullException.ThrowIfNull(table);
 
-        return Inventory.Create(
-            table.Id,
-            table.ProductId,
-            table.Quantity,
-            table.Adjustments.Select(AdjustmentMapper.ToEntity),
-            table.Reservations.Select(ReservationMapper.ToEntity)
-        );
+        return InventoryBuilder
+            .Start()
+            .WithId(table.Id)
+            .WithProductId(table.ProductId)
+            .WithQuantity(table.Quantity)
+            .WithAdjustments(table.Adjustments.Select(AdjustmentMapper.ToEntity))
+            .WithReservations(table.Reservations.Select(ReservationMapper.ToEntity))
+            .Build();
     }
 
     internal static InventoryTable ToTable(Inventory entity)

@@ -9,7 +9,7 @@ public sealed class Quantity : ValueObject
 
     public Quantity(int value)
     {
-        if (value < 0)
+        if (value <= 0)
             throw QuantityException.QuantityZeroOrLesser();
 
         Value = value;

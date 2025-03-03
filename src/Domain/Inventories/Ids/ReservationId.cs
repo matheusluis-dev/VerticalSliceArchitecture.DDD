@@ -1,7 +1,7 @@
 namespace Domain.Inventories.Ids;
 
-public sealed class ReservationId : TypedId<Guid>
+public sealed class ReservationId : TypedId<GuidV7>
 {
-    public ReservationId(Guid value)
+    public ReservationId(GuidV7 value)
         : base(value) { }
 }
