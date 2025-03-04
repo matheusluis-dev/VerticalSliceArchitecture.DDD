@@ -1,7 +1,7 @@
 namespace Domain.Products.Ids;
 
-public sealed class InventoryId : TypedId<GuidV7>
+public sealed class InventoryId : TypedId<Guid>
 {
-    public InventoryId(GuidV7 value)
+    public InventoryId(Guid value)
         : base(value) { }
 }

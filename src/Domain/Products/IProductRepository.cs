@@ -5,13 +5,11 @@ namespace Domain.Products;
 
 public interface IProductRepository
 {
-    Task<IPagedList<Product>> GetAllAsync(int page, int size, CancellationToken ct = default);
+    Task<Product?> FindProductByIdAsync(ProductId id, CancellationToken ct = default);
 
-    Task<Result<Product>> FindProductByIdAsync(ProductId id, CancellationToken ct = default);
+    Task<Product?> FindProductByNameAsync(ProductName name, CancellationToken ct = default);
 
-    Task<Result<Product>> FindProductByNameAsync(ProductName name, CancellationToken ct = default);
-
-    Task<Result<Product>> FindAnotherProductByNameAsync(ProductId id, ProductName name, CancellationToken ct = default);
+    Task<Product?> FindAnotherProductByNameAsync(ProductId id, ProductName name, CancellationToken ct = default);
 
     Task AddAsync(Product product, CancellationToken ct = default);
 

@@ -1,5 +1,4 @@
 global using Application.Extensions;
-global using Application.Models;
 global using Domain.Common;
 global using Domain.Common.Contracts;
 global using Domain.Common.DomainEvents;

@@ -28,54 +28,55 @@ public sealed class Result
 }
 
 [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates")]
-public sealed class Result<T>
-    where T : class
+[SuppressMessage("Naming", "CA1720:Identifier contains type name")]
+public sealed class Result<TObject>
+    where TObject : class
 {
     public bool Succeed => _result.Succeed;
     public bool Failed => _result.Failed;
     public IEnumerable<Error> Errors => _result.Errors;
-    public T? Value { get; }
+    public TObject? Object { get; }
 
     private readonly Result _result;
 
-    private Result(T? value, bool succeed, params IEnumerable<Error> errors)
+    private Result(TObject? @object, bool succeed, params IEnumerable<Error> errors)
     {
-        Value = value;
+        Object = @object;
         _result = succeed ? Result.Success() : Result.Failure(errors);
     }
 
-    private static Result<T> Success(T value)
+    private static Result<TObject> Success(TObject value)
     {
-        return new Result<T>(value, true, Error.None);
+        return new Result<TObject>(value, true, Error.None);
     }
 
-    private static Result<T> Failure(params IEnumerable<Error> errors)
+    private static Result<TObject> Failure(params IEnumerable<Error> errors)
     {
-        return new Result<T>(null, false, errors);
+        return new Result<TObject>(null, false, errors);
     }
 
-    public static implicit operator Result(Result<T> someValue)
+    public static implicit operator Result(Result<TObject> someValue)
     {
         ArgumentNullException.ThrowIfNull(someValue);
 
         return someValue._result;
     }
 
-    public static implicit operator T(Result<T> someValue)
+    public static implicit operator TObject(Result<TObject> someValue)
     {
         ArgumentNullException.ThrowIfNull(someValue);
 
-        return someValue.Value!;
+        return someValue.Object!;
     }
 
-    public static implicit operator Result<T>(T someValue)
+    public static implicit operator Result<TObject>(TObject someValue)
     {
         ArgumentNullException.ThrowIfNull(someValue);
 
         return Success(someValue);
     }
 
-    public static implicit operator Result<T>(Result someValue)
+    public static implicit operator Result<TObject>(Result someValue)
     {
         ArgumentNullException.ThrowIfNull(someValue);
 

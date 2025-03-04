@@ -1,4 +1,3 @@
-global using Domain.Common;
 global using Domain.Common.Contracts;
 global using Domain.Common.DomainEvents;
 global using Domain.Common.Entities;

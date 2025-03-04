@@ -11,7 +11,7 @@ public sealed class CreateAdjustmentService
         var (orderItemId, reservation) = model;
 
         return Adjustment.Create(
-            new AdjustmentId(GuidV7.NewGuid()),
+            new AdjustmentId(Guid.NewGuid()),
             reservation.InventoryId,
             orderItemId,
             reservation.Quantity,

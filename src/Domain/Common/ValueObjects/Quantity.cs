@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace Domain.Common.ValueObjects;
 
 public sealed class Quantity : ValueObject
@@ -18,6 +20,11 @@ public sealed class Quantity : ValueObject
     protected override IEnumerable<object> GetAtomicValues()
     {
         yield return Value;
+    }
+
+    public override string ToString()
+    {
+        return Value.ToString(CultureInfo.CurrentCulture);
     }
 }
 

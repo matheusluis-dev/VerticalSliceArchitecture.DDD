@@ -40,4 +40,9 @@
     </PackageReference>
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="Features\Products\Handlers\" />
+  </ItemGroup>
+
 </Project>

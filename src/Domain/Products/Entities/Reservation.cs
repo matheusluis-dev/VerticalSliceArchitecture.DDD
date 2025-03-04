@@ -5,11 +5,11 @@ namespace Domain.Products.Entities;
 
 public sealed class Reservation : IChildEntity
 {
-    public ReservationId Id { get; private init; } = null!;
-    public InventoryId InventoryId { get; private init; } = null!;
-    public OrderItemId OrderItemId { get; private init; } = null!;
-    public Quantity Quantity { get; private init; } = null!;
-    public ReservationStatus Status { get; private init; }
+    public ReservationId Id { get; init; } = null!;
+    public InventoryId InventoryId { get; init; } = null!;
+    public OrderItemId OrderItemId { get; init; } = null!;
+    public Quantity Quantity { get; init; } = null!;
+    public ReservationStatus Status { get; init; }
 
     private Reservation() { }
 

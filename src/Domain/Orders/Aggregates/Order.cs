@@ -66,7 +66,7 @@ public sealed class Order : AggregateBase
         if (order.Failed)
             return Result.Failure(order.Errors);
 
-        RaiseDomainEvent(new OrderPaidEvent(order.Value!));
+        RaiseDomainEvent(new OrderPaidEvent(order.Object!));
 
         return order;
     }
@@ -88,7 +88,7 @@ public sealed class Order : AggregateBase
         if (order.Failed)
             return order;
 
-        order.Value!.RaiseDomainEvent(new OrderCancelledEvent(order.Value!));
+        order.Object!.RaiseDomainEvent(new OrderCancelledEvent(order.Object!));
 
         return order;
     }
@@ -103,7 +103,7 @@ public sealed class Order : AggregateBase
         if (createItem.Failed)
             return Result.Failure(createItem.Errors);
 
-        var item = createItem.Value!;
+        var item = createItem.Object!;
 
         return OrderBuilder.Create().WithOrderToClone(this).WithOrderItem(item).Build();
     }

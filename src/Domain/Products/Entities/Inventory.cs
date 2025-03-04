@@ -1,7 +1,4 @@
 using System.Collections.Immutable;
-using Domain.Products.Enums;
-using Domain.Products.Errors;
-using Domain.Products.Events;
 
 namespace Domain.Products.Entities;
 
@@ -18,7 +15,7 @@ public sealed class Inventory : IChildEntity
 
     private Inventory() { }
 
-    internal static Result<Inventory> Create(
+    public static Result<Inventory> Create(
         InventoryId id,
         ProductId productId,
         Quantity quantity,

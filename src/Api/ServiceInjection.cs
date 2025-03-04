@@ -1,6 +1,8 @@
 using System.Text.Json.Serialization;
 using Application;
+using Application.Features.Products.Services;
 using Domain.Common.Contracts;
+using Domain.Common.Ids;
 using Domain.Orders;
 using Domain.Orders.Services;
 using Domain.Products;
@@ -23,18 +25,23 @@ public static class ServiceInjection
     public static IServiceCollection AddConfiguredFastEndpoints(this IServiceCollection services)
     {
         services.AddFastEndpoints(options => options.SourceGeneratorDiscoveredTypes = DiscoveredTypes.All!);
-
         services.SwaggerDocument();
 
         services.AddJobQueues<JobRecord, JobStorage>();
 
+        services.AddSingleton(typeof(IRequestBinder<>), typeof(TypedIdRequestBinder<>));
+
         services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
-            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter())
-        );
+        {
+            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            options.SerializerOptions.Converters.Add(new TypedIdConverterFactory());
+        });
 
         services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
-            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
-        );
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            options.JsonSerializerOptions.Converters.Add(new TypedIdConverterFactory());
+        });
 
         return services;
     }
@@ -94,32 +101,30 @@ public static class ServiceInjection
 
         void AddInfrastructureServices()
         {
-            services.AddTransient<IDateTimeService, DateTimeService>();
-            services.AddSingleton<IEmailService, EmailService>();
+            services.AddSingleton<IDateTimeService, DateTimeService>();
+            services.AddScoped<IEmailService, EmailService>();
         }
 
         void AddOrder()
         {
-            services.AddSingleton<OrderPlacementService>();
-            services.AddSingleton<OrderItemManagementService>();
+            services.AddScoped<OrderPlacementService>();
+            services.AddScoped<OrderItemManagementService>();
 
             services.AddScoped<IOrderRepository, OrderRepository>();
         }
 
         void AddInventory()
         {
-            services.AddSingleton<CreateAdjustmentService>();
-            services.AddSingleton<StockReleaseService>();
-            services.AddSingleton<StockReservationService>();
-            services.AddSingleton<CreateInventoryService>();
-
-            services.AddScoped<IInventoryRepository, InventoryRepository>();
+            services.AddScoped<CreateAdjustmentService>();
+            services.AddScoped<StockReleaseService>();
+            services.AddScoped<StockReservationService>();
         }
 
         void AddProduct()
         {
-            services.AddSingleton<CanDeleteProductService>();
             services.AddScoped<IProductRepository, ProductRepository>();
+
+            services.AddScoped<GetProductForOrderItemsService>();
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Domain.Products.Aggregate;
-using Domain.Products.Entities;
 
 namespace Domain.Orders.Errors;
 
@@ -21,7 +20,7 @@ internal static class OrderError
         return new Error(
             "ORD007",
             $"Product '{product.Id}' has not enough stock for placing the order "
-                + $"({product.Inventory!.GetAvailableStock().Value})"
+                + $"({product.GetAvailableStock().Object})"
         );
     }
 }

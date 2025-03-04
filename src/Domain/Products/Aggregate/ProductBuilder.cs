@@ -10,11 +10,13 @@ public sealed class ProductBuilder : IProductBuilder
 
     private ProductId? _id;
     private Quantity? _quantity;
-    private ProductName? _name;
     private Inventory? _inventory;
+    private ProductName? _name;
     private IImmutableList<Adjustment> _adjustmentsToAdd = [];
     private IImmutableList<Reservation> _reservationsToAdd = [];
     private IImmutableList<ReservationId> _reservationsToRemove = [];
+
+    private bool _createNewInventory;
 
     private ProductBuilder() { }
 
@@ -25,31 +27,45 @@ public sealed class ProductBuilder : IProductBuilder
 
     public Result<Product> Build()
     {
-        ArgumentNullException.ThrowIfNull(_name);
-        ArgumentNullException.ThrowIfNull(_quantity);
-
         return _productToClone is null ? New() : Clone();
 
         Result<Product> New()
         {
-            return Product.Create(_id ?? new ProductId(GuidV7.NewGuid()), _inventory, _name, domainEvents: null);
+            return Product.Create(
+                _id ?? new ProductId(Guid.NewGuid()),
+                _inventory,
+                _name ?? throw new ArgumentNullException(nameof(_name)),
+                domainEvents: null
+            );
         }
 
         Result<Product> Clone()
         {
+            var adjustments = _productToClone.GetAdjustments().AddRange(_adjustmentsToAdd);
+
+            var reservations = _productToClone
+                .GetReservations()
+                .AddRange(_reservationsToAdd.Where(r => !_reservationsToRemove.Contains(r.Id)));
+
             Inventory? inventory = null;
             if (_productToClone.HasInventory)
             {
-                var adjustments = _productToClone.Inventory!.Adjustments.AddRange(_adjustmentsToAdd);
-
-                var reservations = _productToClone.Inventory.Reservations.AddRange(
-                    _reservationsToAdd.Where(r => !_reservationsToRemove.Contains(r.Id))
-                );
-
                 inventory = Inventory.Create(
-                    _productToClone.Inventory.Id,
+                    _productToClone.InventoryId!,
                     _productToClone.Id,
-                    _quantity,
+                    _quantity
+                        ?? _productToClone.Inventory?.Quantity
+                        ?? throw new ArgumentNullException(nameof(_quantity)),
+                    adjustments,
+                    reservations
+                );
+            }
+            else if (_createNewInventory)
+            {
+                inventory = Inventory.Create(
+                    new InventoryId(Guid.NewGuid()),
+                    _productToClone.Id,
+                    _quantity ?? throw new ArgumentNullException(nameof(_quantity)),
                     adjustments,
                     reservations
                 );
@@ -72,13 +88,25 @@ public sealed class ProductBuilder : IProductBuilder
 
     public IProductBuilderWithSequence WithNewId()
     {
-        _id = new ProductId(GuidV7.NewGuid());
+        _id = new ProductId(Guid.NewGuid());
         return this;
     }
 
     public IProductBuilderWithSequence WithId(ProductId id)
     {
         _id = id;
+        return this;
+    }
+
+    public IProductBuilderWithSequence WithName(ProductName name)
+    {
+        _name = name;
+        return this;
+    }
+
+    public IProductBuilderWithSequence WithInventory(Inventory inventory)
+    {
+        _inventory = inventory;
         return this;
     }
 
@@ -112,6 +140,12 @@ public sealed class ProductBuilder : IProductBuilder
         return this;
     }
 
+    public IProductBuilderWithPropertiesCloning WithNewInventory()
+    {
+        _createNewInventory = true;
+        return this;
+    }
+
     public IProductBuilderWithPropertiesCloning RemoveReservation(Reservation reservation)
     {
         ArgumentNullException.ThrowIfNull(reservation);
@@ -121,10 +155,7 @@ public sealed class ProductBuilder : IProductBuilder
     }
 }
 
-public interface IProductBuilder
-    : IProductBuilderStart,
-        IProductBuilderWithSequence,
-        IProductBuilderWithPropertiesCloning;
+public interface IProductBuilder : IProductBuilderStart, IProductBuilderWithPropertiesCloning;
 
 public interface IProductBuilderStart : IProductBuilderClone, IProductBuilderWithId;
 
@@ -141,6 +172,8 @@ public interface IProductBuilderWithId
 
 public interface IProductBuilderWithProperties
 {
+    IProductBuilderWithSequence WithName(ProductName name);
+    IProductBuilderWithSequence WithInventory(Inventory inventory);
     IProductBuilderWithSequence WithQuantity(Quantity quantity);
     IProductBuilderWithSequence WithAdjustment(Adjustment adjustment);
     IProductBuilderWithSequence WithAdjustments(IEnumerable<Adjustment> adjustments);
@@ -148,8 +181,9 @@ public interface IProductBuilderWithProperties
     IProductBuilderWithSequence WithReservations(IEnumerable<Reservation> reservations);
 }
 
-public interface IProductBuilderWithPropertiesCloning : IProductBuilderWithProperties
+public interface IProductBuilderWithPropertiesCloning : IProductBuilderWithSequence
 {
+    IProductBuilderWithPropertiesCloning WithNewInventory();
     IProductBuilderWithPropertiesCloning RemoveReservation(Reservation reservation);
 }
 

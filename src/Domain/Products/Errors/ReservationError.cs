@@ -1,4 +1,4 @@
-﻿using Domain.Products.Entities;
+﻿using Domain.Products.Aggregate;
 
 namespace Domain.Products.Errors;
 
@@ -7,15 +7,12 @@ internal static class ReservationError
     internal static Error Res001InventoryIdMustBeInformed => new("RES001", "Inventory ID must be informed");
     internal static Error Res002OrderItemIdMustBeInformed => new("RES002", "Order Item ID must be informed");
 
-    internal static Error Res003ReservationQuantityIsGreaterThanTheAvailableStock(
-        Inventory inventory,
-        Quantity quantity
-    )
+    internal static Error Res003ReservationQuantityIsGreaterThanTheAvailableStock(Product product, Quantity quantity)
     {
         return new Error(
             "RES003",
             $"Reservation quantity ({quantity.Value}) is greater than the available stock "
-                + $"({inventory.GetAvailableStock().Value})"
+                + $"({product.GetAvailableStock().Object})"
         );
     }
 

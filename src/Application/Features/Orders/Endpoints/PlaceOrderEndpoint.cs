@@ -47,12 +47,14 @@ public static class CreateProductEndpoint
             var productsNotFoundErrors = new List<Error>();
             foreach (var item in req.Items)
             {
-                var findProductResult = await _productRepository.FindProductByIdAsync(item.ProductId, ct);
-
-                if (findProductResult.Failed)
+                var product = await _productRepository.FindProductByIdAsync(item.ProductId, ct);
+                if (product is null)
+                {
                     productsNotFoundErrors.Add(new Error("_", $"Product with id {item.ProductId} not found"));
+                    continue;
+                }
 
-                addOrderItems.Add(new OrderItemPlacementModel(findProductResult, item.Quantity, item.UnitPrice));
+                addOrderItems.Add(new OrderItemPlacementModel(product, item.Quantity, item.UnitPrice));
             }
 
             if (productsNotFoundErrors.Count > 0)
@@ -63,7 +65,7 @@ public static class CreateProductEndpoint
 
             await this.SendErrorResponseIfResultFailedAsync(placeOrder, ct);
 
-            var order = placeOrder.Value!;
+            var order = placeOrder.Object!;
 
             await _orderRepository.CreateAsync(order, ct);
             await _orderRepository.SaveChangesAsync(ct);

@@ -58,3 +58,4 @@ public abstract class TypedId<TPrimitive> : IEquatable<TypedId<TPrimitive>>
         return Value.ToString()!;
     }
 }
+#nullable restore

@@ -24,7 +24,7 @@ public static class CancelOrderEndpoint
 
         public override void Configure()
         {
-            Post("orders/cancel/{id}");
+            Post("orders/{id}/cancel");
             AllowAnonymous();
         }
 
@@ -35,11 +35,11 @@ public static class CancelOrderEndpoint
             if (findOrderResult.Failed)
                 await SendNotFoundAsync(ct);
 
-            var cancelOrder = findOrderResult.Value!.Cancel(_dateTime);
+            var cancelOrder = findOrderResult.Object!.Cancel(_dateTime);
 
             await this.SendErrorResponseIfResultFailedAsync(cancelOrder, ct);
 
-            var orderCancelled = cancelOrder.Value!;
+            var orderCancelled = cancelOrder.Object!;
 
             _orderRepository.Update(orderCancelled);
             await _orderRepository.SaveChangesAsync(ct);

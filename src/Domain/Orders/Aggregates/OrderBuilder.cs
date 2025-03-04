@@ -35,7 +35,7 @@ public sealed class OrderBuilder : IOrderBuilder
             ArgumentNullException.ThrowIfNull(_customerEmail);
 
             return Order.Create(
-                _id ?? new OrderId(GuidV7.NewGuid()),
+                _id ?? new OrderId(Guid.NewGuid()),
                 _orderItemsToAdd,
                 _status.Value,
                 _customerEmail,
@@ -71,7 +71,7 @@ public sealed class OrderBuilder : IOrderBuilder
 
     public IOrderBuilderWithSequence WithNewId()
     {
-        _id = new OrderId(GuidV7.NewGuid());
+        _id = new OrderId(Guid.NewGuid());
         return this;
     }
 

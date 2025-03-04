@@ -1,10 +1,11 @@
+using Domain.Products.Aggregate;
 using Domain.Products.Entities;
 using Domain.Products.Enums;
 using Domain.Products.Errors;
 
 namespace Domain.Products.Services;
 
-public sealed record ReleaseStockReservationModel(Inventory Inventory, OrderItemId OrderItemId)
+public sealed record ReleaseStockReservationModel(Product Product, OrderItemId OrderItemId)
 {
     public CreateForOrderItemReservationModel ToCreateForOrderItemReservationModel(Reservation reservation)
     {
@@ -21,13 +22,13 @@ public sealed class StockReleaseService
         _createAdjustment = createAdjustment;
     }
 
-    public Result<Inventory> ReleaseStockReservation(ReleaseStockReservationModel model)
+    public Result<Product> ReleaseStockReservation(ReleaseStockReservationModel model)
     {
         ArgumentNullException.ThrowIfNull(model);
 
-        var (inventory, orderItemId) = model;
+        var (product, orderItemId) = model;
 
-        var reservation = inventory.Reservations.FirstOrDefault(r => r.OrderItemId == orderItemId);
+        var reservation = product.GetReservations().FirstOrDefault(r => r.OrderItemId == orderItemId);
 
         if (reservation is null)
             return Result.Failure(InventoryError.Inv005ReservationWithOrderItemIdNotFound(orderItemId));
@@ -45,13 +46,12 @@ public sealed class StockReleaseService
         if (adjustment.Failed)
             return Result.Failure(adjustment.Errors);
 
-        var adjustmentResult = inventory.PlaceAdjustment(adjustment.Value!);
+        var adjustmentResult = product.PlaceAdjustment(adjustment.Object!);
 
         if (adjustmentResult.Failed)
             return Result.Failure(adjustmentResult.Errors);
 
-        var inventoryAfterAdjustment = adjustmentResult.Value!;
-
+        var inventoryAfterAdjustment = adjustmentResult.Object!;
         return inventoryAfterAdjustment.AlterReservationStatus(reservation.Id, ReservationStatus.APPLIED);
     }
 }

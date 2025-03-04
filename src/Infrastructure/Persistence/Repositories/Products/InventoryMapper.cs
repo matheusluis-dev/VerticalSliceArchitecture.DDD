@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using Domain.Products.Entities;
 using Infrastructure.Persistence.Tables;
 
@@ -14,14 +15,13 @@ internal static class InventoryMapper
     {
         ArgumentNullException.ThrowIfNull(table);
 
-        return InventoryBuilder
-            .Start()
-            .WithId(table.Id)
-            .WithProductId(table.ProductId)
-            .WithQuantity(table.Quantity)
-            .WithAdjustments(table.Adjustments.Select(AdjustmentMapper.ToEntity))
-            .WithReservations(table.Reservations.Select(ReservationMapper.ToEntity))
-            .Build();
+        return Inventory.Create(
+            table.Id,
+            table.ProductId,
+            table.Quantity,
+            table.Adjustments.Select(AdjustmentMapper.ToEntity).ToImmutableList(),
+            table.Reservations.Select(ReservationMapper.ToEntity).ToImmutableList()
+        );
     }
 
     internal static InventoryTable ToTable(Inventory entity)

@@ -11,10 +11,12 @@ public sealed class Product : AggregateBase
 {
     public required ProductId Id { get; init; }
     public required ProductName Name { get; init; }
+    public required InventoryId? InventoryId { get; init; }
 
-    private readonly Inventory? _inventory;
+    public Inventory? Inventory { get; private init; }
 
-    public bool HasInventory => _inventory is not null;
+    public bool HasInventory => Inventory is not null;
+    public bool CanBeDeleted => !HasInventory || (GetAdjustments().Count is 0 && GetReservations().Count is 0);
 
     private Product(IImmutableList<IDomainEvent>? domainEvents = null)
         : base(domainEvents ?? []) { }
@@ -29,8 +31,10 @@ public sealed class Product : AggregateBase
         return new Product(domainEvents)
         {
             Id = id,
-            _inventory = inventory,
             Name = name,
+
+            InventoryId = inventory?.Id,
+            Inventory = inventory,
         };
     }
 
@@ -39,28 +43,45 @@ public sealed class Product : AggregateBase
         if (name == Name)
             return Result.Failure(ProductError.Prd001CanNotUpdateNameToTheSameName);
 
-        return new Product
-        {
-            Id = Id,
-            Name = name,
-            _inventory = _inventory,
-        };
+        return ProductBuilder.Start().WithProductToClone(this).WithName(name).Build();
     }
 
-    public Quantity GetAvailableStock()
+    public Result<Product> CreateInventory(Quantity quantity)
     {
-        if (!HasInventory)
-            throw new Exception("Inventory is null");
+        if (HasInventory)
+            return Result.Failure(ProductError.Prd003AlreadyHaveInventory);
 
-        return new Quantity(_inventory!.Quantity.Value - GetReservedStock().Value);
+        return ProductBuilder.Start().WithProductToClone(this).WithNewInventory().WithQuantity(quantity).Build();
     }
 
-    private Quantity GetReservedStock()
+    internal IImmutableList<Adjustment> GetAdjustments()
+    {
+        return Inventory?.Adjustments ?? ImmutableList<Adjustment>.Empty;
+    }
+
+    internal IImmutableList<Reservation> GetReservations()
+    {
+        return Inventory?.Reservations ?? ImmutableList<Reservation>.Empty;
+    }
+
+    public Result<Quantity> GetAvailableStock()
     {
         if (!HasInventory)
-            throw new Exception("Inventory is null");
+            return Result.Failure(ProductError.Prd002DoesNotHaveInventory);
 
-        var sum = _inventory!.Reservations.Sum(reservation => reservation.Quantity.Value);
+        var getReservedStock = GetReservedStock();
+        if (getReservedStock.Failed)
+            return getReservedStock;
+
+        return new Quantity(Inventory!.Quantity.Value - getReservedStock.Object!.Value);
+    }
+
+    private Result<Quantity> GetReservedStock()
+    {
+        if (!HasInventory)
+            return Result.Failure(ProductError.Prd002DoesNotHaveInventory);
+
+        var sum = Inventory!.Reservations.Sum(reservation => reservation.Quantity.Value);
 
         return new Quantity(sum);
     }
@@ -70,26 +91,26 @@ public sealed class Product : AggregateBase
         if (!HasInventory)
             return true;
 
-        return _inventory!.Quantity.Value >= quantity.Value;
+        return Inventory!.Quantity.Value >= quantity.Value;
     }
 
     public Result<Product> IncreaseStock(Quantity quantity, string reason)
     {
         if (!HasInventory)
-            throw new Exception("Inventory is null");
+            return Result.Failure(ProductError.Prd002DoesNotHaveInventory);
 
         ArgumentNullException.ThrowIfNull(quantity);
         ArgumentNullException.ThrowIfNull(reason);
 
-        var adjustment = Adjustment.Create(new AdjustmentId(GuidV7.NewGuid()), _inventory!.Id, null, quantity, reason);
+        var adjustment = Adjustment.Create(new AdjustmentId(Guid.NewGuid()), Inventory!.Id, null, quantity, reason);
 
-        return adjustment.Failed ? Result.Failure(adjustment.Errors) : PlaceAdjustment(adjustment.Value!);
+        return adjustment.Failed ? Result.Failure(adjustment.Errors) : PlaceAdjustment(adjustment.Object!);
     }
 
     public Result<Product> DecreaseStock(Quantity quantity, string reason)
     {
         if (!HasInventory)
-            throw new Exception("Inventory is null");
+            return Result.Failure(ProductError.Prd002DoesNotHaveInventory);
 
         ArgumentNullException.ThrowIfNull(quantity);
         ArgumentNullException.ThrowIfNull(reason);
@@ -97,27 +118,27 @@ public sealed class Product : AggregateBase
         var normalizedQuantity = new Quantity(quantity.Value < 0 ? quantity.Value * -1 : quantity.Value);
 
         if (!HasEnoughStockToDecrease(normalizedQuantity))
-            return Result.Failure(InventoryError.Inv003QuantityToDecreaseIsGreaterThanAvailableStock(_inventory!));
+            return Result.Failure(InventoryError.Inv003QuantityToDecreaseIsGreaterThanAvailableStock(this));
 
         var adjustment = Adjustment.Create(
-            new AdjustmentId(GuidV7.NewGuid()),
-            _inventory!.Id,
+            new AdjustmentId(Guid.NewGuid()),
+            Inventory!.Id,
             null,
             new Quantity(normalizedQuantity.Value * -1),
             reason
         );
 
-        return adjustment.Failed ? Result.Failure(adjustment.Errors) : PlaceAdjustment(adjustment.Value!);
+        return adjustment.Failed ? Result.Failure(adjustment.Errors) : PlaceAdjustment(adjustment.Object!);
     }
 
     internal Result<Product> PlaceAdjustment(Adjustment newAdjustment)
     {
         if (!HasInventory)
-            throw new Exception("Inventory is null");
+            return Result.Failure(ProductError.Prd002DoesNotHaveInventory);
 
         ArgumentNullException.ThrowIfNull(newAdjustment);
 
-        var quantity = new Quantity(_inventory!.Quantity.Value + newAdjustment.Quantity.Value);
+        var quantity = new Quantity(Inventory!.Quantity.Value + newAdjustment.Quantity.Value);
 
         var productResult = ProductBuilder
             .Start()
@@ -129,9 +150,9 @@ public sealed class Product : AggregateBase
         if (productResult.Failed)
             return Result.Failure(productResult.Errors);
 
-        var product = productResult.Value!;
-        if (product._inventory!.Quantity.Value is 0)
-            product.RaiseDomainEvent(new InventoryStockReachedZeroEvent(product._inventory, product.Id));
+        var product = productResult.Object!;
+        if (product.Inventory!.Quantity.Value is 0)
+            product.RaiseDomainEvent(new InventoryStockReachedZeroEvent(product.Inventory, product.Id));
 
         return product;
     }
@@ -139,7 +160,7 @@ public sealed class Product : AggregateBase
     internal Result<Product> PlaceReservation(Reservation newReservation)
     {
         if (!HasInventory)
-            throw new Exception("Inventory is null");
+            return Result.Failure(ProductError.Prd002DoesNotHaveInventory);
 
         ArgumentNullException.ThrowIfNull(newReservation);
 
@@ -149,9 +170,9 @@ public sealed class Product : AggregateBase
     internal Result<Product> AlterReservationStatus(ReservationId id, ReservationStatus status)
     {
         if (!HasInventory)
-            throw new Exception("Inventory is null");
+            return Result.Failure(ProductError.Prd002DoesNotHaveInventory);
 
-        var oldReservation = _inventory!.Reservations.FirstOrDefault(r => r.Id == id);
+        var oldReservation = Inventory!.Reservations.FirstOrDefault(r => r.Id == id);
 
         if (oldReservation is null)
             return Result.Failure(InventoryError.Inv004ReservationWithIdNotFound(id));

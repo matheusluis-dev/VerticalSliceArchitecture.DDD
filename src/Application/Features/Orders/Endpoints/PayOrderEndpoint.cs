@@ -24,7 +24,7 @@ public static class PayOrderEndpoint
 
         public override void Configure()
         {
-            Post("orders/pay");
+            Post("orders/{id}/pay");
             AllowAnonymous();
         }
 
@@ -35,12 +35,12 @@ public static class PayOrderEndpoint
             if (findOrderResult.Failed)
                 await SendNotFoundAsync(ct);
 
-            var order = findOrderResult.Value!;
+            var order = findOrderResult.Object!;
 
             var payOrder = order.Pay(_dateTime);
             await this.SendErrorResponseIfResultFailedAsync(payOrder, ct);
 
-            var paidOrder = payOrder.Value!;
+            var paidOrder = payOrder.Object!;
 
             _orderRepository.Update(paidOrder);
             await _orderRepository.SaveChangesAsync(ct);

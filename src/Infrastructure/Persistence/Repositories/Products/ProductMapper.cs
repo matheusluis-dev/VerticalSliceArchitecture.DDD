@@ -14,11 +14,12 @@ internal static class ProductMapper
     {
         ArgumentNullException.ThrowIfNull(table);
 
-        return Product.Create(
-            table.Name,
-            table.Id,
-            table.Inventory is null ? null : InventoryMapper.ToEntity(table.Inventory)
-        );
+        var productBuilder = ProductBuilder.Start().WithId(table.Id).WithName(table.Name);
+
+        if (table.Inventory is not null)
+            productBuilder.WithInventory(InventoryMapper.ToEntity(table.Inventory));
+
+        return productBuilder.Build();
     }
 
     internal static ProductTable ToTable(Product entity)
@@ -28,7 +29,7 @@ internal static class ProductMapper
         return new ProductTable
         {
             Id = entity.Id,
-            Inventory = entity.Inventory is null ? null : InventoryMapper.ToTable(entity.Inventory),
+            Inventory = entity.HasInventory ? InventoryMapper.ToTable(entity.Inventory!) : null,
             Name = entity.Name,
         };
     }

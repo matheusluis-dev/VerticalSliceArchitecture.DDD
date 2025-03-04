@@ -1,4 +1,4 @@
-﻿using Domain.Products.Entities;
+﻿using Domain.Products.Aggregate;
 
 namespace Domain.Products.Errors;
 
@@ -11,11 +11,11 @@ internal static class InventoryError
 
     internal static Error Inv002ProductIdMustBeInformed => new("INV002", $"Product ID must be informed");
 
-    internal static Error Inv003QuantityToDecreaseIsGreaterThanAvailableStock(Inventory inventory)
+    internal static Error Inv003QuantityToDecreaseIsGreaterThanAvailableStock(Product product)
     {
         return new Error(
             "INV003",
-            $"Quantity to decrease is greater than available stock ({inventory.GetAvailableStock().Value})"
+            $"Quantity to decrease is greater than available stock ({product.GetAvailableStock().Object})"
         );
     }
 

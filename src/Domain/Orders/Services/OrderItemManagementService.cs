@@ -16,16 +16,16 @@ public sealed class OrderItemManagementService
 
         var (order, product, quantity, unitPrice) = model;
 
-        if (order.OrderItems.Any(item => item.Product.Id == product.Id))
+        if (order.OrderItems.Any(item => item.ProductId == product.Id))
             return Result.Failure(OrderError.Ord006TheresAlreadyAnItemWithProduct(product.Id));
 
-        if (product.HasInventory && !product.Inventory!.HasEnoughStockToDecrease(quantity))
+        if (product.HasInventory && !product.HasEnoughStockToDecrease(quantity))
             return Result.Failure(OrderError.Ord007ProductHasNotEnoughStockForPlacingTheOrder(product));
 
         return new OrderItem(
-            new OrderItemId(GuidV7.NewGuid()),
+            new OrderItemId(Guid.NewGuid()),
             order.Id,
-            product,
+            product.Id,
             null,
             new OrderItemPrice(quantity.Value, unitPrice.Value)
         );

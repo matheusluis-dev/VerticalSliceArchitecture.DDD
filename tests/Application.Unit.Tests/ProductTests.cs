@@ -1,6 +1,5 @@
 using Domain.Products.Aggregate;
 using Domain.Products.ValueObjects;
-using Shouldly;
 
 namespace Application.Unit.Tests;
 
@@ -12,10 +11,10 @@ public sealed class ProductTests
     public void Should_not_allow_empty_name_product(string name)
     {
         // Act
-        var result = Product.Create(new ProductName(name));
+        Action action = () => ProductBuilder.Start().WithNewId().WithName(new ProductName(name)).Build();
 
         // Assert
-        result.Failed.ShouldBeTrue();
+        action.ShouldThrow<ArgumentException>().ParamName.ShouldBe("name");
     }
 
     [Fact]
@@ -23,7 +22,7 @@ public sealed class ProductTests
     {
         // Arrange
         var name = new ProductName("ProductName");
-        var product = Product.Create(name).Value!;
+        var product = ProductBuilder.Start().WithNewId().WithName(name).Build().Object!;
 
         // Act
         var result = product.UpdateName(name);

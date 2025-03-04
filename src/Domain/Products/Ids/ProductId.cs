@@ -1,7 +1,10 @@
 namespace Domain.Products.Ids;
 
-public sealed class ProductId : TypedId<GuidV7>
+public sealed class ProductId : TypedId<Guid>
 {
-    public ProductId(GuidV7 value)
+    public ProductId()
+        : this(Guid.Empty) { }
+
+    public ProductId(Guid value)
         : base(value) { }
 }

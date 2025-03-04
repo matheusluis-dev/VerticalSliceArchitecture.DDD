@@ -46,7 +46,7 @@ public sealed class OrderPlacementService
         if (createOrder.Failed)
             return createOrder;
 
-        var order = createOrder.Value!;
+        var order = createOrder.Object!;
 
         var errorsAddingItem = new List<Error>();
         foreach (var item in itemsList)
