@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 using Application;
+using Application.Converters;
 using Application.Features.Products.Services;
 using Domain.Common.Contracts;
-using Domain.Common.Ids;
 using Domain.Orders;
 using Domain.Orders.Services;
 using Domain.Products;
@@ -32,16 +32,12 @@ public static class ServiceInjection
         services.AddSingleton(typeof(IRequestBinder<>), typeof(TypedIdRequestBinder<>));
 
         services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
-        {
-            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            options.SerializerOptions.Converters.Add(new TypedIdConverterFactory());
-        });
+            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter())
+        );
 
         services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
-        {
-            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            options.JsonSerializerOptions.Converters.Add(new TypedIdConverterFactory());
-        });
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
+        );
 
         return services;
     }
@@ -69,7 +65,9 @@ public static class ServiceInjection
         void AddDatabase()
         {
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
+            {
                 services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("VSA"));
+            }
             else
             {
                 services.AddDbContext<ApplicationDbContext>(options =>

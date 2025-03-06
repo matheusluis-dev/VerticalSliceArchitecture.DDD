@@ -1,31 +1,12 @@
 namespace Domain.Products.ValueObjects;
 
-public sealed class ProductName : ValueObject
+public sealed class ProductName : ValueObject<string>
 {
-    public string Value { get; init; } = null!;
+    public ProductName(string value)
+        : base(value) { }
 
-    [UsedImplicitly]
-    public ProductName() { }
-
-    public ProductName(string name)
+    protected override string Normalize(string value)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(name);
-
-        Value = Normalize(name);
-    }
-
-    private static string Normalize(string name)
-    {
-        return name.ToUpperInvariant();
-    }
-
-    protected override IEnumerable<object> GetAtomicValues()
-    {
-        yield return Value;
-    }
-
-    public override string ToString()
-    {
-        return Value;
+        return value.ToUpperInvariant();
     }
 }

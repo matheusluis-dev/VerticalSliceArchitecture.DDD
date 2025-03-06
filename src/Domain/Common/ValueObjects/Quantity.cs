@@ -1,30 +1,12 @@
-using System.Globalization;
-
 namespace Domain.Common.ValueObjects;
 
-public sealed class Quantity : ValueObject
+public sealed class Quantity : ValueObject<int>
 {
-    public int Value { get; init; }
-
-    [UsedImplicitly]
-    public Quantity() { }
-
     public Quantity(int value)
+        : base(value)
     {
         if (value <= 0)
             throw QuantityException.QuantityZeroOrLesser();
-
-        Value = value;
-    }
-
-    protected override IEnumerable<object> GetAtomicValues()
-    {
-        yield return Value;
-    }
-
-    public override string ToString()
-    {
-        return Value.ToString(CultureInfo.CurrentCulture);
     }
 }
 

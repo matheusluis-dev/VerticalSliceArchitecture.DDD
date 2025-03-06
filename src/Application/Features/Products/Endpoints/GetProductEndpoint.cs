@@ -22,12 +22,7 @@ public sealed record GetProductResponse
 {
     public GetProductResponse() { }
 
-    public GetProductResponse(
-        ProductId id,
-        ProductName name,
-        bool hasInventory,
-        GetProductResponse.InventoryResponse? inventory
-    )
+    public GetProductResponse(ProductId id, ProductName name, bool hasInventory, InventoryResponse? inventory)
     {
         Id = id;
         Name = name;
@@ -38,7 +33,7 @@ public sealed record GetProductResponse
     public ProductId Id { get; init; }
     public ProductName Name { get; init; }
     public bool HasInventory { get; init; }
-    public GetProductResponse.InventoryResponse? Inventory { get; init; }
+    public InventoryResponse? Inventory { get; init; }
 
     public sealed record InventoryResponse(Quantity AvailableStock);
 }
@@ -59,6 +54,7 @@ public sealed class GetProductEndpoint : Endpoint<GetProductRequest, GetProductR
             b.Produces<GetProductResponse>(StatusCodes.Status200OK, "application/json")
                 .ProducesProblem(StatusCodes.Status404NotFound)
         );
+        Summary(s => s.ExampleRequest = new GetProductRequest(new ProductId(Guid.CreateVersion7())));
 
         AllowAnonymous();
     }

@@ -1,6 +1,5 @@
-using System.Text.Json;
 using Api;
-using Domain.Common.Ids;
+using Application.Converters;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Infrastructure.Persistence;
@@ -37,23 +36,7 @@ try
         await db.Database.MigrateAsync(app.Lifetime.ApplicationStopping);
     }
 
-    var jsonSerializerOptions = new JsonSerializerOptions
-    {
-        PropertyNameCaseInsensitive = true, // Optional: Case-insensitive property matching
-        Converters = { new TypedIdConverterFactory() }, // Add your custom converter factory
-    };
-    app.UseFastEndpoints(c =>
-        {
-            c.Serializer.RequestDeserializer = async (req, tDto, jCtx, ct) =>
-            {
-                // Read the JSON body from the request
-                using var reader = new StreamReader(req.Body);
-                var json = await reader.ReadToEndAsync(ct);
-
-                // Deserialize the JSON using System.Text.Json
-                return JsonSerializer.Deserialize(json, tDto, jsonSerializerOptions);
-            };
-        })
+    app.UseFastEndpoints(options => options.Serializer.Options.Converters.Add(new ValueObjectConverterFactory()))
         .UseSwaggerGen()
         .UseJobQueues(options => options.MaxConcurrency = 4);
 

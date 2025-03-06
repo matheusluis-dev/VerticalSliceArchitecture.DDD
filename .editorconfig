@@ -476,7 +476,7 @@ dotnet_diagnostic.CA1040.severity = none # CA1040: Avoid empty interfaces
 ## CA1062: Validate arguments of public methods
 dotnet_code_quality.CA1062.exclude_extension_method_this_parameter = true
 dotnet_code_quality.CA1062.excluded_type_names_with_derived_types = Migration|DbContext|Endpoint|JobStorage
-dotnet_code_quality.CA1062.excluded_symbol_names = ExecuteAsync|HandleAsync|Configure
+dotnet_code_quality.CA1062.excluded_symbol_names = ExecuteAsync|HandleAsync|Configure|Read|Write|CanConvert|CreateConverter
 
 # CA1822: Mark members as static
 dotnet_code_quality.CA1822.api_surface = private, internal
@@ -678,7 +678,11 @@ dotnet_diagnostic.MA0100.severity = warning     # MA0100: Await task before disp
 dotnet_diagnostic.MA0101.severity = none        # MA0101: String contains an implicit end of line character
 dotnet_diagnostic.MA0102.severity = warning     # MA0102: Make member readonly
 dotnet_diagnostic.MA0103.severity = warning     # MA0103: Use SequenceEqual instead of equality operator
-dotnet_diagnostic.MA0104.severity = warning     # MA0104: Do not create a type with a name from the BCL
+
+# MA0104: Do not create a type with a name from the BCL
+dotnet_diagnostic.MA0104.severity = warning
+MA0104.namespaces_regex = ^(?!.*Extensions$).*
+
 dotnet_diagnostic.MA0105.severity = suggestion  # MA0105: Use the lambda parameters instead of using a closure
 dotnet_diagnostic.MA0106.severity = suggestion  # MA0106: Avoid closure by using an overload with the 'factoryArgument' parameter
 dotnet_diagnostic.MA0107.severity = warning     # MA0107: Do not use culture-sensitive object.ToString

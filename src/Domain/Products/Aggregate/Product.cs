@@ -152,7 +152,7 @@ public sealed class Product : AggregateBase
 
         var product = productResult.Object!;
         if (product.Inventory!.Quantity.Value is 0)
-            product.RaiseDomainEvent(new InventoryStockReachedZeroEvent(product.Inventory, product.Id));
+            product.RaiseDomainEvent(new InventoryStockReachedZeroEvent(product));
 
         return product;
     }

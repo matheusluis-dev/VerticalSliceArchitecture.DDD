@@ -11,7 +11,7 @@ public sealed class OrderItemTable
     public required OrderItemId Id { get; set; }
     public required ProductId ProductId { get; set; }
     public required ReservationId ReservationId { get; set; }
-    public required OrderItemPrice OrderItemPrice { get; set; }
+    public required Price OrderItemPrice { get; set; }
 
     public OrderTable? Order { get; set; }
     public ProductTable? Product { get; set; }

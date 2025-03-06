@@ -1,6 +1,6 @@
 namespace Domain.Orders.ValueObjects;
 
-public sealed class OrderItemPrice : ValueObject
+public sealed class Price : ValueObject
 {
     public Quantity Quantity { get; init; } = null!;
     public Amount UnitPrice { get; init; } = null!;
@@ -8,9 +8,9 @@ public sealed class OrderItemPrice : ValueObject
     public Amount TotalPrice => new(Quantity.Value * UnitPrice.Value);
 
     [UsedImplicitly]
-    public OrderItemPrice() { }
+    public Price() { }
 
-    public OrderItemPrice(int quantity, decimal unitPrice)
+    public Price(int quantity, decimal unitPrice)
     {
         Quantity = new Quantity(quantity);
         UnitPrice = new Amount(unitPrice);

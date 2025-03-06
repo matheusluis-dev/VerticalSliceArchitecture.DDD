@@ -37,3 +37,35 @@ public abstract class ValueObject : IEquatable<ValueObject>
         return GetAtomicValues().SequenceEqual(valueObject.GetAtomicValues());
     }
 }
+
+public abstract class ValueObject<TPrimitive> : ValueObject
+    where TPrimitive : IComparable<TPrimitive>
+{
+    private readonly TPrimitive _value = default!;
+    public TPrimitive Value
+    {
+        get => _value;
+        init => _value = Normalize(value);
+    }
+
+    protected ValueObject(TPrimitive value)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        Value = value;
+    }
+
+    protected virtual TPrimitive Normalize(TPrimitive value)
+    {
+        return value;
+    }
+
+    protected override IEnumerable<object> GetAtomicValues()
+    {
+        yield return Value;
+    }
+
+    public override string ToString()
+    {
+        return Value.ToString() ?? string.Empty;
+    }
+}

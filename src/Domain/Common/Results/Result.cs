@@ -65,8 +65,9 @@ public sealed class Result<TObject>
     public static implicit operator TObject(Result<TObject> someValue)
     {
         ArgumentNullException.ThrowIfNull(someValue);
+        ArgumentNullException.ThrowIfNull(someValue.Object);
 
-        return someValue.Object!;
+        return someValue.Object;
     }
 
     public static implicit operator Result<TObject>(TObject someValue)

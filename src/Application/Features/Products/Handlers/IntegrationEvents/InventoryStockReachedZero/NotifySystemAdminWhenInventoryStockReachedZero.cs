@@ -7,15 +7,13 @@ public sealed class NotifySystemAdminWhenInventoryStockReachedZero : IDomainEven
 {
     public Task HandleAsync(InventoryStockReachedZeroEvent eventModel, CancellationToken ct)
     {
-        return new NotifySystemAdminWhenInventoryStockReachedZeroCommand(
-            eventModel.Inventory.Id,
-            eventModel.ProductId
-        ).QueueJobAsync(ct: ct);
+        return new NotifySystemAdminWhenInventoryStockReachedZeroCommand(eventModel.Product.InventoryId!).QueueJobAsync(
+            ct: ct
+        );
     }
 }
 
-public sealed record NotifySystemAdminWhenInventoryStockReachedZeroCommand(InventoryId InventoryId, ProductId ProductId)
-    : ICommand;
+public sealed record NotifySystemAdminWhenInventoryStockReachedZeroCommand(InventoryId ProductId) : ICommand;
 
 public sealed class NotifySystemAdminWhenInventoryStockReachedZeroCommandHandler
     : ICommandHandler<NotifySystemAdminWhenInventoryStockReachedZeroCommand>
@@ -32,7 +30,7 @@ public sealed class NotifySystemAdminWhenInventoryStockReachedZeroCommandHandler
         return _email.SendEmailAsync(
             new Email("system@system.com"),
             new Email("admin@system.com"),
-            $"Inventory '{command.InventoryId}' from product '{command.ProductId}' stock reached zero"
+            $"Inventory from product '{command.ProductId}' stock reached zero"
         );
     }
 }

@@ -27,7 +27,7 @@ public sealed class OrderItemManagementService
             order.Id,
             product.Id,
             null,
-            new OrderItemPrice(quantity.Value, unitPrice.Value)
+            new Price(quantity.Value, unitPrice.Value)
         );
     }
 }
